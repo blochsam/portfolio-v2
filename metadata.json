@@ -1,0 +1,7 @@
+{
+  "name": "Sam Bloch Portfolio - The Samulation",
+  "description": "High-performance interactive portfolio for Sam Bloch, Program Manager at YouTube/Google. Features a 3D workstation, 2D accessible experience, and an AI digital twin powered by Gemini.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
