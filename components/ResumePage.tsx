@@ -7,8 +7,12 @@ const ResumePage: React.FC = () => {
   const navigate = useNavigate();
 
   const handleBack = () => {
-    const lastMain = sessionStorage.getItem('lastMainView');
-    navigate(lastMain || '/');
+    const mode = sessionStorage.getItem('experienceMode');
+    if (mode === '2d') {
+      navigate('/', { state: { force2D: true } });
+    } else {
+      navigate('/');
+    }
   };
 
   return (
@@ -40,6 +44,12 @@ const ResumePage: React.FC = () => {
           <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-[#121212] mb-2 uppercase leading-none">SAM BLOCH</h1>
           <p className="text-[10px] md:text-xs text-gray-500 font-medium tracking-wide">
             Culver City, CA | www.sam-bloch.com
+          </p>
+          <p className="text-[9px] text-gray-400 mt-3 italic">
+            Full contact details available in the{' '}
+            <a href="/SBloch_Resume.pdf" download="SBloch_Resume.pdf" className="text-[#24A2A7] hover:underline font-medium">
+              downloadable PDF
+            </a>
           </p>
         </div>
 

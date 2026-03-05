@@ -12,7 +12,17 @@ const PROJECTS: Project[] = [
     description: 'An immersive dual-view digital experience bridging 2D editorial storytelling and a 3D workstation environment powered by Gemini.',
     tags: ['React', 'Spline', 'Three.js', 'AI'],
     github: 'https://github.com/sam-bloch',
-    image: '/case-study/3d-scene.png'
+    image: '/case-study/3d-scene.webp'
+  },
+  {
+    id: 'portfolio-v2',
+    title: 'My Portfolio Website — Design B',
+    category: 'Design',
+    date: '2025',
+    description: 'An immersive, full-bleed reimagining of the portfolio case study. Scroll-driven reveals, parallax imagery, and animated metrics tell the story of building The Samulation.',
+    tags: ['React', 'Spline', 'Immersive Design', 'AI'],
+    github: 'https://github.com/sam-bloch',
+    image: '/case-study/3d-scene.webp'
   },
   {
     id: 'dcade',
@@ -21,7 +31,7 @@ const PROJECTS: Project[] = [
     date: '2020',
     description: 'Resurrecting a custom Sega Dreamcast arcade cabinet through Raspberry Pi, 3D printing, and A/V signal conversion. Now serving patients at a private medical practice.',
     tags: ['Raspberry Pi', 'RetroPie', '3D Printing', 'Hardware'],
-    image: '/case-study/d-cade-card.png',
+    image: '/case-study/d-cade-card.webp',
     imagePosition: '50% 80%'
   },
   {
@@ -31,8 +41,17 @@ const PROJECTS: Project[] = [
     date: '2025',
     description: 'A custom production-ready LMS for AI-driven career development. Built for Quinnipiac in LA—powers the course, manages the student lifecycle, and uses Gemini for real-time feedback.',
     tags: ['Next.js', 'Prisma', 'Gemini API', 'Cloud Run'],
-    image: '/case-study/level-up-card.png',
+    image: '/case-study/level-up-card.webp',
     link: 'https://levelupqu.com'
+  },
+  {
+    id: 'uc-calnat',
+    title: 'UC California Climate Stewards',
+    category: 'Leadership',
+    date: '2024',
+    description: 'Led a Design Thinking consulting engagement for UC Agriculture & Natural Resources, designing a Community of Practice platform for 9,000+ environmental stewardship alumni across California.',
+    tags: ['Design Thinking', 'UX Research', 'Community Design', 'Stakeholder Interviews'],
+    image: '/case-study/calnat-card.webp'
   },
   {
     id: 'zoo-report',
@@ -40,8 +59,17 @@ const PROJECTS: Project[] = [
     category: 'Design',
     date: '2020',
     description: 'A mobile app concept for zoo and wildlife parks—explore exhibits, learn about animals, and donate. Paper and digital wireframe prototypes from research to final UI.',
-    tags: ['UX Research', 'Prototyping', 'Mobile', 'Figma'],
-    image: '/case-study/zoo-report-card.png'
+    tags: ['UX Research', 'Prototyping', 'Mobile', 'Adobe XD'],
+    image: '/case-study/zoo-report-card.webp'
+  },
+  {
+    id: 'smart-lockers',
+    title: 'Smart Lockers',
+    category: 'Design',
+    date: '2019',
+    description: 'Built a self-service smart locker system at Quicken Loans—a web portal, Raspberry Pi prototype with 3D-printed case, and a working API that earned a presentation to the SVP of Infrastructure.',
+    tags: ['PHP', 'SQL', 'Python', 'Raspberry Pi', '3D Printing'],
+    image: '/case-study/smart-lockers/lockerblock.png'
   },
   {
     id: 'yt-quality-global',
@@ -114,8 +142,12 @@ const ProjectsPage: React.FC = () => {
       {/* Back Button */}
       <button
         onClick={() => {
-          const lastMain = sessionStorage.getItem('lastMainView');
-          navigate(lastMain || '/');
+          const mode = sessionStorage.getItem('experienceMode');
+          if (mode === '2d') {
+            navigate('/', { state: { force2D: true } });
+          } else {
+            navigate('/');
+          }
         }}
         className="fixed top-8 left-8 md:left-12 z-[60] flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-all bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95"
       >
@@ -130,14 +162,16 @@ const ProjectsPage: React.FC = () => {
           
           <div className="flex flex-col md:flex-row gap-6 justify-between items-start md:items-center py-8 border-y border-white/5">
             {/* Filters */}
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2" role="group" aria-label="Filter projects by category">
               {categories.map(cat => (
                 <button
                   key={cat}
                   onClick={() => setFilter(cat)}
-                  className={`px-5 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all border ${
-                    filter === cat 
-                    ? 'bg-[#24A2A7] border-[#24A2A7] text-black shadow-[0_0_20px_rgba(36,162,167,0.3)]' 
+                  aria-pressed={filter === cat}
+                  aria-label={`Filter by ${cat}`}
+                  className={`px-5 py-3 min-h-[44px] rounded-full text-[10px] font-bold uppercase tracking-widest transition-all border ${
+                    filter === cat
+                    ? 'bg-[#24A2A7] border-[#24A2A7] text-black shadow-[0_0_20px_rgba(36,162,167,0.3)]'
                     : 'bg-white/5 border-white/10 text-gray-400 hover:border-[#24A2A7]/50'
                   }`}
                 >
@@ -148,13 +182,15 @@ const ProjectsPage: React.FC = () => {
 
             {/* Search */}
             <div className="relative w-full md:w-80 group">
-              <ArrowLeft className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 group-focus-within:text-[#24A2A7] transition-colors rotate-180" />
-              <input 
-                type="text"
+              <label htmlFor="project-search" className="sr-only">Search projects</label>
+              <ArrowLeft className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-[#24A2A7] transition-colors rotate-180" aria-hidden="true" />
+              <input
+                id="project-search"
+                type="search"
                 placeholder="Search projects..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-full py-3 pl-12 pr-6 text-sm focus:outline-none focus:border-[#24A2A7] transition-all placeholder:text-gray-600"
+                className="w-full bg-white/5 border border-white/10 rounded-full py-3 pl-12 pr-6 text-sm focus:outline-none focus:border-[#24A2A7] transition-all placeholder:text-gray-400"
               />
             </div>
           </div>
@@ -176,6 +212,7 @@ const ProjectsPage: React.FC = () => {
               key={project.id}
               type="button"
               onClick={() => navigate(`/projects/${project.id}`)}
+              aria-label={`View case study: ${project.title}`}
               className="group relative bg-[#1a1a1a]/40 border border-white/5 rounded-3xl overflow-hidden hover:bg-[#202020] transition-all duration-500 flex flex-col h-full text-left cursor-pointer w-full"
             >
               {/* Header image */}
@@ -183,7 +220,10 @@ const ProjectsPage: React.FC = () => {
                 {project.image ? (
                   <img
                     src={project.image}
-                    alt=""
+                    alt={project.title}
+                    width={640}
+                    height={400}
+                    loading="lazy"
                     className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
                     style={{ objectPosition: project.imagePosition ?? 'center' }}
                   />
@@ -194,7 +234,7 @@ const ProjectsPage: React.FC = () => {
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] via-transparent to-transparent opacity-60" />
                 <div className="absolute top-3 left-3 right-3 flex justify-between items-start">
-                  <span className="text-[9px] font-mono text-[#24A2A7] font-bold uppercase tracking-widest px-3 py-1 bg-black/60 backdrop-blur-sm rounded-full">
+                  <span className="text-[11px] font-mono text-[#24A2A7] font-bold uppercase tracking-widest px-3 py-1 bg-black/60 backdrop-blur-sm rounded-full">
                     {project.category}
                   </span>
                   <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest px-3 py-1 bg-black/40 backdrop-blur-sm rounded-full">{project.date}</span>
@@ -212,7 +252,7 @@ const ProjectsPage: React.FC = () => {
 
                 <div className="flex flex-wrap gap-2 mb-6">
                   {project.tags.map(tag => (
-                    <span key={tag} className="text-[8px] font-bold uppercase tracking-[0.2em] text-gray-500 border border-white/5 px-2 py-1 rounded">
+                    <span key={tag} className="text-[11px] font-bold uppercase tracking-[0.15em] text-gray-400 border border-white/5 px-2.5 py-1 rounded">
                       {tag}
                     </span>
                   ))}
@@ -231,7 +271,7 @@ const ProjectsPage: React.FC = () => {
 
           {filteredProjects.length === 0 && (
             <div className="col-span-full py-32 text-center border border-dashed border-white/10 rounded-3xl">
-              <span className="text-gray-600 uppercase font-black tracking-widest text-xs">No artifacts found in this sector.</span>
+              <span className="text-gray-400 uppercase font-black tracking-widest text-xs">No artifacts found in this sector.</span>
             </div>
           )}
         </div>

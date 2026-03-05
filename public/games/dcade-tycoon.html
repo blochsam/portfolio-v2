@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>D-Cade Tycoon: Junkyard Edition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#000}
+canvas{display:block;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges;cursor:none}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+(function(){
+'use strict';
+
+/* ═══════════════════════════════════════════
+   D-CADE TYCOON: JUNKYARD EDITION
+   Canvas-based GBA-style game
+   ═══════════════════════════════════════════ */
+
+// ── Constants ──
+const W = 480, H = 360;
+const FONT = '"Press Start 2P", monospace';
+const STATES = { BOOT:0, TITLE:1, SEARCH:2, BUILD:3, WIN:4 };
+
+// Colors — branded teal (#24A2A7) as primary accent
+const C = {
+  bg: '#0a0a0a', panel: '#0d0d1a', panelB: '#1a1a2e',
+  teal: '#24A2A7', green: '#00FF41', amber: '#FFB800',
+  red: '#FF4444', purple: '#7B2D8B', white: '#ffffff',
+  dim: 'rgba(255,255,255,0.55)',
+  // Black cabinet tones (real D-Cade is black)
+  cab: ['#0a0a0a','#141414','#1c1c1c','#252525','#333333','#444444'],
+  metal: ['#333333','#555555','#777777','#999999','#BBBBBB'],
+  screenGlass: '#0a1a1a',
+};
+
+// Components — updated names, speakers at TOP
+const COMP_DEFS = [
+  { id:'display',  label:'TV',           color:'#24A2A7', zone:{x:5,y:12,w:38,h:28} },
+  { id:'audio',    label:'Speakers',     color:'#FFB800', zone:{x:6,y:2,w:36,h:8}   },
+  { id:'controls', label:'Joystick',     color:'#FF4444', zone:{x:8,y:42,w:32,h:14} },
+  { id:'cpu',      label:'Rasp. Pi',     color:'#24A2A7', zone:{x:34,y:58,w:12,h:14} },
+  { id:'frame',    label:'Wood',          color:'#7B2D8B', zone:{x:0,y:0,w:48,h:80}  },
+];
+const COMP_MAP = {};
+COMP_DEFS.forEach(c => COMP_MAP[c.id] = c);
+
+// Junk templates — actual college house items with sprite types
+const JUNK_ITEMS = [
+  { name:'Tangled Cables',  type:'cables',   flavor:'A rat\'s nest of HDMI and mystery wires' },
+  { name:'Pizza Boxes',     type:'pizza',     flavor:'Last Tuesday. Or was it last month?' },
+  { name:'Solo Cups',       type:'cups',      flavor:'Archaeological record of last weekend' },
+  { name:'Busted CRT',      type:'crt',       flavor:'Smells like ozone and nostalgia' },
+  { name:'Old Textbooks',   type:'books',     flavor:'Intro to Business — never opened' },
+  { name:'Dusty Keyboard',  type:'keyboard',  flavor:'Missing the W, A, S, and D keys' },
+  { name:'VHS Tapes',       type:'vhs',       flavor:'Space Jam and 3 unlabeled tapes' },
+  { name:'Broken Boombox',  type:'boombox',   flavor:'Last played Smash Mouth in 2003' },
+  { name:'Old Sneakers',    type:'shoes',     flavor:'These have seen things' },
+  { name:'Pong Table Junk', type:'pongtable', flavor:'One side always sagged' },
+];
+
+// ── Canvas Setup ──
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+canvas.width = W;
+canvas.height = H;
+ctx.imageSmoothingEnabled = false;
+
+// ── Input System ──
+const input = { x:0, y:0, down:false, clicked:false, rawX:0, rawY:0 };
+function updateInputCoords(e) {
+  const rect = canvas.getBoundingClientRect();
+  const sx = W / rect.width, sy = H / rect.height;
+  const clientX = e.clientX ?? (e.touches && e.touches[0] ? e.touches[0].clientX : input.rawX);
+  const clientY = e.clientY ?? (e.touches && e.touches[0] ? e.touches[0].clientY : input.rawY);
+  input.rawX = clientX; input.rawY = clientY;
+  input.x = (clientX - rect.left) * sx;
+  input.y = (clientY - rect.top) * sy;
+}
+canvas.addEventListener('pointermove', e => { updateInputCoords(e); });
+canvas.addEventListener('pointerdown', e => {
+  updateInputCoords(e);
+  input.down = true;
+  input.clicked = true;
+  initAudio();
+});
+canvas.addEventListener('pointerup', () => { input.down = false; });
+canvas.addEventListener('touchstart', e => { e.preventDefault(); }, { passive: false });
+canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+// ── Audio System ──
+let audioCtx = null, muted = false;
+function initAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+}
+function beep(freq, dur, type, vol) {
+  if (!audioCtx || muted) return;
+  type = type || 'square'; vol = vol || 0.06;
+  const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+  o.type = type; o.frequency.value = freq;
+  g.gain.setValueAtTime(vol, audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+  o.connect(g); g.connect(audioCtx.destination);
+  o.start(); o.stop(audioCtx.currentTime + dur);
+}
+function sfx(name) {
+  if (muted) return;
+  switch(name) {
+    case 'click':    beep(800,.05); break;
+    case 'type':     beep(600+Math.random()*200,.03,'square',.03); break;
+    case 'search':   beep(180,.12,'sawtooth',.05); setTimeout(()=>beep(220,.12,'sawtooth',.04),100); break;
+    case 'found':    beep(523,.1); setTimeout(()=>beep(659,.1),100); setTimeout(()=>beep(784,.15),200); break;
+    case 'dud':      beep(180,.15,'sawtooth',.05); setTimeout(()=>beep(130,.2,'sawtooth',.03),100); break;
+    case 'place':    beep(440,.08); setTimeout(()=>beep(660,.08),80); setTimeout(()=>beep(880,.12),160); break;
+    case 'reject':   beep(150,.08,'sawtooth',.06); setTimeout(()=>beep(120,.12,'sawtooth',.05),80); break;
+    case 'pickup':   beep(600,.04); setTimeout(()=>beep(800,.04),60); break;
+    case 'boot':     beep(200,.3,'sine',.04); break;
+    case 'win':      [0,150,300,450,600,750].forEach((d,i)=>setTimeout(()=>beep([523,659,784,1047,784,1047][i],.15+i*.02),d)); break;
+    case 'start':    beep(440,.08); setTimeout(()=>beep(554,.08),100); setTimeout(()=>beep(659,.12),200); break;
+    case 'allparts': beep(784,.1); setTimeout(()=>beep(988,.1),100); setTimeout(()=>beep(1175,.2),200); break;
+  }
+}
+
+// ── Math / Easing Utilities ──
+function lerp(a,b,t){ return a+(b-a)*t; }
+function clamp(v,mn,mx){ return Math.max(mn,Math.min(mx,v)); }
+function rand(a,b){ return a+Math.random()*(b-a); }
+function randInt(a,b){ return Math.floor(rand(a,b+1)); }
+function dist(x1,y1,x2,y2){ return Math.sqrt((x2-x1)**2+(y2-y1)**2); }
+function easeOutCubic(t){ return 1-Math.pow(1-t,3); }
+function easeInOutQuad(t){ return t<0.5?2*t*t:1-Math.pow(-2*t+2,2)/2; }
+function easeOutBack(t){ const c1=1.70158,c3=c1+1; return 1+c3*Math.pow(t-1,3)+c1*Math.pow(t-1,2); }
+
+// ── Tween System ──
+const tweens = [];
+const MAX_TWEENS = 64;
+for (let i = 0; i < MAX_TWEENS; i++) tweens.push({ active:false });
+function tween(obj, prop, from, to, dur, ease, onDone) {
+  for (let i = 0; i < MAX_TWEENS; i++) {
+    if (!tweens[i].active) {
+      tweens[i] = { active:true, obj, prop, from, to, dur, ease:ease||easeOutCubic, elapsed:0, onDone:onDone||null };
+      obj[prop] = from;
+      return tweens[i];
+    }
+  }
+}
+function updateTweens(dt) {
+  for (let i = 0; i < MAX_TWEENS; i++) {
+    const tw = tweens[i];
+    if (!tw.active) continue;
+    tw.elapsed += dt;
+    const t = clamp(tw.elapsed / tw.dur, 0, 1);
+    tw.obj[tw.prop] = lerp(tw.from, tw.to, tw.ease(t));
+    if (t >= 1) { tw.active = false; if (tw.onDone) tw.onDone(); }
+  }
+}
+
+// ── Particle System ──
+const particles = [];
+const MAX_PARTICLES = 200;
+for (let i = 0; i < MAX_PARTICLES; i++) particles.push({ active:false });
+function spawnParticle(x, y, vx, vy, life, size, color, grav) {
+  for (let i = 0; i < MAX_PARTICLES; i++) {
+    if (!particles[i].active) {
+      particles[i] = { active:true, x, y, vx, vy, life, maxLife:life, size, color, grav:grav||0 };
+      return;
+    }
+  }
+}
+function burstParticles(x, y, count, color, speed, size, grav) {
+  speed = speed || 80; size = size || 3; grav = grav || 0;
+  for (let i = 0; i < count; i++) {
+    const angle = Math.PI * 2 * i / count + rand(-0.3, 0.3);
+    const spd = rand(speed * 0.5, speed * 1.2);
+    spawnParticle(x, y, Math.cos(angle)*spd, Math.sin(angle)*spd, rand(0.3,0.7), rand(size*0.5,size*1.5), color, grav);
+  }
+}
+function updateParticles(dt) {
+  for (let i = 0; i < MAX_PARTICLES; i++) {
+    const p = particles[i];
+    if (!p.active) continue;
+    p.x += p.vx * dt; p.y += p.vy * dt; p.vy += p.grav * dt;
+    p.life -= dt;
+    if (p.life <= 0) p.active = false;
+  }
+}
+function drawParticles() {
+  for (let i = 0; i < MAX_PARTICLES; i++) {
+    const p = particles[i];
+    if (!p.active) continue;
+    ctx.globalAlpha = clamp(p.life / p.maxLife, 0, 1);
+    ctx.fillStyle = p.color;
+    ctx.fillRect(Math.floor(p.x - p.size/2), Math.floor(p.y - p.size/2), Math.ceil(p.size), Math.ceil(p.size));
+  }
+  ctx.globalAlpha = 1;
+}
+
+// ── Screen Effects ──
+let shakeAmount = 0, shakeTimer = 0;
+let flashColor = null, flashTimer = 0;
+const popups = [];
+const MAX_POPUPS = 16;
+for (let i = 0; i < MAX_POPUPS; i++) popups.push({ active:false });
+
+function screenShake(amount, dur) { shakeAmount = amount; shakeTimer = dur; }
+function screenFlash(color, dur) { flashColor = color; flashTimer = dur; }
+function scorePopup(x, y, text, color) {
+  for (let i = 0; i < MAX_POPUPS; i++) {
+    if (!popups[i].active) { popups[i] = { active:true, x, y, text, color, life:1.2, maxLife:1.2 }; return; }
+  }
+}
+function updateEffects(dt) {
+  shakeTimer -= dt; if (shakeTimer < 0) { shakeTimer = 0; shakeAmount = 0; }
+  flashTimer -= dt; if (flashTimer < 0) flashTimer = 0;
+  for (let i = 0; i < MAX_POPUPS; i++) {
+    const p = popups[i];
+    if (!p.active) continue;
+    p.life -= dt; p.y -= 30 * dt;
+    if (p.life <= 0) p.active = false;
+  }
+}
+function drawPopups() {
+  for (let i = 0; i < MAX_POPUPS; i++) {
+    const p = popups[i];
+    if (!p.active) continue;
+    ctx.globalAlpha = clamp(p.life / p.maxLife, 0, 1);
+    ctx.font = '8px ' + FONT; ctx.textAlign = 'center';
+    ctx.fillStyle = '#000'; ctx.fillText(p.text, p.x+1, p.y+1);
+    ctx.fillStyle = p.color; ctx.fillText(p.text, p.x, p.y);
+  }
+  ctx.globalAlpha = 1;
+}
+
+// ── Text Helpers ──
+function drawText(text, x, y, size, color, align, alpha, shadow) {
+  ctx.globalAlpha = alpha != null ? alpha : 1;
+  ctx.font = size + 'px ' + FONT;
+  ctx.textAlign = align || 'center';
+  ctx.textBaseline = 'middle';
+  if (shadow) { ctx.fillStyle = 'rgba(0,0,0,0.6)'; ctx.fillText(text, x+1, y+1); }
+  ctx.fillStyle = color; ctx.fillText(text, x, y);
+  ctx.globalAlpha = 1;
+}
+
+// ── Fade Transition ──
+let fadeAlpha = 1, fadeDir = 0, fadeCallback = null, transitioning = false;
+function fadeOut(cb) { if (transitioning) return; transitioning = true; fadeAlpha = 0; fadeDir = 1; fadeCallback = cb; }
+function fadeIn() { fadeAlpha = 1; fadeDir = -1; fadeCallback = null; transitioning = false; }
+function updateFade(dt) {
+  if (fadeDir === 0) return;
+  fadeAlpha += fadeDir * dt * 2.5;
+  if (fadeDir > 0 && fadeAlpha >= 1) { fadeAlpha = 1; fadeDir = 0; if (fadeCallback) { fadeCallback(); fadeCallback = null; } }
+  if (fadeDir < 0 && fadeAlpha <= 0) { fadeAlpha = 0; fadeDir = 0; }
+}
+function drawFade() {
+  if (fadeAlpha <= 0) return;
+  ctx.globalAlpha = fadeAlpha; ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1;
+}
+
+// ══════════════════════════════════════
+//   JUNK SPRITE DRAWING
+//   Recognizable pixel art for each item
+// ══════════════════════════════════════
+function drawJunkSprite(type, x, y, scale, highlight) {
+  const s = scale || 1;
+  ctx.save();
+  ctx.translate(Math.floor(x), Math.floor(y));
+
+  function px(rx, ry, rw, rh, col) {
+    ctx.fillStyle = col;
+    ctx.fillRect(Math.floor(rx*s), Math.floor(ry*s), Math.ceil(rw*s), Math.ceil(rh*s));
+  }
+
+  switch(type) {
+    case 'pizza': // Pizza box — recognizable flat box shape
+      // Box bottom
+      px(-14, -4, 28, 14, '#8B6914');
+      px(-13, -3, 26, 12, '#A67C28');
+      // Lid (slightly open)
+      px(-14, -8, 28, 5, '#9B7420');
+      px(-13, -7, 26, 3, '#B88A30');
+      // Grease stain
+      px(-4, 0, 8, 4, '#7A5E12');
+      // Lid gap
+      px(-12, -4, 24, 1, '#5A4210');
+      // Box text
+      px(-6, 2, 12, 1, '#5A4210');
+      break;
+
+    case 'cables': // Tangled cables — colorful mess of wires
+      // Wire 1 (green)
+      ctx.strokeStyle = '#00CC44'; ctx.lineWidth = s*1.5; ctx.beginPath();
+      ctx.moveTo(-12*s, -6*s); ctx.quadraticCurveTo(-2*s, -12*s, 8*s, -4*s); ctx.stroke();
+      // Wire 2 (red)
+      ctx.strokeStyle = '#CC3333'; ctx.lineWidth = s*1.5; ctx.beginPath();
+      ctx.moveTo(-8*s, 2*s); ctx.quadraticCurveTo(4*s, -8*s, 12*s, 4*s); ctx.stroke();
+      // Wire 3 (blue)
+      ctx.strokeStyle = '#3366CC'; ctx.lineWidth = s*1.5; ctx.beginPath();
+      ctx.moveTo(-10*s, 6*s); ctx.quadraticCurveTo(0*s, 0*s, 10*s, 8*s); ctx.stroke();
+      // Wire 4 (yellow)
+      ctx.strokeStyle = '#CCAA22'; ctx.lineWidth = s; ctx.beginPath();
+      ctx.moveTo(-6*s, -2*s); ctx.quadraticCurveTo(6*s, 6*s, -4*s, 10*s); ctx.stroke();
+      // HDMI connector
+      px(8, -6, 5, 3, '#333');
+      px(9, -5, 3, 1, '#666');
+      break;
+
+    case 'cups': // Red solo cups — iconic party cups
+      // Cup 1 (upright)
+      px(-10, -8, 10, 16, '#CC2222');
+      px(-9, -7, 8, 14, '#DD3333');
+      px(-8, -8, 6, 1, '#EE5555'); // rim highlight
+      // Cup 2 (tipped over)
+      px(2, 0, 14, 8, '#CC2222');
+      px(3, 1, 12, 6, '#DD3333');
+      px(2, 0, 1, 8, '#EE5555');
+      // Cup 3 (behind)
+      px(-4, -4, 8, 12, '#AA1818');
+      px(-3, -3, 6, 10, '#BB2020');
+      break;
+
+    case 'crt': // Old CRT TV
+      px(-14, -10, 28, 20, '#444');
+      px(-13, -9, 26, 18, '#333');
+      // Screen
+      px(-10, -7, 20, 13, '#1a2a2a');
+      px(-9, -6, 18, 11, '#0a1a1a');
+      // Screen glare
+      px(-8, -5, 4, 2, 'rgba(255,255,255,0.1)');
+      // Knobs
+      px(12, -2, 2, 2, '#666');
+      px(12, 3, 2, 2, '#666');
+      // Stand
+      px(-6, 10, 12, 3, '#333');
+      break;
+
+    case 'books': // Stacked textbooks
+      // Bottom book (thick, blue)
+      px(-10, 2, 20, 5, '#2244AA');
+      px(-9, 3, 18, 3, '#3355BB');
+      px(-10, 2, 2, 5, '#1a3388'); // spine
+      // Middle book (red)
+      px(-8, -2, 18, 5, '#AA2244');
+      px(-7, -1, 16, 3, '#BB3355');
+      px(-8, -2, 2, 5, '#881a33');
+      // Top book (green)
+      px(-12, -6, 16, 5, '#228844');
+      px(-11, -5, 14, 3, '#33AA55');
+      px(-12, -6, 2, 5, '#1a6633');
+      break;
+
+    case 'keyboard': // Dusty keyboard
+      px(-14, -4, 28, 10, '#555');
+      px(-13, -3, 26, 8, '#444');
+      // Key grid
+      for (let row = 0; row < 3; row++) {
+        for (let col = 0; col < 8; col++) {
+          const missing = (row===1 && (col===0||col===1||col===2||col===3)); // WASD missing
+          px(-11+col*3, -2+row*3, 2, 2, missing ? '#333' : '#666');
+        }
+      }
+      // Space bar
+      px(-5, 6, 10, 2, '#666');
+      break;
+
+    case 'vhs': // VHS tapes stacked
+      px(-10, -6, 20, 5, '#222');
+      px(-9, -5, 18, 3, '#333');
+      // Tape windows
+      px(-6, -5, 4, 2, '#111'); px(2, -5, 4, 2, '#111');
+      // Second tape
+      px(-8, 0, 18, 5, '#2a2a2a');
+      px(-7, 1, 16, 3, '#3a3a3a');
+      // Label
+      px(-4, 1, 8, 2, '#8888AA');
+      break;
+
+    case 'boombox': // Broken boombox
+      px(-14, -6, 28, 14, '#444');
+      px(-13, -5, 26, 12, '#555');
+      // Speaker cones
+      ctx.strokeStyle = '#777'; ctx.lineWidth = s;
+      ctx.beginPath(); ctx.arc(-6*s, 1*s, 4*s, 0, Math.PI*2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(6*s, 1*s, 4*s, 0, Math.PI*2); ctx.stroke();
+      ctx.fillStyle = '#333';
+      ctx.beginPath(); ctx.arc(-6*s, 1*s, 2*s, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(6*s, 1*s, 2*s, 0, Math.PI*2); ctx.fill();
+      // Handle
+      px(-8, -8, 16, 2, '#666');
+      // Tape deck
+      px(-4, -4, 8, 3, '#333');
+      break;
+
+    case 'shoes': // Old sneakers
+      // Shoe 1
+      ctx.fillStyle = '#6644AA';
+      ctx.beginPath();
+      ctx.moveTo(-12*s, 6*s); ctx.lineTo(-12*s, -2*s); ctx.lineTo(-6*s, -6*s);
+      ctx.lineTo(-2*s, -2*s); ctx.lineTo(-2*s, 4*s); ctx.lineTo(4*s, 4*s);
+      ctx.lineTo(6*s, 6*s); ctx.closePath(); ctx.fill();
+      // Sole
+      px(-12, 6, 18, 2, '#333');
+      // Laces
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = s*0.5;
+      ctx.beginPath(); ctx.moveTo(-8*s, -1*s); ctx.lineTo(-4*s, -3*s); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-7*s, 1*s); ctx.lineTo(-3*s, -1*s); ctx.stroke();
+      // Shoe 2 (behind, tilted)
+      px(2, -4, 12, 8, '#5533AA');
+      px(2, 4, 12, 2, '#333');
+      break;
+
+    case 'pongtable': // Ping pong / beer pong triangle of cups
+      // Table edge
+      px(-14, 4, 28, 3, '#336633');
+      px(-13, 5, 26, 1, '#448844');
+      // Triangle of cups (top view)
+      const cupPositions = [
+        [0,-6], [-4,-2],[4,-2], [-8,2],[0,2],[8,2]
+      ];
+      cupPositions.forEach(([cx,cy]) => {
+        ctx.fillStyle = '#CC2222';
+        ctx.beginPath();
+        ctx.arc(cx*s, cy*s, 3*s, 0, Math.PI*2);
+        ctx.fill();
+        ctx.fillStyle = '#DD4444';
+        ctx.beginPath();
+        ctx.arc(cx*s - 0.5*s, cy*s - 0.5*s, 1.5*s, 0, Math.PI*2);
+        ctx.fill();
+      });
+      break;
+  }
+
+  // Hover highlight ring
+  if (highlight) {
+    ctx.strokeStyle = C.teal;
+    ctx.lineWidth = 1.5;
+    ctx.globalAlpha = 0.5 + Math.sin(gameTime * 4) * 0.3;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 20*s, 14*s, 0, 0, Math.PI*2);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  }
+
+  ctx.restore();
+}
+
+// ══════════════════════════════════════
+//   CABINET RENDERER — Black D-Cade
+//   Speakers at TOP, black body
+// ══════════════════════════════════════
+function drawCabinet(ox, oy, scale, opts) {
+  opts = opts || {};
+  const s = scale;
+  const placed = opts.placed || {};
+  const bootProgress = opts.bootProgress || 0;
+  const highlightZone = opts.highlightZone || null;
+  const pulseT = opts.pulseT || 0;
+
+  ctx.save();
+  ctx.translate(Math.floor(ox), Math.floor(oy));
+
+  function px(x, y, w, h, color) {
+    ctx.fillStyle = color;
+    ctx.fillRect(Math.floor(x*s), Math.floor(y*s), Math.ceil(w*s), Math.ceil(h*s));
+  }
+
+  // ─ Floor Shadow ─
+  ctx.globalAlpha = 0.4;
+  px(2, 78, 44, 4, '#000');
+  ctx.globalAlpha = 1;
+
+  // ─ Base/Feet ─
+  px(3, 75, 42, 5, C.cab[0]);
+  px(4, 75, 40, 4, C.cab[1]);
+  px(5, 76, 38, 2, C.cab[2]);
+  px(6, 75, 8, 1, C.cab[4]);
+  px(34, 75, 8, 1, C.cab[4]);
+
+  // ─ Main Body (Black) ─
+  px(4, 10, 40, 65, C.cab[1]);
+  // Subtle panel texture
+  for (let gy = 12; gy < 74; gy += 4) {
+    px(5, gy, 38, 1, gy % 8 === 0 ? C.cab[0] : C.cab[2]);
+  }
+  // Edge highlights for 3D depth
+  px(4, 10, 1, 65, C.cab[3]);
+  px(43, 10, 1, 65, C.cab[0]);
+
+  // ─ Speaker Grille at TOP (y=2 to y=10) ─
+  px(4, 0, 40, 10, C.cab[2]);
+  px(5, 1, 38, 8, C.cab[1]);
+  // Top bevel
+  px(4, 0, 40, 1, C.cab[4]);
+
+  if (placed.audio || bootProgress > 0.85) {
+    // Speaker mesh pattern
+    for (let row = 0; row < 3; row++) {
+      for (let col = 0; col < 16; col++) {
+        const bright = (row + col) % 2 === 0;
+        px(8 + col * 2, 2 + row * 2, 2, 2, bright ? C.cab[4] : C.cab[1]);
+      }
+    }
+    // Speaker circles (twin speakers)
+    ctx.strokeStyle = C.metal[3]; ctx.lineWidth = s * 0.8;
+    ctx.beginPath(); ctx.arc(16*s, 5*s, 3*s, 0, Math.PI*2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(32*s, 5*s, 3*s, 0, Math.PI*2); ctx.stroke();
+    if (bootProgress > 0.85) {
+      const waveT = (bootProgress - 0.85) / 0.15;
+      ctx.globalAlpha = waveT * 0.5;
+      ctx.strokeStyle = C.amber; ctx.lineWidth = s * 0.5;
+      for (let w = 0; w < 2; w++) {
+        ctx.beginPath(); ctx.arc(16*s, 5*s, (4+w*2)*waveT*s, -0.4, 0.4); ctx.stroke();
+        ctx.beginPath(); ctx.arc(32*s, 5*s, (4+w*2)*waveT*s, -0.4, 0.4); ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+    }
+  } else {
+    px(6, 2, 36, 6, C.cab[0]);
+    if (highlightZone === 'audio') {
+      ctx.globalAlpha = 0.3 + Math.sin(pulseT * 6) * 0.2;
+      px(6, 2, 36, 8, C.amber);
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  // ─ Screen Area (y=12 to y=40) ─
+  px(5, 12, 38, 28, '#080808');
+  px(6, 13, 36, 26, '#050505');
+
+  if (placed.display || bootProgress > 0) {
+    px(7, 14, 34, 24, C.screenGlass);
+    if (bootProgress > 0) {
+      if (bootProgress < 0.2) {
+        const flick = Math.sin(bootProgress * 80) > 0.3;
+        if (flick) { ctx.globalAlpha = 0.6; px(7, 14, 34, 24, '#fff'); ctx.globalAlpha = 1; }
+      } else if (bootProgress < 0.45) {
+        const sweep = (bootProgress - 0.2) / 0.25;
+        const sweepH = Math.floor(24 * sweep);
+        px(7, 14, 34, sweepH, '#0a2a2a');
+        if (sweepH > 0 && sweepH < 24) { ctx.globalAlpha = 0.7; px(7, 14+sweepH, 34, 1, C.teal); ctx.globalAlpha = 1; }
+      } else if (bootProgress < 0.6) {
+        px(7, 14, 34, 24, '#0a1a1a');
+        const textT = (bootProgress - 0.45) / 0.15;
+        const chars = Math.floor(textT * 6);
+        if (chars > 0) {
+          ctx.font = (6*s)+'px '+FONT; ctx.textAlign='center'; ctx.fillStyle=C.teal; ctx.globalAlpha=0.9;
+          ctx.fillText('D-CADE'.substring(0,chars), 24*s, 27*s);
+          ctx.globalAlpha = 1;
+        }
+      } else {
+        px(7, 14, 34, 24, '#0a1a1a');
+        ctx.font = (6*s)+'px '+FONT; ctx.textAlign='center'; ctx.fillStyle=C.teal; ctx.globalAlpha=0.9;
+        ctx.fillText('D-CADE', 24*s, 27*s);
+        ctx.globalAlpha = 1;
+        ctx.globalAlpha = 0.08; px(8, 15, 32, 22, C.teal); ctx.globalAlpha = 1;
+      }
+    } else {
+      px(7, 14, 34, 24, '#0a1a1a');
+      ctx.globalAlpha = 0.12; px(10, 16, 6, 3, '#ffffff');
+      ctx.globalAlpha = 0.06; px(11, 17, 4, 1, '#ffffff'); ctx.globalAlpha = 1;
+    }
+    // Scanlines on screen
+    ctx.globalAlpha = 0.06;
+    for (let sy = 14; sy < 38; sy += 2) px(7, sy, 34, 1, '#000');
+    ctx.globalAlpha = 1;
+  } else {
+    px(7, 14, 34, 24, '#080808');
+    ctx.globalAlpha = 0.04; px(10, 16, 6, 3, '#fff'); ctx.globalAlpha = 1;
+    if (highlightZone === 'display') {
+      ctx.globalAlpha = 0.3 + Math.sin(pulseT * 6) * 0.2;
+      px(5, 12, 38, 28, C.teal);
+      ctx.globalAlpha = 1;
+    }
+  }
+  // Screen bezel
+  px(5, 12, 38, 1, C.cab[4]);
+  px(5, 12, 1, 28, C.cab[3]);
+  px(5, 39, 38, 1, C.cab[0]);
+  px(42, 12, 1, 28, C.cab[0]);
+
+  // ─ Control Panel (y=42 to y=56) ─
+  px(6, 42, 36, 14, C.metal[1]);
+  px(7, 43, 34, 12, C.metal[0]);
+  px(6, 42, 36, 1, C.metal[3]);
+  px(6, 55, 36, 1, C.cab[0]);
+
+  if (placed.controls || bootProgress > 0.75) {
+    // Joystick
+    px(14, 48, 2, 5, C.metal[0]);
+    px(15, 48, 2, 5, C.metal[2]);
+    px(13, 46, 6, 3, C.red);
+    px(14, 46, 4, 1, '#FF8888');
+    // Buttons
+    const btnColors = [C.red, '#22CC44', '#3388FF', C.amber];
+    const btnX = [26, 31, 36, 31];
+    const btnY = [49, 46, 49, 52];
+    btnColors.forEach((bc, bi) => {
+      px(btnX[bi], btnY[bi]+1, 4, 3, '#222');
+      px(btnX[bi], btnY[bi], 4, 3, bc);
+      px(btnX[bi]+1, btnY[bi], 1, 1, '#fff');
+    });
+    if (bootProgress > 0.75) {
+      const ledT = (bootProgress - 0.75) / 0.1;
+      btnColors.forEach((bc, bi) => {
+        if (bi <= Math.floor(ledT * 4)) {
+          ctx.globalAlpha = 0.5; px(btnX[bi]-1, btnY[bi]-1, 6, 5, bc); ctx.globalAlpha = 1;
+        }
+      });
+    }
+  } else {
+    px(8, 44, 32, 10, '#111');
+    if (highlightZone === 'controls') {
+      ctx.globalAlpha = 0.3 + Math.sin(pulseT * 6) * 0.2;
+      px(8, 42, 32, 14, C.red);
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  // ─ Lower Body ─
+  px(6, 56, 36, 18, C.cab[2]);
+  px(7, 57, 34, 16, C.cab[1]);
+  px(6, 56, 36, 1, C.cab[0]);
+  for (let gy = 58; gy < 72; gy += 3) px(8, gy, 32, 1, C.cab[0]);
+
+  // ─ CPU/Raspberry Pi area (y=58 to y=72, right side) ─
+  if (placed.cpu || bootProgress > 0.2) {
+    px(35, 59, 10, 12, C.metal[1]);
+    px(36, 60, 8, 10, C.metal[0]);
+    const leds = [C.teal, C.red, C.amber];
+    leds.forEach((lc, li) => {
+      px(38, 61 + li * 3, 2, 2, bootProgress > 0.2 ? lc : '#333');
+    });
+    if (bootProgress > 0.3) { ctx.globalAlpha = 0.4; px(38, 61, 2, 2, C.teal); ctx.globalAlpha = 1; }
+  } else {
+    px(34, 58, 12, 14, C.cab[0]);
+    px(35, 59, 10, 12, '#0a0a0a');
+    if (highlightZone === 'cpu') {
+      ctx.globalAlpha = 0.3 + Math.sin(pulseT * 6) * 0.2;
+      px(34, 58, 12, 14, C.teal);
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  // ─ Marquee area at bottom of panel for D-CADE text ─
+  if (bootProgress > 0.6) {
+    const marqueeT = clamp((bootProgress - 0.6) / 0.15, 0, 1);
+    ctx.globalAlpha = marqueeT * 0.6;
+    px(12, 73, 24, 2, C.teal);
+    ctx.globalAlpha = marqueeT * 0.9;
+    ctx.font = (3*s)+'px '+FONT; ctx.textAlign='center'; ctx.fillStyle='#fff';
+    ctx.fillText('D-CADE', 24*s, 74*s);
+    ctx.globalAlpha = 1;
+  }
+
+  // ─ Frame highlight ─
+  if (placed.frame || bootProgress > 0) {
+    ctx.globalAlpha = 0.1; px(4, 10, 1, 65, C.cab[5]); ctx.globalAlpha = 1;
+  } else if (highlightZone === 'frame') {
+    ctx.globalAlpha = 0.15 + Math.sin(pulseT * 6) * 0.1;
+    ctx.strokeStyle = C.purple; ctx.lineWidth = s;
+    ctx.strokeRect(3*s, 0, 42*s, 80*s);
+    ctx.globalAlpha = 1;
+  }
+
+  ctx.restore();
+}
+
+// ── Component Icon Drawing (for inventory/tray) ──
+function drawCompIcon(compId, x, y, size) {
+  const s = size / 16;
+  ctx.save();
+  ctx.translate(Math.floor(x), Math.floor(y));
+  switch(compId) {
+    case 'display':
+      ctx.fillStyle = '#0a2a2a';
+      ctx.fillRect(1*s, 2*s, 14*s, 10*s);
+      ctx.strokeStyle = C.teal; ctx.lineWidth = s;
+      ctx.strokeRect(1*s, 2*s, 14*s, 10*s);
+      ctx.fillStyle = C.teal; ctx.globalAlpha = 0.3;
+      ctx.fillRect(2*s, 3*s, 12*s, 8*s); ctx.globalAlpha = 1;
+      ctx.fillStyle = C.teal;
+      ctx.fillRect(6*s, 12*s, 4*s, 2*s);
+      ctx.fillRect(4*s, 14*s, 8*s, 1*s);
+      break;
+    case 'controls':
+      ctx.fillStyle = C.red;
+      ctx.fillRect(6*s, 2*s, 4*s, 8*s);
+      ctx.fillRect(5*s, 1*s, 6*s, 3*s);
+      ctx.fillStyle = '#FF8888'; ctx.fillRect(6*s, 1*s, 3*s, 1*s);
+      ctx.fillStyle = C.red; ctx.fillRect(1*s, 12*s, 3*s, 3*s);
+      ctx.fillStyle = '#22CC44'; ctx.fillRect(5*s, 12*s, 3*s, 3*s);
+      ctx.fillStyle = '#3388FF'; ctx.fillRect(9*s, 12*s, 3*s, 3*s);
+      ctx.fillStyle = C.amber; ctx.fillRect(13*s, 12*s, 3*s, 3*s);
+      break;
+    case 'cpu':
+      ctx.fillStyle = '#0a200a';
+      ctx.fillRect(2*s, 2*s, 12*s, 12*s);
+      ctx.strokeStyle = C.teal; ctx.lineWidth = s;
+      ctx.strokeRect(2*s, 2*s, 12*s, 12*s);
+      ctx.fillStyle = C.teal; ctx.globalAlpha = 0.4;
+      ctx.fillRect(4*s, 4*s, 8*s, 8*s); ctx.globalAlpha = 1;
+      ctx.fillStyle = C.teal;
+      [3,6,9,12].forEach(p => { ctx.fillRect(p*s, 0, s, 2*s); ctx.fillRect(p*s, 14*s, s, 2*s); });
+      break;
+    case 'audio':
+      ctx.strokeStyle = C.amber; ctx.lineWidth = s;
+      ctx.beginPath(); ctx.arc(8*s, 8*s, 6*s, 0, Math.PI*2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(8*s, 8*s, 3*s, 0, Math.PI*2); ctx.stroke();
+      ctx.fillStyle = C.amber;
+      ctx.beginPath(); ctx.arc(8*s, 8*s, 1.5*s, 0, Math.PI*2); ctx.fill();
+      break;
+    case 'frame':
+      ctx.strokeStyle = C.purple; ctx.lineWidth = s;
+      ctx.strokeRect(3*s, 1*s, 10*s, 14*s);
+      ctx.fillStyle = C.purple; ctx.globalAlpha = 0.15;
+      ctx.fillRect(3*s, 1*s, 10*s, 14*s); ctx.globalAlpha = 1;
+      ctx.fillStyle = C.purple;
+      ctx.fillRect(5*s, 3*s, 6*s, 1*s);
+      ctx.strokeRect(5*s, 5*s, 6*s, 4*s);
+      ctx.strokeRect(5*s, 10*s, 6*s, 3*s);
+      break;
+  }
+  ctx.restore();
+}
+
+// ── Background Scenes ──
+function drawGarageBackground() {
+  // Floor
+  for (let y = 200; y < H; y += 8) {
+    const t = (y - 200) / (H - 200);
+    const tone = Math.floor(lerp(30, 20, t));
+    ctx.fillStyle = `rgb(${tone+10},${tone+5},${tone})`;
+    ctx.fillRect(0, y, W, 8);
+    ctx.fillStyle = 'rgba(0,0,0,0.15)';
+    ctx.fillRect(0, y, W, 1);
+    for (let bx = 0; bx < W; bx += 60 + (y % 2) * 30) ctx.fillRect(bx, y, 1, 8);
+  }
+  // Back wall
+  ctx.fillStyle = '#181818'; ctx.fillRect(0, 0, W, 200);
+  for (let wy = 0; wy < 200; wy += 16) {
+    ctx.fillStyle = wy % 32 === 0 ? '#1c1c1c' : '#151515';
+    ctx.fillRect(0, wy, W, 16);
+  }
+  // Warm overhead light
+  const lg = ctx.createRadialGradient(W/2, 0, 20, W/2, 160, 280);
+  lg.addColorStop(0, 'rgba(255,200,100,0.08)');
+  lg.addColorStop(0.5, 'rgba(255,180,80,0.03)');
+  lg.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = lg; ctx.fillRect(0, 0, W, H);
+  // Shelving
+  ctx.fillStyle = '#252520';
+  ctx.fillRect(20, 60, 120, 4); ctx.fillRect(20, 100, 120, 4); ctx.fillRect(340, 80, 120, 4);
+  ctx.fillStyle = '#2a2a24';
+  ctx.fillRect(20, 60, 3, 40); ctx.fillRect(137, 60, 3, 40); ctx.fillRect(340, 80, 3, 24); ctx.fillRect(457, 80, 3, 24);
+  // Shelf items
+  ctx.fillStyle = '#333';
+  ctx.fillRect(30, 50, 12, 10); ctx.fillRect(60, 46, 8, 14); ctx.fillRect(90, 52, 16, 8);
+  ctx.fillRect(350, 68, 14, 12); ctx.fillRect(390, 72, 10, 8); ctx.fillRect(420, 66, 18, 14);
+}
+
+function drawBuildBackground() {
+  ctx.fillStyle = '#080808'; ctx.fillRect(0, 0, W, H);
+  const sg = ctx.createRadialGradient(320, 150, 20, 320, 180, 250);
+  sg.addColorStop(0, 'rgba(36,162,167,0.05)');
+  sg.addColorStop(0.4, 'rgba(36,162,167,0.02)');
+  sg.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = sg; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = '#141414'; ctx.fillRect(0, 300, W, 60);
+  ctx.fillStyle = '#1a1a1a'; ctx.fillRect(0, 300, W, 1);
+}
+
+// ══════════════════════════════════
+//        GAME STATE
+// ══════════════════════════════════
+let state = STATES.BOOT;
+let gameTime = 0;
+let stateTime = 0;
+let game = {};
+
+function resetGameState() {
+  const shuffled = [...JUNK_ITEMS].sort(() => Math.random() - 0.5);
+  const compIds = [...COMP_DEFS.map(c => c.id)].sort(() => Math.random() - 0.5);
+
+  const piles = [];
+  const positions = [];
+  for (let i = 0; i < 10; i++) {
+    let px, py, tries = 0;
+    do { px = rand(50, W - 50); py = rand(110, 290); tries++; }
+    while (tries < 100 && positions.some(p => dist(px, py, p[0], p[1]) < 55));
+    positions.push([px, py]);
+    piles.push({
+      x: px, y: py,
+      name: shuffled[i % shuffled.length].name,
+      type: shuffled[i % shuffled.length].type,
+      flavor: shuffled[i % shuffled.length].flavor,
+      isComponent: i < 5,
+      compId: i < 5 ? compIds[i] : null,
+      searched: false, searching: false,
+      searchProgress: 0, revealed: false, fadeOut: 1,
+    });
+  }
+  piles.sort(() => Math.random() - 0.5);
+
+  game = {
+    score: 0, found: 0, placed: {}, inventory: [],
+    piles: piles, searchingIdx: -1,
+    holding: null,
+    startTime: 0, elapsed: 0,
+    bootProgress: 0, rating: '',
+  };
+}
+
+// ══════════════════════════════════
+//        STATE: BOOT
+// ══════════════════════════════════
+let bootText = '';
+const BOOT_LINES = ['INITIALIZING D-CADE TYCOON...','LOADING JUNKYARD DATABASE...','CALIBRATING COMPONENT SCANNER...','SYSTEM READY.'];
+let bootLineIdx = 0, bootCharIdx = 0, bootLoadBar = 0;
+
+function updateBoot(dt) {
+  stateTime += dt;
+  if (bootLineIdx < BOOT_LINES.length) {
+    bootCharIdx += dt * 28;
+    if (bootCharIdx >= BOOT_LINES[bootLineIdx].length) {
+      bootText += BOOT_LINES[bootLineIdx] + '\n';
+      bootLineIdx++; bootCharIdx = 0;
+      if (bootLineIdx < BOOT_LINES.length) sfx('type');
+    }
+    if (Math.floor(bootCharIdx) % 3 === 0 && Math.random() > 0.7) sfx('type');
+  }
+  bootLoadBar = clamp((stateTime - 0.3) / 2.2, 0, 1);
+  if (stateTime > 3.0) {
+    sfx('boot');
+    fadeOut(() => { state = STATES.TITLE; stateTime = 0; fadeIn(); });
+  }
+}
+
+function drawBoot() {
+  ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
+  ctx.font = '8px ' + FONT; ctx.textAlign = 'left'; ctx.fillStyle = C.teal;
+  const lines = bootText.split('\n');
+  let cy = 60;
+  lines.forEach(line => { ctx.fillText(line, 40, cy); cy += 18; });
+  if (bootLineIdx < BOOT_LINES.length) {
+    const partial = BOOT_LINES[bootLineIdx].substring(0, Math.floor(bootCharIdx));
+    ctx.fillText(partial + (Math.floor(gameTime * 3) % 2 === 0 ? '_' : ''), 40, cy);
+  }
+  if (bootLoadBar > 0) {
+    const barY = 260, barW = 200, barH = 12, barX = (W - barW) / 2;
+    ctx.strokeStyle = C.teal; ctx.lineWidth = 1;
+    ctx.strokeRect(barX, barY, barW, barH);
+    ctx.fillStyle = C.teal;
+    ctx.fillRect(barX + 2, barY + 2, (barW - 4) * bootLoadBar, barH - 4);
+    ctx.textAlign = 'center'; ctx.font = '7px ' + FONT; ctx.fillStyle = C.teal;
+    ctx.fillText(Math.floor(bootLoadBar * 100) + '%', W/2, barY + barH + 16);
+  }
+}
+
+// ══════════════════════════════════
+//        STATE: TITLE
+// ══════════════════════════════════
+const titleParticles = [];
+for (let i = 0; i < 30; i++) {
+  titleParticles.push({
+    x: rand(0, W), y: rand(0, H),
+    vx: rand(-8, 8), vy: rand(-15, -5),
+    size: rand(1, 3), alpha: rand(0.1, 0.4),
+    color: [C.teal, C.amber, '#fff'][randInt(0,2)],
+  });
+}
+
+function updateTitle(dt) {
+  stateTime += dt;
+  titleParticles.forEach(p => {
+    p.x += p.vx * dt; p.y += p.vy * dt;
+    if (p.y < -10) { p.y = H + 10; p.x = rand(0, W); }
+    if (p.x < -10) p.x = W + 10;
+    if (p.x > W + 10) p.x = -10;
+  });
+  if (input.clicked) {
+    sfx('start');
+    fadeOut(() => { state = STATES.SEARCH; stateTime = 0; resetGameState(); game.startTime = gameTime; fadeIn(); });
+  }
+}
+
+function drawTitle() {
+  ctx.fillStyle = '#050508'; ctx.fillRect(0, 0, W, H);
+  const tg = ctx.createRadialGradient(W/2, H/2 - 30, 20, W/2, H/2, 250);
+  tg.addColorStop(0, 'rgba(13,13,26,1)'); tg.addColorStop(1, 'rgba(5,5,8,1)');
+  ctx.fillStyle = tg; ctx.fillRect(0, 0, W, H);
+
+  // Particles
+  titleParticles.forEach(p => {
+    ctx.globalAlpha = p.alpha; ctx.fillStyle = p.color;
+    ctx.fillRect(Math.floor(p.x), Math.floor(p.y), Math.ceil(p.size), Math.ceil(p.size));
+  });
+  ctx.globalAlpha = 1;
+
+  // Cabinet on right side
+  const cabScale = 3.5;
+  const cabTitleX = W - 48 * cabScale - 30;
+  const cabTitleY = H / 2 - 80 * cabScale / 2 + 10;
+  ctx.globalAlpha = 0.15;
+  drawCabinet(cabTitleX, cabTitleY, cabScale, { placed:{ display:true, controls:true, cpu:true, audio:true, frame:true }});
+  ctx.globalAlpha = 1;
+
+  // Text on left side
+  const textX = 140;
+
+  // Title with teal glow
+  const glowPulse = 0.6 + Math.sin(stateTime * 2) * 0.4;
+  ctx.font = '26px ' + FONT; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.globalAlpha = 0.15 * glowPulse; ctx.fillStyle = C.teal;
+  ctx.fillText('D-CADE', textX, 100); ctx.fillText('TYCOON', textX, 132);
+  ctx.globalAlpha = 0.6; ctx.fillStyle = '#0a3a3a';
+  ctx.fillText('D-CADE', textX + 2, 102); ctx.fillText('TYCOON', textX + 2, 134);
+  ctx.globalAlpha = 1; ctx.fillStyle = C.teal;
+  ctx.fillText('D-CADE', textX, 100); ctx.fillText('TYCOON', textX, 132);
+
+  // Subtitle — high contrast
+  drawText('JUNKYARD EDITION', textX, 164, 9, C.amber, 'center', 1);
+
+  // Instructions — readable contrast
+  drawText('Search through college junk.', textX, 200, 7, 'rgba(255,255,255,0.7)', 'center', 1);
+  drawText('Find arcade components.', textX, 215, 7, 'rgba(255,255,255,0.7)', 'center', 1);
+  drawText('Build the D-Cade.', textX, 230, 7, 'rgba(255,255,255,0.7)', 'center', 1);
+
+  // Blink "CLICK TO START" — high visibility
+  if (Math.floor(stateTime * 1.5) % 2 === 0) {
+    drawText('CLICK TO START', textX, 280, 12, C.teal, 'center', 1);
+  }
+
+  // Component icons at bottom left as legend
+  const iconStartX = textX - 60;
+  const iconY = 310;
+  COMP_DEFS.forEach((comp, i) => {
+    const ix = iconStartX + i * 28;
+    drawCompIcon(comp.id, ix, iconY, 14);
+  });
+
+  drawText('A SAM BLOCH PRODUCTION', W/2, H - 18, 6, 'rgba(255,255,255,0.4)', 'center', 1);
+}
+
+// ══════════════════════════════════
+//        STATE: SEARCH
+// ══════════════════════════════════
+let searchMsg = '', searchMsgTimer = 0, searchMsgColor = C.teal;
+
+function showSearchMsg(msg, color, dur) { searchMsg = msg; searchMsgColor = color || C.teal; searchMsgTimer = dur || 2.0; }
+
+function getHoveredPile() {
+  for (let i = game.piles.length - 1; i >= 0; i--) {
+    const p = game.piles[i];
+    if (p.searched || p.searching) continue;
+    if (dist(input.x, input.y, p.x, p.y) < 22) return i;
+  }
+  return -1;
+}
+
+function updateSearch(dt) {
+  stateTime += dt;
+  game.elapsed = gameTime - game.startTime;
+
+  if (game.searchingIdx >= 0) {
+    const pile = game.piles[game.searchingIdx];
+    pile.searchProgress += dt / 0.8;
+    if (pile.searchProgress >= 1) {
+      pile.searching = false; pile.searched = true; pile.searchProgress = 1; pile.fadeOut = 1.5;
+      screenShake(pile.isComponent ? 4 : 2, 0.2);
+      // Burst particles
+      for (let i = 0; i < 4; i++) {
+        const angle = -Math.PI/2 + (Math.random()-0.5)*2;
+        const speed = rand(60,120);
+        const col = pile.isComponent && i===0 ? C.teal : ['#666','#888','#555','#777'][i];
+        spawnParticle(pile.x, pile.y, Math.cos(angle)*speed, Math.sin(angle)*speed-40, rand(0.5,0.9), rand(3,6), col, 200);
+      }
+      if (pile.isComponent) {
+        game.found++; game.score += 50;
+        game.inventory.push(pile.compId);
+        sfx('found'); screenFlash(C.teal, 0.15);
+        scorePopup(pile.x, pile.y - 20, '+50', C.teal);
+        showSearchMsg('FOUND: ' + COMP_MAP[pile.compId].label.toUpperCase() + '!', C.teal, 2.0);
+        burstParticles(pile.x, pile.y, 16, C.teal, 80, 3, 100);
+        if (game.found >= 5) {
+          setTimeout(() => {
+            sfx('allparts'); showSearchMsg('ALL PARTS FOUND!', C.amber, 2.5);
+            screenShake(6, 0.3); screenFlash(C.amber, 0.2);
+            setTimeout(() => { fadeOut(() => { state = STATES.BUILD; stateTime = 0; fadeIn(); }); }, 1800);
+          }, 500);
+        }
+      } else {
+        game.score += 5; sfx('dud');
+        scorePopup(pile.x, pile.y - 20, '+5', C.red);
+        showSearchMsg(pile.flavor, C.red, 2.0);
+      }
+      game.searchingIdx = -1;
+    }
+  }
+
+  game.piles.forEach(p => { if (p.searched) p.fadeOut -= dt * 0.5; });
+  if (searchMsgTimer > 0) searchMsgTimer -= dt;
+
+  if (input.clicked && game.searchingIdx < 0 && game.found < 5) {
+    const idx = getHoveredPile();
+    if (idx >= 0) {
+      game.searchingIdx = idx;
+      game.piles[idx].searching = true;
+      game.piles[idx].searchProgress = 0;
+      game.score += 10; sfx('search');
+      screenShake(2, 0.8);
+      scorePopup(game.piles[idx].x, game.piles[idx].y - 30, '+10', C.dim);
+    }
+  }
+}
+
+function drawSearch() {
+  drawGarageBackground();
+
+  // Dust motes
+  ctx.globalAlpha = 0.2;
+  for (let i = 0; i < 15; i++) {
+    const dx = (W/2 + Math.sin(gameTime * 0.3 + i * 2.1) * 180) % W;
+    const dy = (i * 25 + Math.sin(gameTime * 0.5 + i * 1.7) * 40) % H;
+    ctx.fillStyle = '#FFE8C0'; ctx.fillRect(Math.floor(dx), Math.floor(dy), 1, 1);
+  }
+  ctx.globalAlpha = 1;
+
+  // Draw junk piles as actual sprites
+  const hoverIdx = game.searchingIdx < 0 ? getHoveredPile() : -1;
+  game.piles.forEach((p, i) => {
+    if (p.searched && p.fadeOut <= 0) return;
+    const alpha = p.searched ? clamp(p.fadeOut, 0, 1) : 1;
+    ctx.globalAlpha = alpha;
+
+    const highlight = (i === hoverIdx && !p.searched && !p.searching);
+
+    // Ground shadow
+    ctx.globalAlpha = alpha * 0.3;
+    ctx.fillStyle = '#000';
+    ctx.beginPath(); ctx.ellipse(p.x, p.y + 12, 18, 5, 0, 0, Math.PI*2); ctx.fill();
+    ctx.globalAlpha = alpha;
+
+    // Draw the actual sprite
+    drawJunkSprite(p.type, p.x, p.y, 1.4, highlight);
+
+    // Search progress ring
+    if (p.searching && p.searchProgress > 0) {
+      ctx.strokeStyle = C.amber; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(p.x, p.y, 20, -Math.PI/2, -Math.PI/2 + Math.PI * 2 * p.searchProgress); ctx.stroke();
+    }
+
+    // Component glow when found
+    if (p.isComponent && p.searched) {
+      ctx.globalAlpha = alpha * 0.4; ctx.fillStyle = C.teal;
+      ctx.beginPath(); ctx.ellipse(p.x, p.y, 26, 20, 0, 0, Math.PI*2); ctx.fill();
+    }
+    // Dud X
+    if (p.searched && !p.isComponent) {
+      ctx.globalAlpha = alpha * 0.6; ctx.strokeStyle = C.red; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(p.x-8,p.y-8); ctx.lineTo(p.x+8,p.y+8);
+      ctx.moveTo(p.x+8,p.y-8); ctx.lineTo(p.x-8,p.y+8); ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  });
+
+  // HUD
+  ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(0, 0, W, 28);
+  ctx.fillStyle = '#222'; ctx.fillRect(0, 28, W, 1);
+  drawText('SCORE: ' + game.score, 10, 14, 8, C.teal, 'left', 1, true);
+  drawText('D-CADE TYCOON', W/2, 14, 7, 'rgba(255,255,255,0.4)', 'center', 1);
+  drawText('PARTS: ' + game.found + '/5', W - 10, 14, 8, C.amber, 'right', 1, true);
+
+  // Inventory bar
+  ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(0, H - 36, W, 36);
+  ctx.fillStyle = '#222'; ctx.fillRect(0, H - 36, W, 1);
+  const slotW = 30, slotH = 28, slotGap = 6;
+  const totalSlotW = 5 * slotW + 4 * slotGap;
+  const slotStartX = (W - totalSlotW) / 2;
+  COMP_DEFS.forEach((comp, i) => {
+    const sx = slotStartX + i * (slotW + slotGap), sy = H - 33;
+    const has = game.inventory.includes(comp.id);
+    ctx.fillStyle = has ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.02)';
+    ctx.fillRect(sx, sy, slotW, slotH);
+    ctx.strokeStyle = has ? comp.color : '#333'; ctx.lineWidth = 1;
+    ctx.strokeRect(sx, sy, slotW, slotH);
+    if (has) drawCompIcon(comp.id, sx + 7, sy + 2, 16);
+    drawText(comp.label.substring(0,5), sx + slotW/2, sy + slotH - 3, 5, has ? comp.color : '#333', 'center', has ? 0.8 : 0.3);
+  });
+
+  // Message
+  if (searchMsgTimer > 0) {
+    const msgAlpha = clamp(searchMsgTimer / 0.5, 0, 1);
+    ctx.globalAlpha = msgAlpha; ctx.font = '8px ' + FONT;
+    const mw = ctx.measureText(searchMsg).width + 24;
+    ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(W/2 - mw/2, 40, mw, 22);
+    ctx.strokeStyle = searchMsgColor; ctx.lineWidth = 1;
+    ctx.strokeRect(W/2 - mw/2, 40, mw, 22);
+    drawText(searchMsg, W/2, 52, 8, searchMsgColor, 'center', msgAlpha, true);
+    ctx.globalAlpha = 1;
+  }
+
+  drawParticles(); drawPopups();
+}
+
+// ══════════════════════════════════
+//        STATE: BUILD
+// ══════════════════════════════════
+const CAB_SCALE = 4, CAB_X = 260, CAB_Y = 30;
+
+function getHoveredZone() {
+  // If holding 'frame' (Wood), accept ANY click on the whole cabinet area with generous padding
+  if (game.holding === 'frame') {
+    const pad = 20;
+    if (input.x >= CAB_X - pad && input.x <= CAB_X + 48 * CAB_SCALE + pad &&
+        input.y >= CAB_Y - pad && input.y <= CAB_Y + 80 * CAB_SCALE + pad) return 'frame';
+  }
+  for (const comp of COMP_DEFS) {
+    if (game.placed[comp.id]) continue;
+    if (comp.id === 'frame') continue; // frame handled above with generous hitbox
+    const z = comp.zone;
+    const zx = CAB_X + z.x * CAB_SCALE, zy = CAB_Y + z.y * CAB_SCALE;
+    const zw = z.w * CAB_SCALE, zh = z.h * CAB_SCALE;
+    if (input.x >= zx && input.x <= zx + zw && input.y >= zy && input.y <= zy + zh) return comp.id;
+  }
+  // Fallback: if holding frame and clicked anywhere, still accept
+  if (game.holding === 'frame') return 'frame';
+  return null;
+}
+
+function getHoveredTrayItem() {
+  for (let i = 0; i < game.inventory.length; i++) {
+    const compId = game.inventory[i];
+    if (game.placed[compId]) continue;
+    const ix = 40, iy = 62 + i * 55;
+    if (input.x >= ix - 22 && input.x <= ix + 22 && input.y >= iy - 22 && input.y <= iy + 22) return compId;
+  }
+  return null;
+}
+
+function updateBuild(dt) {
+  stateTime += dt;
+  if (input.clicked) {
+    if (game.holding) {
+      const zone = getHoveredZone();
+      if (zone === game.holding) {
+        game.placed[game.holding] = true; game.score += 100;
+        sfx('place'); screenShake(5, 0.2);
+        screenFlash(COMP_MAP[game.holding].color, 0.15);
+        const z = COMP_MAP[game.holding].zone;
+        const px = CAB_X + (z.x + z.w/2) * CAB_SCALE, py = CAB_Y + (z.y + z.h/2) * CAB_SCALE;
+        burstParticles(px, py, 14, COMP_MAP[game.holding].color, 60, 3, 80);
+        scorePopup(px, py - 20, '+100', COMP_MAP[game.holding].color);
+        showSearchMsg(COMP_MAP[game.holding].label.toUpperCase() + ' INSTALLED!', COMP_MAP[game.holding].color, 1.5);
+        game.holding = null;
+        if (Object.keys(game.placed).length >= 5) {
+          setTimeout(() => {
+            sfx('allparts'); showSearchMsg('BOOTING UP...', C.teal, 2.0);
+            screenShake(8, 0.4); screenFlash('#fff', 0.2);
+            setTimeout(() => { fadeOut(() => { state = STATES.WIN; stateTime = 0; game.bootProgress = 0; fadeIn(); }); }, 1500);
+          }, 600);
+        }
+      } else if (zone) {
+        sfx('reject'); screenShake(3, 0.15); screenFlash(C.red, 0.1);
+        showSearchMsg('WRONG SLOT!', C.red, 1.0); game.holding = null;
+      } else { game.holding = null; sfx('click'); }
+    } else {
+      const item = getHoveredTrayItem();
+      if (item) { game.holding = item; sfx('pickup'); }
+    }
+  }
+}
+
+function drawBuild() {
+  drawBuildBackground();
+  drawCabinet(CAB_X, CAB_Y, CAB_SCALE, { placed: game.placed, highlightZone: game.holding || null, pulseT: gameTime });
+
+  // Parts tray — positioned below HUD bar
+  ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.fillRect(10, 42, 60, game.inventory.length * 55 + 10);
+  ctx.strokeStyle = '#333'; ctx.lineWidth = 1; ctx.strokeRect(10, 42, 60, game.inventory.length * 55 + 10);
+  drawText('PARTS', 40, 37, 6, 'rgba(255,255,255,0.4)', 'center', 1);
+
+  game.inventory.forEach((compId, i) => {
+    const ix = 40, iy = 62 + i * 55;
+    const isPlaced = game.placed[compId], isHolding = game.holding === compId;
+    const isHovered = !game.holding && getHoveredTrayItem() === compId;
+    ctx.globalAlpha = isPlaced ? 0.2 : 1;
+    ctx.fillStyle = isHolding ? 'rgba(255,255,255,0.1)' : (isHovered ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.02)');
+    ctx.fillRect(ix-22, iy-22, 44, 44);
+    ctx.strokeStyle = isHolding ? C.teal : (isHovered ? C.teal : (isPlaced ? '#222' : COMP_MAP[compId].color));
+    ctx.lineWidth = isHolding || isHovered ? 2 : 1;
+    ctx.strokeRect(ix-22, iy-22, 44, 44);
+    if (!isHolding) drawCompIcon(compId, ix-8, iy-8, 16);
+    drawText(COMP_MAP[compId].label, ix, iy+28, 5, isPlaced ? '#444' : COMP_MAP[compId].color, 'center', isPlaced?0.4:0.8);
+    if (isPlaced) drawText('OK', ix, iy, 8, C.teal, 'center', 0.5);
+    ctx.globalAlpha = 1;
+  });
+
+  if (game.holding) {
+    drawCompIcon(game.holding, input.x-12, input.y-12, 24);
+    drawText(COMP_MAP[game.holding].label, input.x, input.y+18, 6, COMP_MAP[game.holding].color, 'center', 0.8, true);
+  }
+
+  // HUD
+  ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(0, 0, W, 28);
+  ctx.fillStyle = '#222'; ctx.fillRect(0, 28, W, 1);
+  drawText('SCORE: ' + game.score, 10, 14, 8, C.teal, 'left', 1, true);
+  drawText('BUILD MODE', W/2, 14, 7, C.purple, 'center', 0.7);
+  drawText('PLACED: ' + Object.keys(game.placed).length + '/5', W - 10, 14, 8, C.amber, 'right', 1, true);
+
+  if (!game.holding) drawText('Click a part, then click the cabinet to place it', W/2, H - 14, 6, 'rgba(255,255,255,0.4)', 'center', 1);
+  else drawText('Click the matching zone on the cabinet', W/2, H - 14, 6, C.teal, 'center', 0.7);
+
+  if (searchMsgTimer > 0) {
+    const msgAlpha = clamp(searchMsgTimer / 0.5, 0, 1);
+    ctx.globalAlpha = msgAlpha; ctx.font = '8px ' + FONT;
+    const mw = ctx.measureText(searchMsg).width + 24;
+    ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(W/2-mw/2, 40, mw, 22);
+    ctx.strokeStyle = searchMsgColor; ctx.lineWidth = 1; ctx.strokeRect(W/2-mw/2, 40, mw, 22);
+    drawText(searchMsg, W/2, 52, 8, searchMsgColor, 'center', msgAlpha, true);
+    ctx.globalAlpha = 1;
+  }
+  drawParticles(); drawPopups();
+}
+
+// ══════════════════════════════════
+//        STATE: WIN
+// ══════════════════════════════════
+let confettiParts = [];
+let winShowCard = false;
+
+function spawnConfetti() {
+  const colors = [C.teal, C.amber, C.red, C.purple, '#fff', '#FFD700'];
+  for (let i = 0; i < 60; i++) {
+    confettiParts.push({
+      x: rand(50, W-50), y: rand(-40, H/3),
+      vx: rand(-60,60), vy: rand(-200,-60),
+      size: rand(2,5), color: colors[i%colors.length],
+      rot: rand(0,6.28), rotV: rand(-8,8), life: rand(2,4),
+    });
+  }
+}
+function updateConfetti(dt) {
+  confettiParts.forEach(c => { c.x+=c.vx*dt; c.vy+=300*dt; c.y+=c.vy*dt; c.rot+=c.rotV*dt; c.life-=dt; });
+  confettiParts = confettiParts.filter(c => c.life > 0 && c.y < H + 20);
+}
+function drawConfetti() {
+  confettiParts.forEach(c => {
+    ctx.save(); ctx.translate(c.x, c.y); ctx.rotate(c.rot);
+    ctx.globalAlpha = clamp(c.life/0.5, 0, 1);
+    ctx.fillStyle = c.color; ctx.fillRect(-c.size/2, -c.size/2, c.size, c.size*0.6);
+    ctx.restore();
+  });
+  ctx.globalAlpha = 1;
+}
+
+function getRating() {
+  const t = game.elapsed;
+  if (t < 30) return { grade:'S', color:'#FFD700', desc:'LEGENDARY!' };
+  if (t < 50) return { grade:'A', color:C.teal, desc:'EXCELLENT!' };
+  if (t < 80) return { grade:'B', color:C.amber, desc:'GREAT JOB!' };
+  return { grade:'C', color:'#aaa', desc:'NICE WORK!' };
+}
+
+function updateWin(dt) {
+  stateTime += dt;
+  if (game.bootProgress < 1) {
+    game.bootProgress += dt * 0.5;
+    if (game.bootProgress >= 1) {
+      game.bootProgress = 1; sfx('win');
+      spawnConfetti(); setTimeout(() => spawnConfetti(), 500);
+      setTimeout(() => { winShowCard = true; }, 1200);
+    }
+  }
+  updateConfetti(dt);
+  if (input.clicked && winShowCard) {
+    const btnX = W/2-60, btnY = 295, btnW = 120, btnH = 28;
+    if (input.x >= btnX && input.x <= btnX+btnW && input.y >= btnY && input.y <= btnY+btnH) {
+      sfx('start'); winShowCard = false; confettiParts = [];
+      fadeOut(() => { state = STATES.TITLE; stateTime = 0; fadeIn(); });
+    }
+  }
+}
+
+function drawWin() {
+  ctx.fillStyle = '#050808'; ctx.fillRect(0, 0, W, H);
+  const wg = ctx.createRadialGradient(W/2, 160, 20, W/2, 160, 250);
+  wg.addColorStop(0, 'rgba(36,162,167,0.06)');
+  wg.addColorStop(0.5, 'rgba(36,162,167,0.03)');
+  wg.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = wg; ctx.fillRect(0, 0, W, H);
+
+  const winScale = 4;
+  drawCabinet(W/2 - 24*winScale, 35, winScale, {
+    placed:{ display:true, controls:true, cpu:true, audio:true, frame:true },
+    bootProgress: game.bootProgress,
+  });
+
+  drawConfetti();
+
+  if (winShowCard) {
+    const rating = getRating();
+    ctx.fillStyle = 'rgba(0,0,0,0.85)'; ctx.fillRect(W/2-120, 50, 240, 270);
+    ctx.strokeStyle = C.teal; ctx.lineWidth = 2; ctx.strokeRect(W/2-120, 50, 240, 270);
+
+    drawText('BUILD COMPLETE', W/2, 72, 10, C.teal, 'center', 1, true);
+    drawText(rating.grade, W/2, 120, 36, rating.color, 'center', 1, true);
+    drawText(rating.desc, W/2, 150, 8, rating.color, 'center', 0.8);
+
+    drawText('FINAL SCORE', W/2, 175, 6, C.dim, 'center', 0.5);
+    drawText('' + game.score, W/2, 195, 18, '#fff', 'center', 1, true);
+
+    const mins = Math.floor(game.elapsed/60), secs = Math.floor(game.elapsed%60);
+    drawText('TIME: ' + mins + ':' + (secs<10?'0':'') + secs, W/2, 222, 6, C.dim, 'center', 0.6);
+    drawText('SEARCH +' + (game.found*50 + (10-game.found)*5 + 10*10), W/2, 238, 6, C.dim, 'center', 0.5);
+    drawText('BUILD +500', W/2, 250, 6, C.dim, 'center', 0.5);
+    drawText('INSTALL +' + (Object.keys(game.placed).length*100), W/2, 262, 6, C.dim, 'center', 0.5);
+
+    const btnX = W/2-60, btnY = 278, btnW = 120, btnH = 28;
+    const btnHover = input.x>=btnX && input.x<=btnX+btnW && input.y>=btnY && input.y<=btnY+btnH;
+    ctx.fillStyle = btnHover ? C.teal : 'transparent'; ctx.fillRect(btnX, btnY, btnW, btnH);
+    ctx.strokeStyle = C.teal; ctx.lineWidth = 2; ctx.strokeRect(btnX, btnY, btnW, btnH);
+    drawText('PLAY AGAIN', W/2, btnY+btnH/2, 8, btnHover ? '#000' : C.teal, 'center', 1);
+  }
+}
+
+// ══════════════════════════════════
+//        CRT + CURSOR + MUTE
+// ══════════════════════════════════
+function drawCRT() {
+  ctx.globalAlpha = 0.04; ctx.fillStyle = '#000';
+  for (let y = 0; y < H; y += 2) ctx.fillRect(0, y, W, 1);
+  ctx.globalAlpha = 1;
+  const vg = ctx.createRadialGradient(W/2, H/2, W*0.3, W/2, H/2, W*0.7);
+  vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.3)');
+  ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
+}
+
+function drawCursor() {
+  const cx = Math.floor(input.x), cy = Math.floor(input.y);
+  if (cx < 0 || cx > W || cy < 0 || cy > H) return;
+  ctx.fillStyle = C.teal; ctx.globalAlpha = 0.8;
+  ctx.fillRect(cx-5, cy, 4, 1); ctx.fillRect(cx+2, cy, 4, 1);
+  ctx.fillRect(cx, cy-5, 1, 4); ctx.fillRect(cx, cy+2, 1, 4);
+  ctx.fillRect(cx, cy, 1, 1);
+  ctx.globalAlpha = 1;
+}
+
+function drawMuteBtn() {
+  // Draw in bottom-right corner, away from HUD elements
+  const mx = W - 18, my = H - 50;
+  ctx.globalAlpha = 0.5; ctx.fillStyle = '#fff';
+  ctx.fillRect(mx, my+3, 3, 6);
+  ctx.beginPath(); ctx.moveTo(mx+3, my+2); ctx.lineTo(mx+7, my);
+  ctx.lineTo(mx+7, my+12); ctx.lineTo(mx+3, my+10); ctx.closePath(); ctx.fill();
+  if (muted) {
+    ctx.strokeStyle = C.red; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(mx+8, my+2); ctx.lineTo(mx+12, my+10); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(mx+12, my+2); ctx.lineTo(mx+8, my+10); ctx.stroke();
+  } else {
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(mx+8, my+6, 3, -0.5, 0.5); ctx.stroke();
+    ctx.beginPath(); ctx.arc(mx+8, my+6, 5, -0.4, 0.4); ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+}
+function checkMuteClick() {
+  const mx = W - 18, my = H - 50;
+  if (input.x >= mx - 4 && input.x <= mx + 16 && input.y >= my - 2 && input.y <= my + 16) { muted = !muted; return true; }
+  return false;
+}
+
+// ══════════════════════════════════
+//        MAIN GAME LOOP
+// ══════════════════════════════════
+let lastTime = 0;
+function gameLoop(timestamp) {
+  requestAnimationFrame(gameLoop);
+  if (!lastTime) lastTime = timestamp;
+  let dt = (timestamp - lastTime) / 1000;
+  lastTime = timestamp;
+  dt = Math.min(dt, 0.05);
+  gameTime += dt;
+
+  updateTweens(dt); updateParticles(dt); updateEffects(dt); updateFade(dt);
+  switch(state) {
+    case STATES.BOOT:   updateBoot(dt);   break;
+    case STATES.TITLE:  updateTitle(dt);  break;
+    case STATES.SEARCH: updateSearch(dt); break;
+    case STATES.BUILD:  updateBuild(dt);  break;
+    case STATES.WIN:    updateWin(dt);    break;
+  }
+
+  ctx.save();
+  if (shakeTimer > 0) { ctx.translate((Math.random()-0.5)*shakeAmount*2, (Math.random()-0.5)*shakeAmount*2); }
+  switch(state) {
+    case STATES.BOOT:   drawBoot();   break;
+    case STATES.TITLE:  drawTitle();  break;
+    case STATES.SEARCH: drawSearch(); break;
+    case STATES.BUILD:  drawBuild();  break;
+    case STATES.WIN:    drawWin();    break;
+  }
+  ctx.restore();
+
+  if (flashTimer > 0) { ctx.globalAlpha = flashTimer*2; ctx.fillStyle = flashColor; ctx.fillRect(0,0,W,H); ctx.globalAlpha = 1; }
+  drawCRT();
+  if (state !== STATES.BOOT) drawMuteBtn();
+  drawCursor();
+  drawFade();
+
+  if (input.clicked && state !== STATES.BOOT) checkMuteClick();
+  input.clicked = false;
+}
+
+// ── Init ──
+document.fonts.ready.then(() => {
+  fadeAlpha = 1; fadeDir = -1;
+  requestAnimationFrame(gameLoop);
+});
+
+})();
+</script>
+</body>
+</html>

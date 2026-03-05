@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { useNavigate, useParams, Navigate } from 'react-router-dom';
 import { ArrowLeft, Download, Github, X } from 'lucide-react';
 import { COLORS } from '../constants';
 import InteractiveSitemap from './InteractiveSitemap';
 import { SITEMAP } from '../sitemap';
-import { generateCaseStudyPdfHtml } from '../utils/generateCaseStudyPdf';
 
+const CalNatCaseStudy = lazy(() => import('./CalNatCaseStudy'));
+const PortfolioCaseStudyB = lazy(() => import('./PortfolioCaseStudy'));
+const DcadeCaseStudy = lazy(() => import('./DcadeCaseStudy'));
+const ZooReportCaseStudy = lazy(() => import('./ZooReportCaseStudy'));
+const SmartLockersCaseStudy = lazy(() => import('./SmartLockersCaseStudy'));
 const ProjectCaseStudy: React.FC = () => {
   const navigate = useNavigate();
   const { projectId } = useParams<{ projectId: string }>();
@@ -21,7 +25,8 @@ const ProjectCaseStudy: React.FC = () => {
 
   if (!projectId) return <Navigate to="/projects" replace />;
 
-  const handleDownloadPDF = () => {
+  const handleDownloadPDF = async () => {
+    const { generateCaseStudyPdfHtml } = await import('../utils/generateCaseStudyPdf');
     const html = generateCaseStudyPdfHtml(projectId, window.location.origin);
     const blob = new Blob([html], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
@@ -53,6 +58,23 @@ const ProjectCaseStudy: React.FC = () => {
   const isDcade = projectId === 'dcade';
   const isLevelUp = projectId === 'level-up';
   const isZooReport = projectId === 'zoo-report';
+  const isCalNat = projectId === 'uc-calnat';
+  const isPortfolioB = projectId === 'portfolio-v2';
+  const isSmartLockers = projectId === 'smart-lockers';
+
+  // Immersive Design B case studies get their own components
+  if (isCalNat || isPortfolioB || isDcade || isZooReport || isSmartLockers) {
+    const Component = isCalNat ? CalNatCaseStudy : isDcade ? DcadeCaseStudy : isZooReport ? ZooReportCaseStudy : isSmartLockers ? SmartLockersCaseStudy : PortfolioCaseStudyB;
+    return (
+      <Suspense fallback={
+        <div className="min-h-screen bg-black flex items-center justify-center">
+          <div className="w-6 h-6 border-2 border-white/10 border-t-white/40 rounded-full animate-spin" />
+        </div>
+      }>
+        <Component />
+      </Suspense>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#121212] text-white selection:bg-[#24A2A7]/30 font-sans">
@@ -234,14 +256,14 @@ const ProjectCaseStudy: React.FC = () => {
               Personal Portfolio Redesign
             </h1>
             <p className="text-gray-500 text-[15px] leading-relaxed">
-              UX Architect & Full-Stack Strategist · React, Spline, Gemini API
+              Design, Development & 3D · React 19, TypeScript, Spline, Tailwind v4
             </p>
           </header>
 
           {/* Executive Summary */}
           <section className="mb-12">
             <p className="text-gray-300 text-[15px] md:text-base leading-[1.7]">
-              I redesigned my portfolio from a static, text-heavy site into a dual-view experience that demonstrates systems thinking, technical capability, and inclusive design. The result—the Samulation—serves an accessible 2D editorial experience by default and an immersive 3D workstation for capable devices, with consistent navigation and content across both. The project was an opportunity to explore AI tooling, advance my web development skills, and integrate 3D design using Spline and meshy.ai—all while ensuring no visitor receives a broken or inaccessible experience.
+              My old portfolio was a static site I hadn't touched since college. It worked, but it didn't <em>do</em> anything. I rebuilt it from scratch as a dual-view experience I call the Samulation: a clean 2D editorial site for mobile and lower-spec devices, and an interactive 3D workstation (built in Spline) for desktops that can handle it. Both views share the same content and navigation. The whole thing runs on React 19 with TypeScript, Tailwind v4, and Vite 6. I used the project as an excuse to go deep on AI-assisted development, 3D web design, and the kind of performance work that most portfolio sites skip entirely.
             </p>
           </section>
 
@@ -249,9 +271,9 @@ const ProjectCaseStudy: React.FC = () => {
           <section id="problem" className="scroll-mt-28 mb-12">
             <span className="text-[11px] font-medium text-[#24A2A7]/90 mb-3 block">Context & Opportunity</span>
             <p className="text-gray-300 text-[15px] md:text-base leading-[1.7] mb-6">
-              My previous site had been running for years—essentially unchanged since undergraduate graduation. It was clean and functional: white background, teal accent, left-aligned navigation (home, about, project management, web development, ux & design, research & writing, video, personal projects), hero imagery with overlays, and sections for &quot;my story&quot; and &quot;services.&quot; It communicated who I was, but it no longer reflected what I could do.
+              My previous site had been running for years, basically untouched since I graduated from Michigan State. White background, teal accent, left-aligned nav with eight categories (home, about, project management, web development, ux & design, research & writing, video, personal projects), hero imagery with overlays, "my story" and "services" sections. It told people who I was, but it didn't show what I could actually build.
             </p>
-            <p className="text-gray-300 text-[15px] md:text-base leading-[1.7] mb-4">The opportunity was clear. I wanted to:</p>
+            <p className="text-gray-300 text-[15px] md:text-base leading-[1.7] mb-4">I had a few specific goals:</p>
             <div className="overflow-x-auto mb-6">
               <table className="w-full text-[15px] border-collapse border border-white/10 rounded-lg overflow-hidden">
                 <thead>
@@ -262,42 +284,42 @@ const ProjectCaseStudy: React.FC = () => {
                 </thead>
                 <tbody className="text-gray-300">
                   <tr className="border-b border-white/5">
-                    <td className="py-3 px-4 font-medium text-[#24A2A7]/90">Explore AI tooling</td>
-                    <td className="py-3 px-4">Integrate generative AI in a meaningful way, not as a gimmick</td>
+                    <td className="py-3 px-4 font-medium text-[#24A2A7]/90">Actually use AI</td>
+                    <td className="py-3 px-4">Not slap a chatbot on it. Use generative AI as a real part of the development workflow.</td>
                   </tr>
                   <tr className="border-b border-white/5">
-                    <td className="py-3 px-4 font-medium text-[#24A2A7]/90">Advance web development</td>
-                    <td className="py-3 px-4">Move from static HTML/CSS to a modern React architecture</td>
+                    <td className="py-3 px-4 font-medium text-[#24A2A7]/90">Level up technically</td>
+                    <td className="py-3 px-4">Go from static HTML/CSS to a real React architecture with routing, state management, and component design</td>
                   </tr>
                   <tr className="border-b border-white/5">
-                    <td className="py-3 px-4 font-medium text-[#24A2A7]/90">Integrate 3D design</td>
-                    <td className="py-3 px-4">Use Spline and meshy.ai to create an immersive, spatial experience</td>
+                    <td className="py-3 px-4 font-medium text-[#24A2A7]/90">Build in 3D</td>
+                    <td className="py-3 px-4">Use Spline and meshy.ai to create a spatial, explorable environment</td>
                   </tr>
                   <tr>
-                    <td className="py-3 px-4 font-medium text-[#24A2A7]/90">Ship something that proves the thesis</td>
-                    <td className="py-3 px-4">A portfolio that demonstrates the skills it describes</td>
+                    <td className="py-3 px-4 font-medium text-[#24A2A7]/90">Prove the thesis</td>
+                    <td className="py-3 px-4">Make a portfolio that <em>demonstrates</em> the skills it describes, not just lists them</td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <p className="text-gray-300 text-[15px] md:text-base leading-[1.7] mb-6">
-              React became the foundation. It offered component-based architecture, strong ecosystem support for Spline and AI APIs, and the flexibility to build a dual-view system that could adapt to device capability.
+              React made sense as the foundation. Component architecture meant I could build the 2D and 3D views as separate experiences that share the same content layer. The ecosystem already had solid Spline and AI API support, and React Router v7 gave me real URLs people can bookmark and share.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <button
                 type="button"
-                onClick={() => setEnlargedImage({ src: '/case-study/before-home.png', alt: "Previous portfolio home page - hey, i'm sam" })}
+                onClick={() => setEnlargedImage({ src: '/case-study/before-home.webp', alt: "Previous portfolio home page - hey, i'm sam" })}
                 className="rounded-xl overflow-hidden border border-white/5 text-left hover:border-[#24A2A7]/40 transition-colors cursor-zoom-in group"
               >
-                <img src="/case-study/before-home.png" alt="Previous portfolio home page - hey, i'm sam" className="w-full h-auto group-hover:opacity-90 transition-opacity" />
+                <img src="/case-study/before-home.webp" alt="Previous portfolio home page - hey, i'm sam" className="w-full h-auto group-hover:opacity-90 transition-opacity" loading="lazy" />
                 <p className="text-[11px] text-gray-500 px-3 py-2 bg-white/[0.02]">Before: Home · Click to enlarge</p>
               </button>
               <button
                 type="button"
-                onClick={() => setEnlargedImage({ src: '/case-study/before-about.png', alt: "Previous portfolio about page - my story and services" })}
+                onClick={() => setEnlargedImage({ src: '/case-study/before-about.webp', alt: "Previous portfolio about page - my story and services" })}
                 className="rounded-xl overflow-hidden border border-white/5 text-left hover:border-[#24A2A7]/40 transition-colors cursor-zoom-in group"
               >
-                <img src="/case-study/before-about.png" alt="Previous portfolio about page - my story and services" className="w-full h-auto group-hover:opacity-90 transition-opacity" />
+                <img src="/case-study/before-about.webp" alt="Previous portfolio about page - my story and services" className="w-full h-auto group-hover:opacity-90 transition-opacity" loading="lazy" />
                 <p className="text-[11px] text-gray-500 px-3 py-2 bg-white/[0.02]">Before: About · Click to enlarge</p>
               </button>
             </div>
@@ -307,7 +329,7 @@ const ProjectCaseStudy: React.FC = () => {
           <section id="challenge" className="scroll-mt-28 mb-12">
             <span className="text-[11px] font-medium text-[#24A2A7]/90 mb-3 block">The Challenge</span>
             <p className="text-gray-300 text-[15px] md:text-base leading-[1.7] mb-4">
-              The core challenge wasn&apos;t aesthetics—it was <em>demonstration</em>. Standard portfolios list skills; they rarely show them. I needed a site that could:
+              The hard part wasn&apos;t making it look good. It was making it <em>prove something</em>. Most portfolios just list skills. I wanted mine to actually demonstrate them:
             </p>
             <div className="overflow-x-auto mb-4">
               <table className="w-full text-[15px] border-collapse border border-white/10 rounded-lg overflow-hidden">
@@ -319,26 +341,26 @@ const ProjectCaseStudy: React.FC = () => {
                 </thead>
                 <tbody className="text-gray-300">
                   <tr className="border-b border-white/5">
-                    <td className="py-3 px-4 font-medium text-[#24A2A7]/90">Show, not tell</td>
-                    <td className="py-3 px-4">Prove I can think in systems, ship product, and care about performance</td>
+                    <td className="py-3 px-4 font-medium text-[#24A2A7]/90">Show, don't tell</td>
+                    <td className="py-3 px-4">If I say I think in systems, the site itself should prove it</td>
                   </tr>
                   <tr className="border-b border-white/5">
-                    <td className="py-3 px-4 font-medium text-[#24A2A7]/90">Meet visitors where they are</td>
-                    <td className="py-3 px-4">Different devices, different contexts, different needs</td>
+                    <td className="py-3 px-4 font-medium text-[#24A2A7]/90">Work for everyone</td>
+                    <td className="py-3 px-4">Someone on a five-year-old phone and someone on a beefy desktop should both have a good experience</td>
                   </tr>
                   <tr className="border-b border-white/5">
-                    <td className="py-3 px-4 font-medium text-[#24A2A7]/90">Stay accessible</td>
-                    <td className="py-3 px-4">No one should hit a broken page or an experience they can&apos;t use</td>
+                    <td className="py-3 px-4 font-medium text-[#24A2A7]/90">Never break</td>
+                    <td className="py-3 px-4">No blank screens, no laggy WebGL on a phone, no dead ends</td>
                   </tr>
                   <tr>
-                    <td className="py-3 px-4 font-medium text-[#24A2A7]/90">Feel built, not templated</td>
-                    <td className="py-3 px-4">Distinct, memorable, and aligned with my professional identity</td>
+                    <td className="py-3 px-4 font-medium text-[#24A2A7]/90">Feel handmade</td>
+                    <td className="py-3 px-4">You should be able to tell a person built this, not a template</td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <p className="text-gray-300 text-[15px] md:text-base leading-[1.7]">
-              The previous site was competent but forgettable. The new one had to be both ambitious and responsible.
+              The old site was fine. Fine doesn't stick with people.
             </p>
           </section>
 
@@ -346,7 +368,7 @@ const ProjectCaseStudy: React.FC = () => {
           <section id="solution" className="scroll-mt-28 mb-12">
             <span className="text-[11px] font-medium text-[#24A2A7]/90 mb-3 block">Design Approach</span>
             <p className="text-gray-300 text-[15px] md:text-base leading-[1.7] mb-4">
-              I established three design pillars that guided every decision:
+              Three ideas guided every visual and interaction decision:
             </p>
             <div className="overflow-x-auto mb-6">
               <table className="w-full text-[15px] border-collapse border border-white/10 rounded-lg overflow-hidden">
@@ -359,32 +381,32 @@ const ProjectCaseStudy: React.FC = () => {
                 <tbody className="text-gray-300">
                   <tr className="border-b border-white/5">
                     <td className="py-3 px-4 font-medium text-[#24A2A7]/90">Tech-Noir aesthetics</td>
-                    <td className="py-3 px-4">Teal-on-charcoal palette, sharp typography, subtle gradients. Professional without feeling corporate. A deliberate shift from the white, airy predecessor to a more distinctive visual language.</td>
+                    <td className="py-3 px-4">Teal on charcoal, sharp type, subtle gradients. Professional but not corporate. The old site was white and airy. This one has a point of view.</td>
                   </tr>
                   <tr className="border-b border-white/5">
                     <td className="py-3 px-4 font-medium text-[#24A2A7]/90">Editorial minimalism</td>
-                    <td className="py-3 px-4">Let content breathe. No clutter. Scannable hierarchy. The 2D experience had to feel like a well-designed editorial site, not a brochure.</td>
+                    <td className="py-3 px-4">Let content breathe. No clutter. The 2D side should read like a magazine, not a brochure.</td>
                   </tr>
                   <tr>
-                    <td className="py-3 px-4 font-medium text-[#24A2A7]/90">Human integrity</td>
-                    <td className="py-3 px-4">The site should feel personal, not sterile. Every interaction—from the ambient audio to the clickable desk objects—was designed to reflect my personality. The site doesn&apos;t just present me; it <em>invites exploration</em>.</td>
+                    <td className="py-3 px-4 font-medium text-[#24A2A7]/90">Human touch</td>
+                    <td className="py-3 px-4">Ambient audio, a cat with her own card, a guitar that opens my About page. The site should feel like it belongs to a real person, not a LinkedIn profile.</td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <p className="text-gray-300 text-[15px] md:text-base leading-[1.7] mb-6">
-              Before development, I created wireframes and a prototype mockup to validate the structure—logo, nav, 3D workstation placeholder, footer.
+              I wireframed the structure before writing any code. Logo, nav, 3D workstation placeholder, footer. Getting the bones right first.
             </p>
             <button
               type="button"
-              onClick={() => setEnlargedImage({ src: '/case-study/wireframe.png', alt: "Portfolio wireframe - layout before development" })}
+              onClick={() => setEnlargedImage({ src: '/case-study/wireframe.webp', alt: "Portfolio wireframe - layout before development" })}
               className="rounded-xl overflow-hidden border border-white/5 mb-6 text-left hover:border-[#24A2A7]/40 transition-colors cursor-zoom-in group w-full"
             >
-              <img src="/case-study/wireframe.png" alt="Portfolio wireframe - layout before development" className="w-full h-auto group-hover:opacity-90 transition-opacity" />
+              <img src="/case-study/wireframe.webp" alt="Portfolio wireframe - layout before development" className="w-full h-auto group-hover:opacity-90 transition-opacity" loading="lazy" />
               <p className="text-[11px] text-gray-500 px-3 py-2 bg-white/[0.02]">Wireframe: Structure before build · Click to enlarge</p>
             </button>
             <p className="text-gray-300 text-[15px] md:text-base leading-[1.7]">
-              The wireframe captured the dual-view concept: a 2D editorial path and a 3D workstation path, with consistent navigation across both.
+              Even at this stage you can see the dual-view idea taking shape: two entry points, same destinations.
             </p>
           </section>
 
@@ -392,7 +414,7 @@ const ProjectCaseStudy: React.FC = () => {
           <section id="progress" className="scroll-mt-28 mb-12">
             <span className="text-[11px] font-medium text-[#24A2A7]/90 mb-3 block">Solution Overview</span>
             <p className="text-gray-300 text-[15px] md:text-base leading-[1.7] mb-4">
-              <strong>The Samulation</strong> is a dual-layered portfolio:
+              <strong>The Samulation</strong> has two layers:
             </p>
             <div className="overflow-x-auto mb-6">
               <table className="w-full text-[15px] border-collapse border border-white/10 rounded-lg overflow-hidden">
@@ -405,75 +427,75 @@ const ProjectCaseStudy: React.FC = () => {
                 <tbody className="text-gray-300">
                   <tr className="border-b border-white/5">
                     <td className="py-3 px-4 font-medium text-[#24A2A7]/90">2D editorial</td>
-                    <td className="py-3 px-4">A clean, accessible site with resume, projects, and about. This is the default experience for mobile and lower-spec devices. Navigation is straightforward: back, forward, clear hierarchy. Content is readable, scannable, and works everywhere.</td>
+                    <td className="py-3 px-4">A clean, scrollable site with resume, projects, and about sections. This is what mobile visitors and lower-spec devices get by default. It reads well, loads fast, and doesn't require any GPU muscle.</td>
                   </tr>
                   <tr>
                     <td className="py-3 px-4 font-medium text-[#24A2A7]/90">3D workstation</td>
-                    <td className="py-3 px-4">A Spline-powered environment where visitors stand at my desk. They can orbit the camera, click objects (MacBook, monitors, books, fountain pen), and surface rich content in overlays. Each object maps to a theme: Trust & Safety, AI & Systems, Leadership, Consulting. The guitar opens the About story. Sesame, my cat, has her own card.</td>
+                    <td className="py-3 px-4">A Spline-powered environment where you're standing at my desk. Orbit the camera, click the MacBook, monitors, books, fountain pen. Each object maps to a content theme: Trust & Safety, AI & Systems, Leadership, Consulting. The guitar opens my About story. Sesame (my cat) has her own card.</td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <p className="text-gray-300 text-[15px] md:text-base leading-[1.7] mb-6">
-              A toggle lets visitors switch between 2D and 3D at any time. Navigation stays consistent across both views—the same menu items, the same content, different presentation.
+              A toggle lets you switch between 2D and 3D whenever you want. Same menu, same content, different wrapper.
             </p>
             <button
               type="button"
-              onClick={() => setEnlargedImage({ src: '/case-study/3d-scene.png', alt: "The Samulation - 3D workstation scene" })}
+              onClick={() => setEnlargedImage({ src: '/case-study/3d-scene.webp', alt: "The Samulation - 3D workstation scene" })}
               className="rounded-xl overflow-hidden border border-white/5 text-left hover:border-[#24A2A7]/40 transition-colors cursor-zoom-in group w-full"
             >
-              <img src="/case-study/3d-scene.png" alt="The Samulation - 3D workstation scene" className="w-full h-auto group-hover:opacity-90 transition-opacity" />
+              <img src="/case-study/3d-scene.webp" alt="The Samulation - 3D workstation scene" className="w-full h-auto group-hover:opacity-90 transition-opacity" loading="lazy" />
               <p className="text-[11px] text-gray-500 px-3 py-2 bg-white/[0.02]">The Samulation: 3D workstation · Click to enlarge</p>
             </button>
 
             <p className="text-gray-300 text-[15px] md:text-base leading-[1.7] mt-8 mb-4">
-              The scene was built in Spline with assets generated in Meshy.ai—a workflow that combined spatial design with AI-powered 3D generation and React development.
+              I built the scene in Spline and generated assets with Meshy.ai. The workflow bounced between spatial design, AI-powered 3D generation, and React development.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <button
                 type="button"
-                onClick={() => setEnlargedImage({ src: '/case-study/spline-workflow.png', alt: "Spline workflow - Sam's Desk scene creation" })}
+                onClick={() => setEnlargedImage({ src: '/case-study/spline-workflow.webp', alt: "Spline workflow - Sam's Desk scene creation" })}
                 className="rounded-xl overflow-hidden border border-white/5 text-left hover:border-[#24A2A7]/40 transition-colors cursor-zoom-in group"
               >
-                <img src="/case-study/spline-workflow.png" alt="Spline workflow - Sam's Desk scene creation" className="w-full h-auto group-hover:opacity-90 transition-opacity" />
+                <img src="/case-study/spline-workflow.webp" alt="Spline workflow - Sam's Desk scene creation" className="w-full h-auto group-hover:opacity-90 transition-opacity" loading="lazy" />
                 <p className="text-[11px] text-gray-500 px-3 py-2 bg-white/[0.02]">Spline: Building Sam&apos;s Desk · Click to enlarge</p>
               </button>
               <button
                 type="button"
-                onClick={() => setEnlargedImage({ src: '/case-study/meshy-workflow.png', alt: "Meshy.ai workflow - generating 3D assets" })}
+                onClick={() => setEnlargedImage({ src: '/case-study/meshy-workflow.webp', alt: "Meshy.ai workflow - generating 3D assets" })}
                 className="rounded-xl overflow-hidden border border-white/5 text-left hover:border-[#24A2A7]/40 transition-colors cursor-zoom-in group"
               >
-                <img src="/case-study/meshy-workflow.png" alt="Meshy.ai workflow - generating 3D assets" className="w-full h-auto group-hover:opacity-90 transition-opacity" />
+                <img src="/case-study/meshy-workflow.webp" alt="Meshy.ai workflow - generating 3D assets" className="w-full h-auto group-hover:opacity-90 transition-opacity" loading="lazy" />
                 <p className="text-[11px] text-gray-500 px-3 py-2 bg-white/[0.02]">Meshy.ai: Generating 3D assets · Click to enlarge</p>
               </button>
               <button
                 type="button"
-                onClick={() => setEnlargedImage({ src: '/case-study/code-screenshot.png', alt: "Portfolio code - index.html" })}
+                onClick={() => setEnlargedImage({ src: '/case-study/code-screenshot.webp', alt: "Portfolio code - index.html" })}
                 className="rounded-xl overflow-hidden border border-white/5 text-left hover:border-[#24A2A7]/40 transition-colors cursor-zoom-in group"
               >
-                <img src="/case-study/code-screenshot.png" alt="Portfolio code - index.html" className="w-full h-auto group-hover:opacity-90 transition-opacity" />
+                <img src="/case-study/code-screenshot.webp" alt="Portfolio code - index.html" className="w-full h-auto group-hover:opacity-90 transition-opacity" loading="lazy" />
                 <p className="text-[11px] text-gray-500 px-3 py-2 bg-white/[0.02]">Code: index.html · Click to enlarge</p>
               </button>
             </div>
 
             <p className="text-gray-300 text-[15px] md:text-base leading-[1.7] mt-10 mb-4">
-              The result: a modular React codebase and a live site that serves both 2D and 3D experiences.
+              End result: a modular React codebase powering both the 2D and 3D experiences from a single source of truth.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <button
                 type="button"
-                onClick={() => setEnlargedImage({ src: '/case-study/hero-desktop.png', alt: "New site - hero section desktop" })}
+                onClick={() => setEnlargedImage({ src: '/case-study/hero-desktop.webp', alt: "New site - hero section desktop" })}
                 className="rounded-xl overflow-hidden border border-white/5 text-left hover:border-[#24A2A7]/40 transition-colors cursor-zoom-in group"
               >
-                <img src="/case-study/hero-desktop.png" alt="New site - hero section desktop" className="w-full h-auto group-hover:opacity-90 transition-opacity" />
+                <img src="/case-study/hero-desktop.webp" alt="New site - hero section desktop" className="w-full h-auto group-hover:opacity-90 transition-opacity" loading="lazy" />
                 <p className="text-[11px] text-gray-500 px-3 py-2 bg-white/[0.02]">New site: Hero · Click to enlarge</p>
               </button>
               <button
                 type="button"
-                onClick={() => setEnlargedImage({ src: '/case-study/resume-page.png', alt: "New site - resume page" })}
+                onClick={() => setEnlargedImage({ src: '/case-study/resume-page.webp', alt: "New site - resume page" })}
                 className="rounded-xl overflow-hidden border border-white/5 text-left hover:border-[#24A2A7]/40 transition-colors cursor-zoom-in group"
               >
-                <img src="/case-study/resume-page.png" alt="New site - resume page" className="w-full h-auto group-hover:opacity-90 transition-opacity" />
+                <img src="/case-study/resume-page.webp" alt="New site - resume page" className="w-full h-auto group-hover:opacity-90 transition-opacity" loading="lazy" />
                 <p className="text-[11px] text-gray-500 px-3 py-2 bg-white/[0.02]">New site: Resume · Click to enlarge</p>
               </button>
             </div>
@@ -483,7 +505,7 @@ const ProjectCaseStudy: React.FC = () => {
           <section id="sitemap" className="scroll-mt-28 mb-12">
             <span className="text-[11px] font-medium text-[#24A2A7]/90 mb-3 block">Site Architecture</span>
             <p className="text-gray-300 text-[15px] md:text-base leading-[1.7] mb-4">
-              Explore the dual-view structure: 2D editorial and 3D immersive experiences, with shared navigation to Resume, Projects, and About.
+              Here's how the dual-view structure maps out. Two entry points, shared navigation to Resume, Projects, and About.
             </p>
             <InteractiveSitemap data={SITEMAP} />
           </section>
@@ -494,15 +516,15 @@ const ProjectCaseStudy: React.FC = () => {
             
             <h4 className="text-sm font-semibold text-white mt-6 mb-2">Why Dual-View?</h4>
             <p className="text-gray-300 text-[15px] md:text-base leading-[1.7] mb-4">
-              Not every device can run a 3D WebGL scene smoothly. Not every visitor wants one. Forcing a single experience would either exclude capable users from the immersive experience or deliver a broken, laggy experience to others.
+              Not every device can run a WebGL scene. Not every visitor wants one. I'm not going to force a 3D experience on someone browsing on their phone at lunch.
             </p>
             <p className="text-gray-300 text-[15px] md:text-base leading-[1.7] mb-6">
-              The dual-view architecture solves this: serve the right experience based on context. Mobile and lower-spec devices get the 2D editorial view by default. Desktop users can opt into the 3D Samulation. Both paths lead to the same content—resume, projects, about—so no one misses information.
+              So the site detects what you're working with and serves the right experience. Mobile and lower-spec devices get the 2D editorial view. Desktop users can opt into the 3D Samulation. Both paths have the same content, so nobody misses anything.
             </p>
 
-            <h4 className="text-sm font-semibold text-white mt-6 mb-2">Why This Design?</h4>
+            <h4 className="text-sm font-semibold text-white mt-6 mb-2">Why a Desk?</h4>
             <p className="text-gray-300 text-[15px] md:text-base leading-[1.7] mb-4">
-              The 3D workstation metaphor—a desk with clickable objects—was chosen for three reasons:
+              The 3D workstation metaphor works for a few reasons:
             </p>
             <div className="overflow-x-auto mb-6">
               <table className="w-full text-[15px] border-collapse border border-white/10 rounded-lg overflow-hidden">
@@ -514,16 +536,16 @@ const ProjectCaseStudy: React.FC = () => {
                 </thead>
                 <tbody className="text-gray-300">
                   <tr className="border-b border-white/5">
-                    <td className="py-3 px-4 font-medium text-[#24A2A7]/90">Memorable</td>
-                    <td className="py-3 px-4">It&apos;s distinct. Visitors remember &quot;the site with the desk&quot; more than &quot;the site with the resume.&quot;</td>
+                    <td className="py-3 px-4 font-medium text-[#24A2A7]/90">It sticks</td>
+                    <td className="py-3 px-4">People remember "the site with the desk" way more than "the site with the resume"</td>
                   </tr>
                   <tr className="border-b border-white/5">
-                    <td className="py-3 px-4 font-medium text-[#24A2A7]/90">Demonstrative</td>
-                    <td className="py-3 px-4">It shows I can integrate 3D, handle WebGL performance, and design for spatial interfaces.</td>
+                    <td className="py-3 px-4 font-medium text-[#24A2A7]/90">It proves the work</td>
+                    <td className="py-3 px-4">It shows I can ship 3D, manage WebGL performance, and think spatially</td>
                   </tr>
                   <tr>
-                    <td className="py-3 px-4 font-medium text-[#24A2A7]/90">Scalable</td>
-                    <td className="py-3 px-4">New content can be added as new objects. The architecture supports growth without redesign.</td>
+                    <td className="py-3 px-4 font-medium text-[#24A2A7]/90">It grows</td>
+                    <td className="py-3 px-4">New content = new desk object. The architecture supports it without a redesign.</td>
                   </tr>
                 </tbody>
               </table>
@@ -532,9 +554,9 @@ const ProjectCaseStudy: React.FC = () => {
 
           {/* Accessibility */}
           <section id="accessibility" className="scroll-mt-28 mb-12">
-            <span className="text-[11px] font-medium text-[#24A2A7]/90 mb-3 block">Why Accessibility Mattered: Toggles and Views</span>
+            <span className="text-[11px] font-medium text-[#24A2A7]/90 mb-3 block">Accessibility as a Design Constraint</span>
             <p className="text-gray-300 text-[15px] md:text-base leading-[1.7] mb-4">
-              Accessibility wasn&apos;t an afterthought—it was a design constraint from the start.
+              I didn't bolt accessibility on at the end. It shaped the architecture from day one.
             </p>
             <div className="overflow-x-auto mb-4">
               <table className="w-full text-[15px] border-collapse border border-white/10 rounded-lg overflow-hidden">
@@ -547,19 +569,19 @@ const ProjectCaseStudy: React.FC = () => {
                 <tbody className="text-gray-300">
                   <tr className="border-b border-white/5">
                     <td className="py-3 px-4 font-medium text-[#24A2A7]/90">Device capability</td>
-                    <td className="py-3 px-4">3D rendering is GPU-intensive. On older hardware or mobile, the experience can stutter or fail. I implemented an &quot;uplink&quot; fallback: detect capability, serve 2D when 3D would perform poorly. No one gets a broken page.</td>
+                    <td className="py-3 px-4">3D rendering is GPU-intensive. On older phones it'll stutter or fail. The site detects capability and falls back to 2D automatically. Nobody gets a broken page.</td>
                   </tr>
                   <tr className="border-b border-white/5">
-                    <td className="py-3 px-4 font-medium text-[#24A2A7]/90">User preference</td>
-                    <td className="py-3 px-4">Some visitors prefer a simple, linear experience. The toggle lets them switch from 3D to 2D (and back) at any time. The choice is theirs, not the device&apos;s.</td>
+                    <td className="py-3 px-4 font-medium text-[#24A2A7]/90">User choice</td>
+                    <td className="py-3 px-4">Some people just want to read. The toggle lets you switch from 3D to 2D at any time. Your call, not the device's.</td>
                   </tr>
                   <tr className="border-b border-white/5">
-                    <td className="py-3 px-4 font-medium text-[#24A2A7]/90">Reduced motion and performance</td>
-                    <td className="py-3 px-4">I avoided heavy effects that could cause discomfort or lag. For example, I removed <code className="text-[#24A2A7]/90">backdrop-blur</code> over the WebGL canvas when overlays opened—it was causing noticeable jank. A solid <code className="text-[#24A2A7]/90">bg-black/70</code> dimmed the scene without the performance cost. Small decisions compound.</td>
+                    <td className="py-3 px-4 font-medium text-[#24A2A7]/90">Performance details</td>
+                    <td className="py-3 px-4">I killed <code className="text-[#24A2A7]/90">backdrop-blur</code> over the WebGL canvas when overlays open because it was causing visible jank. A solid <code className="text-[#24A2A7]/90">bg-black/70</code> dims the scene without the GPU hit. I also discovered that <code className="text-[#24A2A7]/90">overflow-x: hidden</code> silently creates a nested scrolling context (per CSS spec), which was making scroll feel "stuck" on one of my case study pages. Swapping to <code className="text-[#24A2A7]/90">overflow-x: clip</code> fixed it instantly. Small details like these compound.</td>
                   </tr>
                   <tr>
                     <td className="py-3 px-4 font-medium text-[#24A2A7]/90">Consistent navigation</td>
-                    <td className="py-3 px-4">Whether in 2D or 3D, the same menu items (About, Projects, Resume) are available. Content overlays use the same interaction pattern: click to open, click outside or &quot;Return&quot; to close. Predictability reduces cognitive load.</td>
+                    <td className="py-3 px-4">2D or 3D, the same menu items are always there. Content overlays use the same pattern everywhere: click to open, click outside or "Return" to close. Predictability means people don't have to re-learn anything.</td>
                   </tr>
                 </tbody>
               </table>
@@ -570,10 +592,10 @@ const ProjectCaseStudy: React.FC = () => {
           <section className="mb-12">
             <span className="text-[11px] font-medium text-[#24A2A7]/90 mb-3 block">What I Learned</span>
             <ul className="text-gray-300 text-[15px] md:text-base leading-[1.7] space-y-2">
-              <li><strong>Accessibility is design</strong> — Toggles and fallbacks aren&apos;t compromises; they&apos;re better products. Designing for the edges improves the center.</li>
-              <li><strong>Performance is UX</strong> — Removing <code className="text-[#24A2A7]/90">backdrop-blur</code> fixed overlay lag. Users feel the difference even if they can&apos;t name it.</li>
-              <li><strong>The user is you (until it isn&apos;t)</strong> — I was the primary user during development. Listening to my own experience—where I got stuck, what felt slow—surfaced issues that would have affected visitors.</li>
-              <li><strong>Ship, then refine</strong> — The case study page evolved from header-heavy to prose-first. The wireframe preceded the prototype. Iteration is the process.</li>
+              <li><strong>Accessibility is design, not charity</strong> — The dual-view system and fallbacks aren't compromises. They make the product better for everyone, including the people on the best hardware.</li>
+              <li><strong>Performance is felt, not seen</strong> — Killing <code className="text-[#24A2A7]/90">backdrop-blur</code> over WebGL, replacing <code className="text-[#24A2A7]/90">useState</code> scroll handlers with direct DOM refs, swapping <code className="text-[#24A2A7]/90">overflow-x: hidden</code> for <code className="text-[#24A2A7]/90">clip</code> to eliminate nested scroll contexts. Visitors can't name what changed, but they feel it.</li>
+              <li><strong>AI is a collaborator, not a replacement</strong> — I used Claude as a development partner throughout this build: debugging CSS spec behavior, iterating on scroll animations, tuning ambient particles across 14+ rounds of adjustment. The AI helped me move faster, but the creative decisions and the stubbornness to get things right were mine.</li>
+              <li><strong>Ship, then obsess</strong> — The case study pages went from header-heavy to prose-first. The particles got tuned, re-tuned, and tuned again. The Discord Clyde logo went through half a dozen SVG iterations. Good work is a willingness to keep going.</li>
             </ul>
           </section>
 
@@ -603,10 +625,10 @@ const ProjectCaseStudy: React.FC = () => {
           <div className="mb-10">
             <button
               type="button"
-              onClick={() => setEnlargedImage({ src: '/case-study/d-cade-hero.png', alt: 'The D-Cade arcade cabinet' })}
+              onClick={() => setEnlargedImage({ src: '/case-study/d-cade-hero.webp', alt: 'The D-Cade arcade cabinet' })}
               className="rounded-xl overflow-hidden border border-white/5 text-left hover:border-[#24A2A7]/40 transition-colors cursor-zoom-in group w-full"
             >
-              <img src="/case-study/d-cade-hero.png" alt="The D-Cade arcade cabinet" className="w-full h-auto group-hover:opacity-90 transition-opacity" />
+              <img src="/case-study/d-cade-hero.webp" alt="The D-Cade arcade cabinet" className="w-full h-auto group-hover:opacity-90 transition-opacity" loading="lazy" />
               <p className="text-[11px] text-gray-500 px-3 py-2 bg-white/[0.02]">The D-Cade cabinet · Click to enlarge</p>
             </button>
           </div>
@@ -693,10 +715,10 @@ const ProjectCaseStudy: React.FC = () => {
             </p>
             <button
               type="button"
-              onClick={() => setEnlargedImage({ src: '/case-study/d-cade-splash.png', alt: 'Custom D-Cade splash screen' })}
+              onClick={() => setEnlargedImage({ src: '/case-study/d-cade-splash.webp', alt: 'Custom D-Cade splash screen' })}
               className="rounded-xl overflow-hidden border border-white/5 text-left hover:border-[#24A2A7]/40 transition-colors cursor-zoom-in group w-full"
             >
-              <img src="/case-study/d-cade-splash.png" alt="Custom D-Cade splash screen" className="w-full h-auto group-hover:opacity-90 transition-opacity" />
+              <img src="/case-study/d-cade-splash.webp" alt="Custom D-Cade splash screen" className="w-full h-auto group-hover:opacity-90 transition-opacity" loading="lazy" />
               <p className="text-[11px] text-gray-500 px-3 py-2 bg-white/[0.02]">Custom D-Cade splash screen · Click to enlarge</p>
             </button>
           </section>
@@ -744,10 +766,10 @@ const ProjectCaseStudy: React.FC = () => {
           <div className="mb-10">
             <button
               type="button"
-              onClick={() => setEnlargedImage({ src: '/case-study/level-up-dashboard.png', alt: 'Level Up dashboard' })}
+              onClick={() => setEnlargedImage({ src: '/case-study/level-up-dashboard.webp', alt: 'Level Up dashboard' })}
               className="rounded-xl overflow-hidden border border-white/5 text-left hover:border-[#24A2A7]/40 transition-colors cursor-zoom-in group w-full"
             >
-              <img src="/case-study/level-up-dashboard.png" alt="Level Up dashboard" className="w-full h-auto group-hover:opacity-90 transition-opacity" />
+              <img src="/case-study/level-up-dashboard.webp" alt="Level Up dashboard" className="w-full h-auto group-hover:opacity-90 transition-opacity" loading="lazy" />
               <p className="text-[11px] text-gray-500 px-3 py-2 bg-white/[0.02]">Level Up dashboard · Click to enlarge</p>
             </button>
           </div>
@@ -820,10 +842,10 @@ const ProjectCaseStudy: React.FC = () => {
             </p>
             <button
               type="button"
-              onClick={() => setEnlargedImage({ src: '/case-study/level-up-interview.png', alt: 'AI Interview Practice' })}
+              onClick={() => setEnlargedImage({ src: '/case-study/level-up-interview.webp', alt: 'AI Interview Practice' })}
               className="rounded-xl overflow-hidden border border-white/5 text-left hover:border-[#24A2A7]/40 transition-colors cursor-zoom-in group w-full mb-6"
             >
-              <img src="/case-study/level-up-interview.png" alt="AI Interview Practice" className="w-full h-auto group-hover:opacity-90 transition-opacity" />
+              <img src="/case-study/level-up-interview.webp" alt="AI Interview Practice" className="w-full h-auto group-hover:opacity-90 transition-opacity" loading="lazy" />
               <p className="text-[11px] text-gray-500 px-3 py-2 bg-white/[0.02]">AI Interview Practice · Click to enlarge</p>
             </button>
 
@@ -902,10 +924,10 @@ const ProjectCaseStudy: React.FC = () => {
           <div className="mb-10">
             <button
               type="button"
-              onClick={() => setEnlargedImage({ src: '/case-study/zoo-report-mockup.png', alt: 'Augmented Reality Detroit Zoo App — Explore, animal info, and Donate screens' })}
+              onClick={() => setEnlargedImage({ src: '/case-study/zoo-report-mockup.webp', alt: 'Augmented Reality Detroit Zoo App — Explore, animal info, and Donate screens' })}
               className="rounded-xl overflow-hidden border border-white/5 text-left hover:border-[#24A2A7]/40 transition-colors cursor-zoom-in group w-full"
             >
-              <img src="/case-study/zoo-report-mockup.png" alt="Augmented Reality Detroit Zoo App — Explore, animal info, and Donate screens" className="w-full h-auto group-hover:opacity-90 transition-opacity" />
+              <img src="/case-study/zoo-report-mockup.webp" alt="Augmented Reality Detroit Zoo App — Explore, animal info, and Donate screens" className="w-full h-auto group-hover:opacity-90 transition-opacity" loading="lazy" />
               <p className="text-[11px] text-gray-500 px-3 py-2 bg-white/[0.02]">App screens: Explore, Giraffe, Donate · Click to enlarge</p>
             </button>
           </div>
@@ -929,10 +951,10 @@ const ProjectCaseStudy: React.FC = () => {
           <div className="mb-10 flex justify-center">
             <button
               type="button"
-              onClick={() => setEnlargedImage({ src: '/case-study/detroit-zoo-logo.png', alt: 'Detroit Zoo Logo' })}
+              onClick={() => setEnlargedImage({ src: '/case-study/detroit-zoo-logo.webp', alt: 'Detroit Zoo Logo' })}
               className="rounded-xl overflow-hidden border border-white/5 text-left hover:border-[#24A2A7]/40 transition-colors cursor-zoom-in group max-w-md w-full"
             >
-              <img src="/case-study/detroit-zoo-logo.png" alt="Detroit Zoo Logo" className="w-full h-auto group-hover:opacity-90 transition-opacity" />
+              <img src="/case-study/detroit-zoo-logo.webp" alt="Detroit Zoo Logo" className="w-full h-auto group-hover:opacity-90 transition-opacity" loading="lazy" />
               <p className="text-[11px] text-gray-500 px-3 py-2 bg-white/[0.02]">Detroit Zoo · Click to enlarge</p>
             </button>
           </div>

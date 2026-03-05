@@ -117,7 +117,7 @@ I truly love connecting with people and hearing their stories––especially wh
     id: 'sesame',
     title: 'Sesame',
     subtitle: 'Chief Morale Officer (CMO)',
-    image: '/sesame.jpg',
+    image: '/sesame.webp',
     description: 'Meet Sesame, the real power behind the workstation. Often found photobombing high-stakes video calls, Sesame ensures that morale remains high and treats are dispensed regularly.',
     tags: ['CMO', 'Cat', 'Professional Nap Expert']
   }

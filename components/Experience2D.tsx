@@ -1,8 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CONTENT_MAP, COLORS, LOGO } from '../constants';
-import { SplineObjectId, PortfolioContent } from '../types';
-import { Menu, X } from 'lucide-react';
+import { SplineObjectId, PortfolioContent, Project } from '../types';
+import { Menu, X, ChevronDown } from 'lucide-react';
+
+/* ─── Featured project IDs — single source of truth (#2 Global Component) ─── */
+const FEATURED_PROJECT_IDS = ['portfolio-v2', 'dcade', 'uc-calnat'];
+
+/* ─── Shared PROJECTS data (imported inline to avoid circular dep) ─── */
+const PROJECTS: Project[] = [
+  { id: 'portfolio-v2', title: 'The Samulation', category: 'Design', date: '2025', description: 'An immersive, full-bleed reimagining of the portfolio case study. Scroll-driven reveals, parallax imagery, and animated metrics.', tags: ['React', 'Spline', 'Immersive Design', 'AI'], image: '/case-study/3d-scene.webp' },
+  { id: 'dcade', title: 'The D-Cade', category: 'Design', date: '2020', description: 'Resurrecting a custom Sega Dreamcast arcade cabinet through Raspberry Pi, 3D printing, and A/V signal conversion.', tags: ['Raspberry Pi', 'RetroPie', '3D Printing'], image: '/case-study/d-cade-card.webp', imagePosition: '50% 80%' },
+  { id: 'uc-calnat', title: 'UC CalNat Stewards', category: 'Leadership', date: '2024', description: 'Led a Design Thinking consulting engagement for UC Agriculture & Natural Resources, designing a platform for 9,000+ alumni.', tags: ['Design Thinking', 'UX Research', 'Community'], image: '/case-study/calnat-card.webp' },
+];
+
+/* ─── Hook: observe .scroll-reveal and add .revealed (#10 reduced-motion guard) ─── */
+function useScrollReveal() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const container = containerRef.current;
+    if (!container) return;
+    const targets = container.querySelectorAll('.scroll-reveal, .scroll-reveal-stagger');
+    if (targets.length === 0) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+    targets.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+  return containerRef;
+}
 
 
 interface Experience2DProps {
@@ -13,15 +49,73 @@ interface Experience2DProps {
 const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbout }) => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [hoveredNav, setHoveredNav] = useState<string | null>(null);
+  const [expandedFocus, setExpandedFocus] = useState<string | null>(null);
+  const scrollRef = useScrollReveal();
 
-  // Filter out Sesame and About from the focus areas grid on 2D
+  // Close mobile menu on Escape
+  useEffect(() => {
+    if (!isMenuOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsMenuOpen(false);
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isMenuOpen]);
+
+  // Filter out Sesame and About from the focus areas
   const sections = (Object.keys(CONTENT_MAP) as SplineObjectId[]).filter(
     id => id !== '1dfa5782-8ffc-47dc-9562-db86cba5ee72' && id !== '1ee647e1-3ee5-42f9-80bd-4829e0df1c52'
   );
 
-  const isDesktop = !window.matchMedia('(pointer: coarse)').matches && window.innerWidth >= 768;
+  const featured = PROJECTS.filter(p => FEATURED_PROJECT_IDS.includes(p.id));
 
-  // Helper to render Google with brand colors (used in hero only now)
+  // Normalize smart quotes/apostrophes to ASCII for reliable matching
+  const norm = (s: string) => s.replace(/[\u2018\u2019\u2032]/g, "'").replace(/[\u201c\u201d]/g, '"');
+
+  // Parse overlay description into structured sections for rich display
+  const parseContent = (desc: string) => {
+    const lines = desc.split('\n');
+    const introLines: string[] = [];
+    const bullets: { title: string; desc: string }[] = [];
+    let quote = '';
+    let section: 'pre' | 'intro' | 'approach' | 'philosophy' = 'pre';
+
+    const introHeaders = ["Why I'm Obsessed", "Why I'm Energized", "Why I Love", "Decoding"];
+    const approachHeaders = ["How I Approach"];
+    const quoteHeaders = ["The Big Picture", "My Philosophy"];
+
+    for (const line of lines) {
+      const t = line.trim();
+      if (!t) continue;
+      const tn = norm(t);
+
+      if (introHeaders.some(h => tn.startsWith(h))) { section = 'intro'; continue; }
+      if (approachHeaders.some(h => tn.startsWith(h))) { section = 'approach'; continue; }
+      if (quoteHeaders.some(h => tn.startsWith(h))) { section = 'philosophy'; continue; }
+
+      if (section === 'intro' && !t.startsWith('•')) {
+        introLines.push(t);
+      }
+      if (section === 'approach' && t.startsWith('•')) {
+        const text = t.replace(/^•\s*/, '');
+        const colonIdx = text.indexOf(':');
+        if (colonIdx > 0) {
+          bullets.push({ title: text.substring(0, colonIdx).trim(), desc: text.substring(colonIdx + 1).trim() });
+        } else {
+          bullets.push({ title: text, desc: '' });
+        }
+      }
+      if (section === 'philosophy') {
+        const stripped = t.replace(/^["\u201c]/, '').replace(/["\u201d]$/, '');
+        if (stripped !== t || t.startsWith('"')) quote = stripped;
+      }
+    }
+
+    return { intro: introLines.join(' '), bullets, quote };
+  };
+
+  // Google colorized helper
   const GoogleColorized = () => (
     <span className="inline-flex font-bold">
       <span className="text-[#4285F4]">G</span>
@@ -33,31 +127,48 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
     </span>
   );
 
+  const handleSecureMail = () => {
+    const user = 'sam';
+    const domain = 'sam-bloch.com';
+    window.location.href = `mailto:${user}@${domain}`;
+  };
+
   return (
-    <div className="min-h-screen bg-[#121212] text-white selection:bg-[#24A2A7]/30 overflow-x-hidden">
+    <div ref={scrollRef} className="min-h-screen bg-[#121212] text-white selection:bg-[#24A2A7]/30 overflow-x-hidden">
       {/* Editorial Navigation */}
       <header className="fixed top-0 w-full z-50 bg-[#121212]/95 backdrop-blur-md border-b border-white/5 p-4 md:p-6 md:px-12 flex justify-between items-center">
         <div className="transition-transform scale-75 md:scale-100 origin-left">
           {LOGO}
         </div>
-        
+
         {/* Desktop Nav */}
-        <nav className="hidden md:flex gap-10 items-center font-black text-[10px] uppercase tracking-[0.4em]">
-          <button
-            onClick={() => navigate('/resume')}
-            className="text-gray-400 hover:text-white transition-colors uppercase"
-          >
-            Resume
-          </button>
-          <button
-            onClick={() => navigate('/projects')}
-            className="text-gray-400 hover:text-[#24A2A7] transition-colors uppercase"
-          >
-            Projects & Artifacts
-          </button>
+        <nav className="hidden md:flex gap-8 lg:gap-10 items-center">
+          {[
+            { id: 'resume', label: 'Resume', action: () => navigate('/resume') },
+            { id: 'projects', label: 'Projects', action: () => navigate('/projects') },
+          ].map(item => (
+            <button
+              key={item.id}
+              onClick={item.action}
+              onMouseEnter={() => setHoveredNav(item.id)}
+              onMouseLeave={() => setHoveredNav(null)}
+              className={`text-xs font-black uppercase tracking-[0.3em] transition-all duration-300 relative py-2 whitespace-nowrap
+                ${hoveredNav === item.id ? 'text-[#24A2A7] scale-110' : 'text-gray-400 hover:text-white'}`}
+              style={hoveredNav === item.id ? { textShadow: '0 0 12px rgba(36, 162, 167, 0.6)' } : undefined}
+            >
+              {item.label}
+              <span className={`absolute -bottom-1 left-0 h-[2px] bg-[#24A2A7] transition-all duration-500
+                ${hoveredNav === item.id ? 'w-full shadow-[0_0_8px_rgba(36,162,167,0.5)]' : 'w-0'}`}>
+              </span>
+            </button>
+          ))}
           <button
             onClick={() => navigate('/3d')}
-            className="px-5 py-2.5 rounded-full border border-[#24A2A7]/30 text-[#24A2A7] hover:bg-[#24A2A7]/10 transition-all active:scale-95 whitespace-nowrap uppercase"
+            onMouseEnter={() => setHoveredNav('3d')}
+            onMouseLeave={() => setHoveredNav(null)}
+            className={`px-5 py-2.5 rounded-full border text-xs font-black uppercase tracking-[0.3em] transition-all duration-300 active:scale-95 whitespace-nowrap
+              ${hoveredNav === '3d' ? 'border-[#24A2A7] text-[#24A2A7] bg-[#24A2A7]/10 scale-105' : 'border-[#24A2A7]/30 text-[#24A2A7] hover:bg-[#24A2A7]/10'}`}
+            style={hoveredNav === '3d' ? { boxShadow: '0 0 16px rgba(36, 162, 167, 0.3)' } : undefined}
           >
             Enter Immersive 3D
           </button>
@@ -65,9 +176,9 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
 
         {/* Mobile Hamburger Button */}
         <div className="md:hidden">
-          <button 
-            onClick={() => setIsMenuOpen(true)} 
-            className="p-2 text-gray-400 hover:text-white transition-colors"
+          <button
+            onClick={() => setIsMenuOpen(true)}
+            className="p-3 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-white transition-colors"
             aria-label="Open Menu"
           >
             <Menu className="w-6 h-6" />
@@ -77,251 +188,292 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
 
       {/* Mobile Menu Overlay */}
       {isMenuOpen && (
-        <div className="fixed inset-0 z-[120] bg-[#121212] flex flex-col items-center justify-center p-8 animate-in fade-in duration-300">
-          <button 
+        <div className="fixed inset-0 z-[120] bg-[#121212] flex flex-col items-center justify-center p-8 motion-safe:animate-in motion-safe:fade-in duration-300" role="dialog" aria-modal="true" aria-label="Navigation menu">
+          <button
             onClick={() => setIsMenuOpen(false)}
-            className="absolute top-8 right-8 p-2 text-gray-400 hover:text-white transition-colors"
+            className="absolute top-8 right-8 p-3 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-white transition-colors"
             aria-label="Close Menu"
           >
             <X className="w-8 h-8" />
           </button>
 
           <div className="flex flex-col gap-10 text-center">
-            <button 
-              onClick={() => {
-                setIsMenuOpen(false);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-              className="text-3xl font-black uppercase tracking-tighter hover:text-[#24A2A7] transition-colors"
-            >
-              Home
-            </button>
             <button
-              onClick={() => {
-                setIsMenuOpen(false);
-                navigate('/3d');
-              }}
+              onClick={() => { setIsMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
               className="text-3xl font-black uppercase tracking-tighter hover:text-[#24A2A7] transition-colors"
-            >
-              3D Experience
-            </button>
-            <button
-              onClick={() => {
-                setIsMenuOpen(false);
-                navigate('/projects');
-              }}
-              className="text-3xl font-black uppercase tracking-tighter hover:text-[#24A2A7] transition-colors"
-            >
-              Projects & Artifacts
-            </button>
-            <a 
-              href="/SBloch_Resume.pdf" 
-              download="SBloch_Resume.pdf"
-              onClick={() => setIsMenuOpen(false)}
-              className="text-3xl font-black uppercase tracking-tighter hover:text-[#24A2A7] transition-colors"
-            >
-              Resume
-            </a>
+            >Home</button>
+            <button onClick={() => { setIsMenuOpen(false); navigate('/3d'); }} className="text-3xl font-black uppercase tracking-tighter hover:text-[#24A2A7] transition-colors">3D Experience</button>
+            <button onClick={() => { setIsMenuOpen(false); navigate('/projects'); }} className="text-3xl font-black uppercase tracking-tighter hover:text-[#24A2A7] transition-colors">Projects & Artifacts</button>
+            <a href="/SBloch_Resume.pdf" download="SBloch_Resume.pdf" onClick={() => setIsMenuOpen(false)} className="text-3xl font-black uppercase tracking-tighter hover:text-[#24A2A7] transition-colors">Resume</a>
           </div>
-          
-          <div className="mt-20 opacity-20 scale-75">
-            {LOGO}
-          </div>
+
+          <div className="mt-20 opacity-20 scale-75">{LOGO}</div>
         </div>
       )}
 
       <main className="relative overflow-hidden">
-        {/* Editorial Hero Section - Grid layout keeps headshot tethered at any zoom */}
-        <section className="relative min-h-screen grid grid-cols-1 md:grid-cols-[1fr_auto] md:items-center gap-8 md:gap-12 px-6 md:px-12 max-w-7xl mx-auto pt-20 md:pt-32 pb-20 overflow-visible">
+
+        {/* ════════════════════════════════════════
+            SECTION 1 — HERO
+           ════════════════════════════════════════ */}
+        <section className="relative min-h-screen grid grid-cols-1 md:grid-cols-[1fr_auto] md:items-center gap-8 md:gap-12 px-6 md:px-12 max-w-7xl mx-auto pt-28 md:pt-32 pb-12 overflow-visible">
           <div className="relative z-20 max-w-4xl">
-            <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[0.95] md:leading-[0.9] mb-8 md:mb-12 animate-in fade-in duration-1000">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[0.95] md:leading-[0.9] mb-8 md:mb-12 motion-safe:animate-in motion-safe:fade-in duration-1000">
               Architecting <br />
               <span className="text-[#24A2A7]">Human-Centric</span><br />
               Systems.
             </h1>
-            
-            <p className="max-w-xl text-gray-400 text-base md:text-xl leading-relaxed animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-300">
-              Seasoned operations leader specializing in Trust & Safety, AI innovation, and organizational leadership. Building the future of digital safety at <GoogleColorized />.
-            </p>
-          </div>
 
-          {/* Headshot: below hero text on mobile, right of text on desktop */}
-          <div className="flex items-center justify-center md:justify-end pr-0 md:pr-4 lg:pr-8 order-2 md:order-none">
-            <div 
-              className="relative w-[min(280px,85vw)] md:w-[min(560px,48vw)] rounded-2xl md:rounded-l-2xl overflow-hidden shrink-0"
-              style={{ aspectRatio: '4/5' }}
-            >
-              <img 
-                src="/headshot.jpg" 
-                alt="Sam Bloch"
-                className="w-full h-full object-cover object-center grayscale"
-              />
-              {/* Top fade - hides JPEG top edge on all viewports */}
-              <div 
-                className="absolute inset-x-0 top-0 h-1/4 pointer-events-none"
-                style={{ background: 'linear-gradient(to bottom, #121212 0%, transparent 100%)' }}
-              />
-              {/* Left fade - blends into text area */}
-              <div 
-                className="absolute inset-y-0 left-0 w-1/3 pointer-events-none"
-                style={{ background: 'linear-gradient(to right, #121212 0%, transparent 100%)' }}
-              />
-              {/* Right fade - blends into edge */}
-              <div 
-                className="absolute inset-y-0 right-0 w-1/4 pointer-events-none"
-                style={{ background: 'linear-gradient(to left, #121212 0%, transparent 100%)' }}
-              />
-              {/* Bottom fade - stronger on mobile for seamless blend */}
-              <div 
-                className="absolute inset-x-0 bottom-0 h-1/3 md:h-1/3 pointer-events-none"
-                style={{ background: 'linear-gradient(to top, #121212 0%, transparent 100%)' }}
-              />
+            <p className="max-w-xl text-gray-400 text-base md:text-xl leading-relaxed motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 duration-1000 delay-300">
+              Trust & Safety at <GoogleColorized /> · AI Innovation · Educator at Quinnipiac. Building the future of digital safety.
+            </p>
+
+            <div className="mt-8 md:mt-10 flex flex-wrap gap-4 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 duration-1000 delay-500">
+              <button
+                onClick={handleSecureMail}
+                className="group px-8 py-4 bg-[#24A2A7] text-black font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:brightness-110 transition-all shadow-xl active:scale-95 flex items-center gap-3"
+              >
+                Let's Connect
+                <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </button>
+              <button
+                onClick={() => navigate('/projects')}
+                className="px-8 py-4 border border-white/10 text-gray-400 hover:text-white hover:border-white/30 font-black uppercase text-[10px] tracking-[0.2em] rounded-full transition-all active:scale-95"
+              >
+                View Work
+              </button>
+            </div>
+
+            {/* Logo strip */}
+            <div className="mt-10 flex items-center justify-center md:justify-start gap-5 md:gap-8 opacity-20 hover:opacity-35 transition-opacity duration-500 motion-safe:animate-in motion-safe:fade-in duration-1000 delay-700">
+              {/* Google wordmark */}
+              <svg className="h-[18px] md:h-[22px] shrink-0" viewBox="0 0 272 92" fill="currentColor"><path d="M115.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18C71.25 34.32 81.24 25 93.5 25s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44S80.99 39.2 80.99 47.18c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z"/><path d="M163.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18C119.25 34.32 129.24 25 141.5 25s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44s-12.51 5.46-12.51 13.44c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z"/><path d="M209.75 26.34v39.82c0 16.38-9.66 23.07-21.08 23.07-10.75 0-17.22-7.19-19.66-13.07l8.48-3.53c1.51 3.61 5.21 7.87 11.17 7.87 7.31 0 11.84-4.51 11.84-13v-3.19h-.34c-2.18 2.69-6.38 5.04-11.68 5.04-11.09 0-21.25-9.66-21.25-22.09 0-12.52 10.16-22.26 21.25-22.26 5.29 0 9.49 2.35 11.68 4.96h.34v-3.61h9.25zm-8.56 20.92c0-7.81-5.21-13.52-11.84-13.52-6.72 0-12.35 5.71-12.35 13.52 0 7.73 5.63 13.36 12.35 13.36 6.63 0 11.84-5.63 11.84-13.36z"/><path d="M225 3v65h-9.5V3h9.5z"/><path d="M262.02 54.48l7.56 5.04c-2.44 3.61-8.32 9.83-18.48 9.83-12.6 0-22.01-9.74-22.01-22.18 0-13.19 9.49-22.18 20.92-22.18 11.51 0 17.14 9.16 18.98 14.11l1.01 2.52-29.65 12.28c2.27 4.45 5.8 6.72 10.75 6.72 4.96 0 8.4-2.44 10.92-6.14zm-23.27-7.98l19.82-8.23c-1.09-2.77-4.37-4.7-8.23-4.7-4.96 0-11.84 4.37-11.59 12.93z"/><path d="M35.29 41.19V32H67c.31 1.64.47 3.58.47 5.68 0 7.06-1.93 15.79-8.15 22.01-6.05 6.3-13.78 9.66-24.02 9.66C16.32 69.35.36 53.89.36 34.91.36 15.93 16.32.47 35.3.47c10.5 0 17.98 4.12 23.6 9.49l-6.64 6.64c-4.03-3.78-9.49-6.72-16.97-6.72-13.86 0-24.7 11.17-24.7 25.03 0 13.86 10.84 25.03 24.7 25.03 8.99 0 14.11-3.61 17.39-6.89 2.66-2.66 4.41-6.46 5.1-11.65l-22.49-.21z"/></svg>
+              {/* YouTube full wordmark */}
+              <img src="/youtube-logo.svg" alt="YouTube" className="h-[22px] md:h-[28px] shrink-0" style={{ filter: 'brightness(0) invert(1)' }} />
+              {/* Rocket Mortgage full wordmark */}
+              <img src="/rocket-logo.svg" alt="Rocket Mortgage" className="h-[20px] md:h-[24px] shrink-0" style={{ filter: 'brightness(0) invert(1)' }} />
+              {/* MSCI full wordmark */}
+              <img src="/msci-logo.svg" alt="MSCI" className="h-[24px] md:h-[30px] shrink-0" style={{ filter: 'brightness(0) invert(1)' }} />
             </div>
           </div>
-          
-          {/* Subtle scroll hint */}
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center opacity-30 animate-pulse pointer-events-none">
-            <div className="w-px h-10 bg-white/40"></div>
+
+          {/* Headshot */}
+          <div className="flex items-center justify-center md:justify-end pr-0 md:pr-4 lg:pr-8 -mt-2 md:mt-0 order-2 md:order-none">
+            <div
+              className="relative w-[min(300px,85vw)] md:w-[min(440px,40vw)] rounded-2xl overflow-hidden shrink-0"
+              style={{ aspectRatio: '4/5' }}
+            >
+              <img
+                src="/about-portrait.webp"
+                alt="Sam Bloch"
+                width={440}
+                height={550}
+                fetchPriority="high"
+                className="w-full h-full object-cover object-center grayscale"
+              />
+              {/* Top + bottom fades (always) */}
+              <div className="absolute inset-x-0 top-0 h-1/4 md:h-1/3 pointer-events-none" style={{ background: 'linear-gradient(to bottom, #121212 0%, transparent 100%)' }} />
+              <div className="absolute inset-x-0 bottom-0 h-1/3 md:h-1/2 pointer-events-none" style={{ background: 'linear-gradient(to top, #121212 0%, transparent 60%)' }} />
+              {/* Side fades — desktop only (mobile portrait is centered, no need) */}
+              <div className="absolute inset-y-0 left-0 w-1/4 pointer-events-none hidden md:block" style={{ background: 'linear-gradient(to right, #121212 0%, transparent 100%)' }} />
+              <div className="absolute inset-y-0 right-0 w-1/4 pointer-events-none hidden md:block" style={{ background: 'linear-gradient(to left, #121212 0%, transparent 100%)' }} />
+            </div>
           </div>
         </section>
 
-        {/* Focus Area Grid */}
-        <section className="px-6 md:px-12 max-w-7xl mx-auto mb-24 relative z-20">
+        {/* ════════════════════════════════════════
+            SECTION 2 — FEATURED WORK (#2)
+           ════════════════════════════════════════ */}
+        <section className="scroll-reveal px-6 md:px-12 max-w-7xl mx-auto mb-24 relative z-20">
           <div className="flex items-end justify-between mb-8 md:mb-10 border-b border-white/5 pb-6">
-            <div className="flex items-center gap-4">
-              <h2 className="text-lg md:text-xl font-black tracking-tighter uppercase">Focus Areas</h2>
-            </div>
+            <h2 className="text-lg md:text-xl font-black tracking-tighter uppercase">Selected Work</h2>
+            <button
+              onClick={() => navigate('/projects')}
+              className="text-[11px] font-bold uppercase tracking-widest text-[#24A2A7] hover:text-white transition-colors flex items-center gap-2"
+            >
+              See All
+              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+            </button>
           </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
+
+          <div className="scroll-reveal-stagger grid grid-cols-1 md:grid-cols-3 gap-4">
+            {featured.map((project, i) => (
+              <button
+                key={project.id}
+                onClick={() => navigate(`/projects/${project.id}`)}
+                className="group relative bg-[#1a1a1a]/40 border border-white/5 rounded-2xl overflow-hidden hover:bg-[#202020] transition-all duration-500 text-left"
+                style={{ transitionDelay: `${i * 100}ms` }}
+                aria-label={`View case study: ${project.title}`}
+              >
+                {project.image && (
+                  <div className="relative w-full aspect-[16/10] overflow-hidden">
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      width={640}
+                      height={400}
+                      loading="lazy"
+                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
+                      style={{ objectPosition: project.imagePosition ?? 'center' }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] via-transparent to-transparent opacity-60" />
+                    <span className="absolute top-3 left-3 text-[10px] font-mono text-[#24A2A7] font-bold uppercase tracking-widest px-3 py-1 bg-black/60 backdrop-blur-sm rounded-full">
+                      {project.category}
+                    </span>
+                  </div>
+                )}
+                <div className="p-5 md:p-6">
+                  <h3 className="text-lg font-black tracking-tight mb-2 group-hover:text-[#24A2A7] transition-colors leading-tight">{project.title}</h3>
+                  <p className="text-gray-400 text-sm leading-relaxed line-clamp-2 mb-4">{project.description}</p>
+                  <span className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#24A2A7] group-hover:gap-4 transition-all">
+                    View Case Study
+                    <svg className="w-3 h-3 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                  </span>
+                </div>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* ════════════════════════════════════════
+            SECTION 3 — FOCUS AREAS (inline expandable, #1 + #8)
+           ════════════════════════════════════════ */}
+        <section className="scroll-reveal px-6 md:px-12 max-w-7xl mx-auto mb-24 relative z-20">
+          <div className="flex items-end justify-between mb-8 md:mb-10 border-b border-white/5 pb-6">
+            <h2 className="text-lg md:text-xl font-black tracking-tighter uppercase">Focus Areas</h2>
+          </div>
+
+          <div className="space-y-3">
             {sections.map((id, index) => {
               const content = CONTENT_MAP[id];
+              const isOpen = expandedFocus === id;
+              const parsed = parseContent(content.description);
+
               return (
-                <button 
-                  key={id} 
-                  onClick={() => setSelectedContent(content)}
-                  className="group relative flex flex-col items-start p-8 md:p-10 bg-[#1a1a1a]/40 border border-white/5 hover:bg-[#202020] transition-all duration-300 text-left active:scale-[0.98]"
+                <div
+                  key={id}
+                  className={`rounded-2xl overflow-hidden transition-colors duration-500 border ${isOpen ? 'border-[#24A2A7]/20 bg-[#161616]' : 'border-white/5 hover:border-white/10 bg-transparent'}`}
                 >
-                  <span className="text-[9px] md:text-[10px] font-mono text-gray-600 mb-6 md:mb-8 group-hover:text-[#24A2A7] transition-colors">0{index + 1}</span>
-                  <h3 className="text-lg md:text-xl font-black uppercase tracking-tight text-white mb-2 leading-tight">
-                    {content.title}
-                  </h3>
-                  <div className="absolute top-0 left-0 w-0.5 h-0 bg-[#24A2A7] group-hover:h-full transition-all duration-500"></div>
-                </button>
+                  <button
+                    onClick={() => setExpandedFocus(isOpen ? null : id)}
+                    className="w-full flex items-center justify-between p-5 md:p-7 text-left group cursor-pointer"
+                    aria-expanded={isOpen}
+                  >
+                    <div className="flex items-center gap-4 md:gap-6">
+                      <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors duration-300 ${isOpen ? 'bg-[#24A2A7]/15' : 'bg-white/[0.04]'}`}>
+                        <span className={`text-[11px] font-mono font-bold transition-colors duration-300 ${isOpen ? 'text-[#24A2A7]' : 'text-gray-500 group-hover:text-[#24A2A7]'}`}>0{index + 1}</span>
+                      </div>
+                      <div>
+                        <h3 className="text-base md:text-lg font-black uppercase tracking-tight text-white leading-tight">{content.title}</h3>
+                        <p className="text-gray-500 text-[13px] mt-1 hidden md:block">{content.subtitle}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="hidden lg:flex gap-2 flex-wrap justify-end">
+                        {content.tags.map(tag => (
+                          <span key={tag} className="text-[10px] font-bold uppercase tracking-wider text-gray-500 border border-white/5 px-2.5 py-1 rounded-md">{tag}</span>
+                        ))}
+                      </div>
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${isOpen ? 'bg-[#24A2A7]/10 rotate-180' : 'bg-white/[0.03]'}`}>
+                        <ChevronDown className={`w-4 h-4 transition-colors duration-300 ${isOpen ? 'text-[#24A2A7]' : 'text-gray-500'}`} />
+                      </div>
+                    </div>
+                  </button>
+
+                  {/* Expandable content — always in DOM for SEO (#8) */}
+                  <div
+                    className="transition-all duration-600 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] overflow-hidden"
+                    style={{ maxHeight: isOpen ? '1200px' : '0px', opacity: isOpen ? 1 : 0 }}
+                  >
+                    <div className="px-5 md:px-7 pb-7 md:pb-9">
+                      {/* Divider */}
+                      <div className="h-px w-full bg-white/5 mb-6" />
+
+                      {/* Intro paragraph */}
+                      <p className="text-gray-400 text-[15px] md:text-base leading-[1.8] mb-8 max-w-4xl">
+                        {parsed.intro}
+                      </p>
+
+                      {/* Approach cards */}
+                      {parsed.bullets.length > 0 && (
+                        <div className="grid md:grid-cols-3 gap-3 mb-8">
+                          {parsed.bullets.map((b, i) => (
+                            <div key={i} className="bg-white/[0.025] border border-white/[0.06] rounded-xl p-5 md:p-6 space-y-3 hover:border-[#24A2A7]/15 transition-colors duration-300">
+                              <div className="flex items-center gap-3">
+                                <div className="w-7 h-7 rounded-lg bg-[#24A2A7]/10 flex items-center justify-center shrink-0">
+                                  <span className="text-[#24A2A7] text-[11px] font-black">{i + 1}</span>
+                                </div>
+                                <h4 className="text-white font-bold text-sm leading-tight">{b.title}</h4>
+                              </div>
+                              {b.desc && (
+                                <p className="text-gray-500 text-[13px] leading-[1.7]">{b.desc}</p>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Philosophy quote */}
+                      {parsed.quote && (
+                        <div className="border-l-2 border-[#24A2A7]/30 pl-5 py-1">
+                          <p className="text-gray-300/70 text-[14px] italic leading-relaxed">&ldquo;{parsed.quote}&rdquo;</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
               );
             })}
           </div>
         </section>
 
-        {/* Integrated About Section */}
-        <section className="px-6 md:px-12 max-w-7xl mx-auto mb-24 md:mb-32 relative z-20">
-          <div className="bg-[#1a1a1a]/40 border border-white/5 rounded-[2rem] p-8 md:p-16 lg:p-24 overflow-hidden relative">
-            <div className="absolute top-0 right-0 p-12 opacity-[0.03] pointer-events-none hidden md:block">
-              <svg width="400" height="400" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
-              </svg>
-            </div>
-
-            <div className="grid lg:grid-cols-2 gap-12 lg:gap-24 items-center">
+        {/* ════════════════════════════════════════
+            SECTION 4 — ABOUT (condensed)
+           ════════════════════════════════════════ */}
+        <section className="scroll-reveal px-6 md:px-12 max-w-5xl mx-auto mb-24 relative z-20">
+          <div className="bg-[#1a1a1a]/40 border border-white/5 rounded-[2rem] p-8 md:p-14 lg:p-20 overflow-hidden relative">
+            <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-10 lg:gap-16 items-center">
               <div>
-                <span className="text-[10px] font-black text-[#24A2A7] uppercase tracking-[0.5em] block mb-4">BEHIND THE SCREEN</span>
-                <h2 className="text-4xl md:text-5xl font-black tracking-tighter mb-4 leading-tight">
-                  ABOUT ME: <br />
-                  <span className="text-white/40">Innovation & Identity</span>
+                <h2 className="text-3xl md:text-4xl font-black tracking-tighter mb-6 leading-tight">
+                  About Me
                 </h2>
-                <div className="w-12 h-1.5 bg-[#24A2A7] mb-8 md:mb-0"></div>
-              </div>
-
-              <div className="space-y-8">
-                <p className="text-lg md:text-2xl text-gray-300 leading-relaxed font-medium">
-                  I’m a Michigan-born, California-based systems-thinker who lives for a good "unsolvable" problem. I spend my days at Google navigating the AI explosion and my evenings mentoring the next generation of leaders as a college educator. 
+                <p className="text-lg md:text-xl text-gray-300 leading-relaxed font-medium mb-4">
+                  Michigan-born, California-based. I spend my days at Google figuring out how to keep people safe online, and my evenings teaching the next generation of leaders at Quinnipiac.
                 </p>
-                <p className="text-gray-400 text-base md:text-lg leading-relaxed">
-                  When I'm not architecting human-centric systems, I'm playing guitar, surfing, 3D printing, or meticulously cataloging my life through <a href="https://www.concertarchives.org/sam-bloch" target="_blank" rel="noopener noreferrer" className="text-[#24A2A7] hover:underline decoration-2 underline-offset-4">music</a> and <a href="https://letterboxd.com/sam5927tde/" target="_blank" rel="noopener noreferrer" className="text-[#24A2A7] hover:underline decoration-2 underline-offset-4">film</a>.
+                <p className="text-gray-400 text-base leading-relaxed mb-8">
+                  Three degrees. Two grad programs (HCI + Leadership). One obsession: making systems work better for people.
                 </p>
-                <div className="pt-4">
-                  <button
-                    onClick={openAbout}
-                    className="group flex items-center gap-4 px-8 py-4 bg-white text-black font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:bg-[#24A2A7] hover:text-white transition-all shadow-xl active:scale-95"
-                  >
-                    Learn More
-                    <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Narrative Sections */}
-        <section className="px-6 md:px-12 max-w-5xl mx-auto space-y-16 md:space-y-20 relative z-20">
-          {/* Section 01 */}
-          <div className="grid md:grid-cols-2 gap-10 md:gap-20 items-start">
-            <div>
-              <span className="text-[9px] md:text-[10px] font-black text-[#24A2A7] uppercase tracking-[0.4em] block mb-4 md:mb-6">01 // THE PHILOSOPHY</span>
-              <h2 className="text-3xl md:text-5xl font-black tracking-tight leading-none mb-6 md:mb-8">Engineering Integrity at Global Scale.</h2>
-            </div>
-            <div className="text-gray-400 text-base md:text-xl leading-relaxed space-y-6 md:space-y-8">
-              <p>
-                In a digital landscape that evolves at the speed of light, Trust & Safety isn't just about rules; it's about building the immune system of the internet. I focus on creating frameworks that protect users without stifling innovation.
-              </p>
-              <p>
-                As a Program Manager at <span className="text-[#EA4335] font-semibold">YouTube</span>, I specialize in high-stakes operational protocols. My approach combines data-driven system building with a deep understanding of human behavior.
-              </p>
-            </div>
-          </div>
-
-          {/* Section 02 */}
-          <div className="grid md:grid-cols-2 gap-10 md:gap-20 items-start">
-            <div className="md:order-2">
-              <span className="text-[9px] md:text-[10px] font-black text-[#24A2A7] uppercase tracking-[0.4em] block mb-4 md:mb-6">02 // STRATEGIC IMPACT</span>
-              <h2 className="text-3xl md:text-5xl font-black tracking-tight leading-none mb-6 md:mb-8">AI Integration & Process Innovation.</h2>
-            </div>
-            <div className="text-gray-400 text-base md:text-xl leading-relaxed space-y-6 md:space-y-8 md:order-1">
-              <p>
-                Leveraging Large Language Models to transform operational bottlenecks into high-efficiency pipelines. My work focuses on the proactive application of AI to move safety "upstream."
-              </p>
-              <p>
-                By integrating GenAI into moderation workflows, we've seen significant reductions in latency while maintaining—and often exceeding—legacy integrity standards. It is about working smarter.
-              </p>
-            </div>
-          </div>
-
-          {/* Archive / CTA Section - LARGER BOTTOM PADDING FOR MOBILE VIEW */}
-          <div className="text-center pt-12 pb-48 md:pb-24 border-t border-white/5 mt-12">
-            <h3 className="text-5xl sm:text-6xl md:text-[8rem] font-black tracking-tighter mb-8 md:mb-12 uppercase leading-none opacity-10 md:opacity-20">The Archive.</h3>
-            <div className="flex flex-col sm:flex-row justify-center items-center gap-6 md:gap-8">
-              <button
-                onClick={() => navigate('/projects')}
-                className="w-full sm:w-auto px-10 py-5 bg-white text-black font-black uppercase tracking-widest rounded-full hover:bg-[#24A2A7] hover:text-white transition-all shadow-2xl active:scale-95 text-[10px]"
-              >
-                Projects & Artifacts
-              </button>
-
-              {/* MOBILE ACTION: GOES TO RESUME DOWNLOAD INSTEAD OF PAGE */}
-              {isDesktop ? (
                 <button
-                  onClick={() => navigate('/resume')}
-                  className="text-gray-500 font-bold uppercase tracking-widest text-[9px] hover:text-white transition-colors py-4"
+                  onClick={openAbout}
+                  className="group flex items-center gap-4 px-8 py-4 bg-transparent text-[#24A2A7] border-2 border-[#24A2A7] font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:bg-[#24A2A7] hover:text-[#121212] transition-all shadow-xl active:scale-95"
                 >
-                  View Full Resume
+                  Full Bio
+                  <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
                 </button>
-              ) : (
-                <a 
-                  href="/SBloch_Resume.pdf" 
-                  download="SBloch_Resume.pdf"
-                  className="text-gray-500 font-bold uppercase tracking-widest text-[9px] hover:text-white transition-colors py-4 flex items-center justify-center gap-2"
-                >
-                  Download Resume
-                </a>
-              )}
+              </div>
+
+              {/* Portrait */}
+              <div className="aspect-[4/5] rounded-[1.5rem] overflow-hidden border border-white/5 relative group">
+                <img
+                  src="/headshot.webp"
+                  alt="Sam Bloch"
+                  className="w-full h-full object-cover object-center grayscale group-hover:grayscale-0 transition-[filter] duration-700"
+                  decoding="async"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a]/50 via-transparent to-transparent" />
+              </div>
             </div>
           </div>
         </section>
-      </main>
 
+        {/* Bottom spacer for fixed footer clearance */}
+        <div className="h-20" />
+
+      </main>
     </div>
   );
 };

@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Locker System — Interactive Diagram</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0f1c;
+    color: #e0e0e0;
+    font-family: 'JetBrains Mono', monospace;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* ─── CRT Scanlines ─── */
+  .scanlines {
+    position: fixed; inset: 0; pointer-events: none; z-index: 100;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 2px,
+      rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px
+    );
+  }
+
+  /* ─── Grid Background ─── */
+  .grid-bg {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    opacity: 0.04;
+    background-image:
+      linear-gradient(rgba(36,162,167,0.4) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(36,162,167,0.4) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* ─── Main Layout ─── */
+  .container {
+    position: relative; z-index: 1;
+    max-width: 900px; margin: 0 auto;
+    padding: 24px 20px 40px;
+  }
+
+  .header {
+    text-align: center; margin-bottom: 32px;
+  }
+  .header h1 {
+    font-size: 16px; font-weight: 600; letter-spacing: 0.15em;
+    text-transform: uppercase; color: #24A2A7; margin-bottom: 6px;
+  }
+  .header p {
+    font-size: 11px; color: #666; letter-spacing: 0.1em;
+  }
+
+  /* ─── System Nodes ─── */
+  .system-row {
+    display: flex; gap: 12px; align-items: stretch;
+    margin-bottom: 20px; position: relative;
+  }
+  @media (max-width: 700px) {
+    .system-row { flex-direction: column; }
+  }
+
+  .node {
+    flex: 1; border: 1px solid rgba(36,162,167,0.2);
+    border-radius: 8px; padding: 20px;
+    background: rgba(36,162,167,0.03);
+    cursor: pointer; transition: all 0.4s ease;
+    position: relative; overflow: hidden;
+  }
+  .node:hover, .node.active {
+    border-color: rgba(36,162,167,0.5);
+    background: rgba(36,162,167,0.08);
+    box-shadow: 0 0 30px rgba(36,162,167,0.1), inset 0 0 30px rgba(36,162,167,0.03);
+  }
+  .node.active {
+    border-color: #24A2A7;
+  }
+
+  .node-num {
+    font-size: 10px; color: rgba(36,162,167,0.4); margin-bottom: 10px;
+  }
+  .node-icon {
+    font-size: 28px; margin-bottom: 8px;
+  }
+  .node-title {
+    font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 4px;
+  }
+  .node-tech {
+    font-size: 10px; color: rgba(36,162,167,0.6); margin-bottom: 8px;
+    letter-spacing: 0.05em;
+  }
+  .node-desc {
+    font-size: 11px; color: #777; line-height: 1.6;
+  }
+
+  /* ─── Expanded detail panel ─── */
+  .detail-panel {
+    border: 1px solid rgba(36,162,167,0.15);
+    border-radius: 8px; padding: 0;
+    background: rgba(10,15,28,0.95);
+    overflow: hidden;
+    max-height: 0; opacity: 0;
+    transition: max-height 0.5s ease, opacity 0.4s ease, margin 0.4s ease, padding 0.4s ease;
+    margin-bottom: 0;
+  }
+  .detail-panel.open {
+    max-height: 600px; opacity: 1;
+    margin-bottom: 20px; padding: 20px;
+  }
+
+  .detail-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 16px; padding-bottom: 12px;
+    border-bottom: 1px solid rgba(36,162,167,0.1);
+  }
+  .detail-header .icon { font-size: 24px; }
+  .detail-header h2 { font-size: 15px; font-weight: 700; color: #fff; }
+  .detail-header .tag {
+    font-size: 9px; padding: 2px 8px; border-radius: 4px;
+    background: rgba(36,162,167,0.15); color: #24A2A7;
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
+
+  .detail-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  @media (max-width: 500px) {
+    .detail-grid { grid-template-columns: 1fr; }
+  }
+
+  .detail-item {
+    padding: 12px; border-radius: 6px;
+    border: 1px solid rgba(36,162,167,0.08);
+    background: rgba(36,162,167,0.02);
+  }
+  .detail-item .label {
+    font-size: 9px; color: rgba(36,162,167,0.5);
+    text-transform: uppercase; letter-spacing: 0.12em;
+    margin-bottom: 4px;
+  }
+  .detail-item .value {
+    font-size: 12px; color: #ccc; line-height: 1.5;
+  }
+
+  /* ─── Flow Animation Canvas ─── */
+  .flow-section {
+    margin-top: 8px; text-align: center;
+  }
+
+  .flow-canvas-wrap {
+    position: relative;
+    border: 1px solid rgba(36,162,167,0.15);
+    border-radius: 8px; overflow: hidden;
+    background: rgba(36,162,167,0.02);
+    margin-bottom: 16px;
+  }
+  #flowCanvas {
+    display: block; width: 100%;
+  }
+
+  /* ─── Simulate Button ─── */
+  .sim-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 24px; border-radius: 6px;
+    border: 1px solid rgba(36,162,167,0.3);
+    background: rgba(36,162,167,0.08);
+    color: #24A2A7; font-family: inherit;
+    font-size: 12px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    cursor: pointer; transition: all 0.3s ease;
+  }
+  .sim-btn:hover {
+    background: rgba(36,162,167,0.15);
+    border-color: #24A2A7;
+    box-shadow: 0 0 20px rgba(36,162,167,0.2);
+  }
+  .sim-btn:disabled {
+    opacity: 0.4; cursor: not-allowed;
+  }
+  .sim-btn .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #24A2A7; animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* ─── Flow Status Log ─── */
+  .log {
+    text-align: left; padding: 12px 16px;
+    border: 1px solid rgba(36,162,167,0.1);
+    border-radius: 6px; background: rgba(0,0,0,0.3);
+    font-size: 11px; line-height: 1.8;
+    max-height: 180px; overflow-y: auto;
+    margin-top: 12px;
+  }
+  .log-line { opacity: 0; transition: opacity 0.3s; }
+  .log-line.visible { opacity: 1; }
+  .log-line .ts { color: rgba(36,162,167,0.4); }
+  .log-line .msg { color: #999; }
+  .log-line .ok { color: #24A2A7; }
+  .log-line .val { color: #7DD3D7; }
+
+  /* ─── Footer hint ─── */
+  .footer-hint {
+    text-align: center; font-size: 10px; color: #444;
+    margin-top: 16px; letter-spacing: 0.08em;
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="scanlines"></div>
+
+<div class="container">
+  <div class="header">
+    <h1>⬡ System Architecture</h1>
+    <p>Click a component to inspect &middot; Run simulation to see the flow</p>
+  </div>
+
+  <!-- System Nodes -->
+  <div class="system-row">
+    <div class="node" id="node-web" onclick="toggleNode('web')">
+      <div class="node-num">01</div>
+      <div class="node-icon">🌐</div>
+      <div class="node-title">Web Portal</div>
+      <div class="node-tech">PHP &middot; SQL &middot; Bootstrap</div>
+      <div class="node-desc">Employee-facing request portal with device catalog and PIN generation.</div>
+    </div>
+    <div class="node" id="node-api" onclick="toggleNode('api')">
+      <div class="node-num">02</div>
+      <div class="node-icon">⚡</div>
+      <div class="node-title">API & Server</div>
+      <div class="node-tech">Python &middot; REST</div>
+      <div class="node-desc">Inventory management, RFID validation, PIN generation, locker control.</div>
+    </div>
+    <div class="node" id="node-hw" onclick="toggleNode('hw')">
+      <div class="node-num">03</div>
+      <div class="node-icon">🔧</div>
+      <div class="node-title">Hardware Kiosk</div>
+      <div class="node-tech">Raspberry Pi &middot; RFID &middot; 3D Print</div>
+      <div class="node-desc">Physical kiosk with touchscreen, badge scanner, and locker mechanism.</div>
+    </div>
+  </div>
+
+  <!-- Detail Panels -->
+  <div class="detail-panel" id="detail-web">
+    <div class="detail-header">
+      <span class="icon">🌐</span>
+      <h2>Web Portal</h2>
+      <span class="tag">Layer 01</span>
+    </div>
+    <div class="detail-grid">
+      <div class="detail-item">
+        <div class="label">Frontend</div>
+        <div class="value">HTML5, CSS3, JavaScript, Bootstrap 4 responsive grid</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Backend</div>
+        <div class="value">PHP server-side rendering with MySQL/SQL database queries</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Key Feature</div>
+        <div class="value">Device catalog (laptops, mice, keyboards, headsets) with real-time availability</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Output</div>
+        <div class="value">Unique 4-digit PIN + locker assignment (floor, side, number)</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Built By</div>
+        <div class="value">Sam Bloch — full-stack development</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Auth</div>
+        <div class="value">Quicken Loans employee email tied to company RFID badge</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="detail-panel" id="detail-api">
+    <div class="detail-header">
+      <span class="icon">⚡</span>
+      <h2>API & Server</h2>
+      <span class="tag">Layer 02</span>
+    </div>
+    <div class="detail-grid">
+      <div class="detail-item">
+        <div class="label">Language</div>
+        <div class="value">Python — application logic and locker control scripts</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Interface</div>
+        <div class="value">REST API connecting web portal to physical hardware</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Functions</div>
+        <div class="value">Inventory mgmt, RFID validation, PIN generation, locker door control</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Security</div>
+        <div class="value">Dual-auth: RFID badge scan + unique per-request PIN code</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Built By</div>
+        <div class="value">Matthew Brown — Python application development</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Tracking</div>
+        <div class="value">Device checkout status, user history, return monitoring</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="detail-panel" id="detail-hw">
+    <div class="detail-header">
+      <span class="icon">🔧</span>
+      <h2>Hardware Kiosk</h2>
+      <span class="tag">Layer 03</span>
+    </div>
+    <div class="detail-grid">
+      <div class="detail-item">
+        <div class="label">Computer</div>
+        <div class="value">Raspberry Pi running Raspian OS — under $50 in hardware</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Display</div>
+        <div class="value">Touchscreen interface for PIN entry and status display</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Scanner</div>
+        <div class="value">RFID badge reader for Quicken Loans employee ID cards</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Enclosure</div>
+        <div class="value">Custom 3D-printed case — designed and printed by Sam</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Mechanism</div>
+        <div class="value">GPIO-controlled locker door release on successful auth</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Devices</div>
+        <div class="value">4 types: loaner laptops, mice, keyboards, headsets</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flow Simulation -->
+  <div class="flow-section">
+    <div class="flow-canvas-wrap">
+      <canvas id="flowCanvas" height="160"></canvas>
+    </div>
+
+    <button class="sim-btn" id="simBtn" onclick="runSimulation()">
+      <span class="dot"></span> Run Flow Simulation
+    </button>
+
+    <div class="log" id="log"></div>
+  </div>
+
+  <div class="footer-hint">
+    Interactive diagram &middot; Smart Locker System &middot; Quicken Loans 2019
+  </div>
+</div>
+
+<script>
+// ─── Node Toggle ───
+let activeNode = null;
+
+function toggleNode(id) {
+  const panels = document.querySelectorAll('.detail-panel');
+  const nodes = document.querySelectorAll('.node');
+
+  if (activeNode === id) {
+    // Close
+    panels.forEach(p => p.classList.remove('open'));
+    nodes.forEach(n => n.classList.remove('active'));
+    activeNode = null;
+    return;
+  }
+
+  panels.forEach(p => p.classList.remove('open'));
+  nodes.forEach(n => n.classList.remove('active'));
+
+  document.getElementById('detail-' + id).classList.add('open');
+  document.getElementById('node-' + id).classList.add('active');
+  activeNode = id;
+}
+
+// ─── Flow Canvas ───
+const canvas = document.getElementById('flowCanvas');
+const ctx = canvas.getContext('2d');
+let W, H;
+let particles = [];
+let simRunning = false;
+let simStep = 0;
+let simTimer = null;
+
+function resizeCanvas() {
+  const rect = canvas.parentElement.getBoundingClientRect();
+  W = rect.width;
+  H = 160;
+  canvas.width = W * window.devicePixelRatio;
+  canvas.height = H * window.devicePixelRatio;
+  canvas.style.height = H + 'px';
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  drawStatic();
+}
+
+const NODES = [
+  { label: '👤 Employee', x: 0.08 },
+  { label: '🌐 Web Portal', x: 0.28 },
+  { label: '⚡ API Server', x: 0.50 },
+  { label: '🔧 Kiosk', x: 0.72 },
+  { label: '📦 Locker', x: 0.92 },
+];
+
+function drawStatic() {
+  ctx.clearRect(0, 0, W, H);
+
+  const y = H / 2;
+
+  // Connection lines
+  ctx.strokeStyle = 'rgba(36,162,167,0.15)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
+  for (let i = 0; i < NODES.length - 1; i++) {
+    ctx.beginPath();
+    ctx.moveTo(NODES[i].x * W + 20, y);
+    ctx.lineTo(NODES[i + 1].x * W - 20, y);
+    ctx.stroke();
+  }
+  ctx.setLineDash([]);
+
+  // Nodes
+  NODES.forEach((n, i) => {
+    const nx = n.x * W;
+
+    // Circle
+    ctx.beginPath();
+    ctx.arc(nx, y, 22, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(36,162,167,0.06)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(36,162,167,0.3)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Icon
+    ctx.font = '16px serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(n.label.split(' ')[0], nx, y);
+
+    // Label below
+    ctx.font = '500 9px "JetBrains Mono", monospace';
+    ctx.fillStyle = '#666';
+    ctx.textBaseline = 'top';
+    ctx.fillText(n.label.split(' ').slice(1).join(' '), nx, y + 30);
+  });
+}
+
+function drawParticles() {
+  ctx.clearRect(0, 0, W, H);
+  drawStatic();
+
+  const y = H / 2;
+
+  particles = particles.filter(p => {
+    p.progress += p.speed;
+    if (p.progress > 1) return false;
+
+    const fromX = NODES[p.from].x * W;
+    const toX = NODES[p.to].x * W;
+    const px = fromX + (toX - fromX) * p.progress;
+
+    // Glow
+    const grad = ctx.createRadialGradient(px, y, 0, px, y, 12);
+    grad.addColorStop(0, 'rgba(36,162,167,0.6)');
+    grad.addColorStop(1, 'rgba(36,162,167,0)');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(px, y, 12, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Core dot
+    ctx.beginPath();
+    ctx.arc(px, y, 3, 0, Math.PI * 2);
+    ctx.fillStyle = '#24A2A7';
+    ctx.fill();
+
+    // Trail
+    ctx.strokeStyle = 'rgba(36,162,167,0.3)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    const trailStart = Math.max(0, p.progress - 0.15);
+    ctx.moveTo(fromX + (toX - fromX) * trailStart, y);
+    ctx.lineTo(px, y);
+    ctx.stroke();
+
+    return true;
+  });
+
+  if (particles.length > 0 || simRunning) {
+    requestAnimationFrame(drawParticles);
+  } else {
+    drawStatic();
+  }
+}
+
+// ─── Simulation ───
+const LOG_STEPS = [
+  { ts: '00:01', msg: 'Employee opens web portal in browser', type: 'msg' },
+  { ts: '00:02', msg: 'Browsing device catalog... selected: ', val: 'Loaner Laptop', type: 'val' },
+  { ts: '00:03', msg: 'Request submitted → POST /api/request', type: 'msg' },
+  { ts: '00:04', msg: 'API validates RFID badge: ', val: 'BADGE #4827', type: 'val' },
+  { ts: '00:05', msg: 'PIN generated: ', val: '9716', type: 'ok' },
+  { ts: '00:06', msg: 'Locker assigned → Floor 12, Monroe side, Locker ', val: '#2', type: 'val' },
+  { ts: '00:07', msg: 'Employee walks to kiosk...', type: 'msg' },
+  { ts: '00:08', msg: 'RFID badge scanned ', val: '✓', type: 'ok' },
+  { ts: '00:09', msg: 'PIN entered: 9716 ', val: '✓ MATCH', type: 'ok' },
+  { ts: '00:10', msg: 'LOCKER #2 DOOR OPENED ', val: '→ Device retrieved', type: 'ok' },
+  { ts: '00:11', msg: 'Status updated: Laptop checked out to BADGE #4827', type: 'msg' },
+  { ts: '─────', msg: 'FLOW COMPLETE ', val: '✓', type: 'ok' },
+];
+
+const PARTICLE_SCHEDULE = [
+  { delay: 0, from: 0, to: 1 },       // Employee → Web Portal
+  { delay: 1200, from: 1, to: 2 },     // Web → API
+  { delay: 2800, from: 2, to: 1 },     // API → Web (PIN response)
+  { delay: 4200, from: 0, to: 3 },     // Employee → Kiosk
+  { delay: 5500, from: 3, to: 2 },     // Kiosk → API (validate)
+  { delay: 6500, from: 2, to: 3 },     // API → Kiosk (unlock)
+  { delay: 7500, from: 3, to: 4 },     // Kiosk → Locker (open)
+];
+
+function runSimulation() {
+  if (simRunning) return;
+  simRunning = true;
+
+  const btn = document.getElementById('simBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="dot"></span> Simulating...';
+
+  const log = document.getElementById('log');
+  log.innerHTML = '';
+
+  particles = [];
+  requestAnimationFrame(drawParticles);
+
+  // Schedule particles
+  PARTICLE_SCHEDULE.forEach(p => {
+    setTimeout(() => {
+      particles.push({ from: p.from, to: p.to, progress: 0, speed: 0.015 });
+    }, p.delay);
+  });
+
+  // Schedule log entries
+  LOG_STEPS.forEach((step, i) => {
+    setTimeout(() => {
+      const line = document.createElement('div');
+      line.className = 'log-line';
+
+      let html = `<span class="ts">[${step.ts}]</span> `;
+      html += `<span class="msg">${step.msg}</span>`;
+      if (step.val) {
+        html += `<span class="${step.type === 'ok' ? 'ok' : 'val'}">${step.val}</span>`;
+      }
+
+      line.innerHTML = html;
+      log.appendChild(line);
+      log.scrollTop = log.scrollHeight;
+
+      requestAnimationFrame(() => line.classList.add('visible'));
+    }, i * 750);
+  });
+
+  // End simulation
+  setTimeout(() => {
+    simRunning = false;
+    btn.disabled = false;
+    btn.innerHTML = '<span class="dot"></span> Run Flow Simulation';
+  }, LOG_STEPS.length * 750 + 500);
+}
+
+// ─── Init ───
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+</script>
+</body>
+</html>

@@ -1,8 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { useOutletContext, useLocation } from 'react-router-dom';
 import Experience2D from './Experience2D';
-import Experience3D from './Experience3D';
 import { AppShellContext } from '../types';
+
+const Experience3D = lazy(() => import('./Experience3D'));
+
+const Experience3DLoadingFallback = () => (
+  <div className="fixed inset-0 bg-[#121212] flex flex-col items-center justify-center z-0">
+    <div className="text-center animate-pulse">
+      <span className="text-[10px] font-mono uppercase tracking-[0.8em] text-white/50 mb-4 block">Uplink established</span>
+      <h2 className="text-xl font-black uppercase tracking-[0.4em] text-white/40">Initializing Samulation...</h2>
+    </div>
+  </div>
+);
 
 const ExperienceDefault: React.FC = () => {
   const [is3D, setIs3D] = useState<boolean | null>(null);
@@ -21,10 +31,10 @@ const ExperienceDefault: React.FC = () => {
     setIs3D(!isMobile);
   }, [location.state]);
 
-  // Store last main view for back-navigation from subpages
+  // Store which experience mode is active for back-navigation from subpages
   useEffect(() => {
     if (is3D !== null) {
-      sessionStorage.setItem('lastMainView', is3D ? '/3d' : '/');
+      sessionStorage.setItem('experienceMode', is3D ? '3d' : '2d');
     }
   }, [is3D]);
 
@@ -40,10 +50,12 @@ const ExperienceDefault: React.FC = () => {
 
   return is3D ? (
     <div className="animate-in fade-in duration-1000 h-screen w-screen overflow-hidden">
-      <Experience3D
-        setSelectedContent={context.setSelectedContent}
-        openAbout={context.openAbout}
-      />
+      <Suspense fallback={<Experience3DLoadingFallback />}>
+        <Experience3D
+          setSelectedContent={context.setSelectedContent}
+          openAbout={context.openAbout}
+        />
+      </Suspense>
     </div>
   ) : (
     <div className="animate-in fade-in duration-1000">
