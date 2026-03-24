@@ -4,15 +4,37 @@ import { ArrowLeft, Download, Github, X } from 'lucide-react';
 import { COLORS } from '../constants';
 import InteractiveSitemap from './InteractiveSitemap';
 import { SITEMAP } from '../sitemap';
+import { usePageMeta } from '../utils/usePageMeta';
+import { getCaseStudyMeta } from '../data/routeMeta';
+
+const PROJECT_TITLES: Record<string, string> = {
+  'portfolio': 'My Portfolio Website',
+  'dcade': 'The D-Cade',
+  'level-up': 'Level Up',
+  'uc-calnat': 'UC California Climate Stewards',
+  'zoo-report': 'Augmented Reality Detroit Zoo App',
+  'fudge': 'Fudge',
+  'smart-lockers': 'Smart Lockers',
+  'yt-quality-global': 'YouTube Global Quality Framework',
+  'google-legal-ops': 'Legal Ops Workflow Automation',
+  'yt-sql-dashboards': 'Predictive SQL Performance Dashboards',
+  'cube-ux-lead': 'the CUBE Publishing UX',
+  'michigan-speech': 'Michigan Speech Coaches Platform',
+  'ai-safety-upstream': 'Upstream AI Safety Protocols',
+};
 
 const CalNatCaseStudy = lazy(() => import('./CalNatCaseStudy'));
 const PortfolioCaseStudyB = lazy(() => import('./PortfolioCaseStudy'));
 const DcadeCaseStudy = lazy(() => import('./DcadeCaseStudy'));
 const ZooReportCaseStudy = lazy(() => import('./ZooReportCaseStudy'));
 const SmartLockersCaseStudy = lazy(() => import('./SmartLockersCaseStudy'));
+const FudgeCaseStudy = lazy(() => import('./FudgeCaseStudy'));
+const LevelUpCaseStudy = lazy(() => import('./LevelUpCaseStudy'));
 const ProjectCaseStudy: React.FC = () => {
   const navigate = useNavigate();
   const { projectId } = useParams<{ projectId: string }>();
+  const title = projectId ? (PROJECT_TITLES[projectId] || projectId) : 'Project';
+  usePageMeta(getCaseStudyMeta(projectId || ''));
   const [enlargedImage, setEnlargedImage] = useState<{ src: string; alt: string } | null>(null);
 
   useEffect(() => {
@@ -54,17 +76,17 @@ const ProjectCaseStudy: React.FC = () => {
     }
   };
 
-  const isPortfolioCaseStudy = projectId === 'portfolio-v1';
   const isDcade = projectId === 'dcade';
   const isLevelUp = projectId === 'level-up';
   const isZooReport = projectId === 'zoo-report';
   const isCalNat = projectId === 'uc-calnat';
-  const isPortfolioB = projectId === 'portfolio-v2';
+  const isPortfolio = projectId === 'portfolio';
   const isSmartLockers = projectId === 'smart-lockers';
+  const isFudge = projectId === 'fudge';
 
-  // Immersive Design B case studies get their own components
-  if (isCalNat || isPortfolioB || isDcade || isZooReport || isSmartLockers) {
-    const Component = isCalNat ? CalNatCaseStudy : isDcade ? DcadeCaseStudy : isZooReport ? ZooReportCaseStudy : isSmartLockers ? SmartLockersCaseStudy : PortfolioCaseStudyB;
+  // Immersive case studies get their own components
+  if (isCalNat || isPortfolio || isDcade || isZooReport || isSmartLockers || isFudge || isLevelUp) {
+    const Component = isCalNat ? CalNatCaseStudy : isDcade ? DcadeCaseStudy : isZooReport ? ZooReportCaseStudy : isSmartLockers ? SmartLockersCaseStudy : isFudge ? FudgeCaseStudy : isLevelUp ? LevelUpCaseStudy : PortfolioCaseStudyB;
     return (
       <Suspense fallback={
         <div className="min-h-screen bg-black flex items-center justify-center">

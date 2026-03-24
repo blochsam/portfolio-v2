@@ -2,8 +2,11 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { COLORS } from '../constants';
 import { Download, ArrowLeft } from 'lucide-react';
+import { usePageMeta } from '../utils/usePageMeta';
+import { ROUTE_META } from '../data/routeMeta';
 
 const ResumePage: React.FC = () => {
+  usePageMeta(ROUTE_META['/resume']);
   const navigate = useNavigate();
 
   const handleBack = () => {
@@ -57,26 +60,26 @@ const ResumePage: React.FC = () => {
         <section className="mb-10">
           <h2 className="text-[11px] font-black uppercase tracking-[0.3em] text-[#24A2A7] border-b border-gray-100 mb-4 pb-1">Summary</h2>
           <p className="text-sm leading-relaxed text-gray-800">
-            Experienced Program Manager with a proven track record in Trust & Safety, driving operational excellence through user-centered design principles. Skilled in leading cross-functional teams, conducting in-depth research, and translating user insights into actionable strategies for process improvement, risk mitigation, and product development. Proficient in technical skills including SQL, data analysis, and project management methodologies.
+            Program Manager at YouTube/Google who ships production software. I run global Trust & Safety operations across 10 sites and 800+ moderators, and I use AI to build the tools I wish existed. Full-stack apps, custom platforms, automation systems. If there's a problem and no product to solve it, I make one.
           </p>
         </section>
 
         {/* Skills */}
         <section className="mb-10">
           <h2 className="text-[11px] font-black uppercase tracking-[0.3em] text-[#24A2A7] border-b border-gray-100 mb-4 pb-1">Skills</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-1 text-sm">
-            <ul className="list-disc list-inside space-y-1 text-gray-800">
-              <li>Program/Project Management</li>
-              <li>Trust & Safety</li>
-              <li>Risk Assessment & Mitigation</li>
-              <li>User Experience Research</li>
-            </ul>
-            <ul className="list-disc list-inside space-y-1 text-gray-800">
-              <li>Data Analysis (SQL)</li>
-              <li>Cross-functional Collaboration</li>
-              <li>Technical Skills: HTML, CSS, JavaScript, PHP</li>
-              <li>Software: Adobe Creative Suite, WordPress</li>
-            </ul>
+          <div className="space-y-3 text-sm text-gray-800">
+            <div>
+              <span className="font-semibold text-gray-900">Domains: </span>
+              Trust & Safety Operations · AI Safety & Innovation · Content Moderation at Scale · Vendor Program Management · UX Research · Curriculum Design
+            </div>
+            <div>
+              <span className="font-semibold text-gray-900">I Ship With: </span>
+              React · Next.js · TypeScript · Supabase · Prisma · Tailwind CSS · Node.js · SQL · Python · Vercel · Google Cloud
+            </div>
+            <div>
+              <span className="font-semibold text-gray-900">AI Toolkit: </span>
+              Claude · Gemini API · AI pair programming · Prompt engineering · AI safety protocols
+            </div>
           </div>
         </section>
 

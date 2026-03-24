@@ -3,7 +3,15 @@ import { useOutletContext, useLocation } from 'react-router-dom';
 import Experience2D from './Experience2D';
 import { AppShellContext } from '../types';
 
-const Experience3D = lazy(() => import('./Experience3D'));
+// Eagerly kick off the import on desktop so the 2MB chunk starts downloading
+// immediately instead of waiting for useEffect → setState → re-render.
+const experience3DImport = typeof window !== 'undefined' &&
+  !window.matchMedia('(pointer: coarse)').matches &&
+  window.innerWidth >= 768
+    ? import('./Experience3D')
+    : null;
+
+const Experience3D = lazy(() => experience3DImport || import('./Experience3D'));
 
 const Experience3DLoadingFallback = () => (
   <div className="fixed inset-0 bg-[#121212] flex flex-col items-center justify-center z-0">

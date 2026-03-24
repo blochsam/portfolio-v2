@@ -2,58 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, X } from 'lucide-react';
 import { COLORS } from '../constants';
-
-/* ─── Scroll reveal with staggered delays ─── */
-function useScrollReveal() {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const targets = el.querySelectorAll('[data-reveal]');
-    if (!targets.length) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('revealed');
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -60px 0px' }
-    );
-    targets.forEach((t) => observer.observe(t));
-    return () => observer.disconnect();
-  }, []);
-  return ref;
-}
-
-/* ─── Overline label ─── */
-const Overline: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <p data-reveal className="apple-reveal text-[13px] font-semibold uppercase tracking-[0.2em] text-[#24A2A7] mb-6">
-    {children}
-  </p>
-);
-
-/* ─── Image w/ lightbox ─── */
-const Img: React.FC<{
-  src: string;
-  alt: string;
-  caption?: string;
-  onOpen: (img: { src: string; alt: string }) => void;
-  className?: string;
-}> = ({ src, alt, caption, onOpen, className = '' }) => (
-  <button
-    type="button"
-    onClick={() => onOpen({ src, alt })}
-    className={`group block w-full text-left cursor-zoom-in ${className}`}
-  >
-    <div className="overflow-hidden rounded-2xl border border-white/[0.06] glow-border transition-all duration-700 group-hover:border-white/[0.12] group-hover:shadow-2xl group-hover:shadow-[#24A2A7]/5">
-      <img src={src} alt={alt} className="w-full h-auto transition-transform duration-700 group-hover:scale-[1.02]" loading="lazy" />
-    </div>
-    {caption && <p className="text-[12px] text-[#9a9a9f] mt-3 tracking-wide">{caption}</p>}
-  </button>
-);
+import { useScrollReveal, Overline, CaseStudyImage as Img } from './CaseStudyShared';
 
 /* ─── Full-bleed nature image section ─── */
 const NatureMoment: React.FC<{
@@ -432,8 +381,8 @@ const CalNatCaseStudy: React.FC = () => {
 
       {/* Lightbox */}
       {lightbox && (
-        <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-6 md:p-12 animate-in fade-in duration-300" onClick={() => setLightbox(null)} role="dialog" aria-label="Enlarged image">
-          <button onClick={() => setLightbox(null)} className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/20 transition-all z-[101]" aria-label="Close">
+        <div className="fixed inset-0 z-[200] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-6 md:p-12 animate-in fade-in duration-300" onClick={() => setLightbox(null)} role="dialog" aria-label="Enlarged image">
+          <button onClick={() => setLightbox(null)} className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/20 transition-all z-[201]" aria-label="Close">
             <X className="w-5 h-5" />
           </button>
           <img src={lightbox.src} alt={lightbox.alt} className="max-w-full max-h-[85vh] rounded-2xl object-contain" onClick={(e) => e.stopPropagation()} />
@@ -465,9 +414,11 @@ const CalNatCaseStudy: React.FC = () => {
         {/* Nature hero background with scale-on-scroll */}
         <img
           ref={heroImgRef}
-          src="https://images.unsplash.com/photo-1577940800897-c082cd6790f1?auto=format&fit=crop&w=1920&q=80"
+          src="/case-study/calnat-hero.webp"
           alt=""
           aria-hidden="true"
+          loading="eager"
+          fetchPriority="high"
           className="absolute inset-0 w-full h-full object-cover transition-none will-change-transform"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black pointer-events-none" />
@@ -476,21 +427,21 @@ const CalNatCaseStudy: React.FC = () => {
         <FloatingParticles count={6} />
 
         <div ref={heroTextRef} className="relative z-10 transition-opacity duration-100">
-          <p className="text-[13px] font-semibold uppercase tracking-[0.3em] text-[#24A2A7] mb-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+          <p className="text-[13px] font-semibold uppercase tracking-[0.3em] text-[#24A2A7] mb-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 fill-mode-both">
             Design Thinking &middot; Fall 2024
           </p>
-          <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-[7rem] font-bold leading-[0.9] tracking-tight mb-8 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-200" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.5), 0 4px 40px rgba(0,0,0,0.3)' }}>
+          <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-[7rem] font-bold leading-[0.9] tracking-tight mb-8 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-200 fill-mode-both" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.5), 0 4px 40px rgba(0,0,0,0.3)' }}>
             <span className="block text-white">UC California</span>
             <span className="block bg-gradient-to-r from-[#24A2A7] via-[#2BB8BD] to-[#7DD3D7] bg-clip-text text-transparent" style={{ textShadow: 'none', filter: 'drop-shadow(0 2px 12px rgba(36,162,167,0.3))' }}>
               Climate Stewards
             </span>
           </h1>
-          <p className="text-lg md:text-xl text-white/70 max-w-xl mx-auto leading-relaxed animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-500" style={{ textShadow: '0 1px 8px rgba(0,0,0,0.5)' }}>
+          <p className="text-lg md:text-xl text-white/70 max-w-xl mx-auto leading-relaxed animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-500 fill-mode-both" style={{ textShadow: '0 1px 8px rgba(0,0,0,0.5)' }}>
             Designing a way to keep 9,000+ environmental stewards connected after graduation.
           </p>
         </div>
 
-        <div className="absolute bottom-12 animate-in fade-in duration-1000 delay-1000">
+        <div className="absolute bottom-12 animate-in fade-in duration-1000 delay-1000 fill-mode-both">
           <div className="w-[1px] h-16 bg-gradient-to-b from-transparent via-[#24A2A7]/40 to-transparent mx-auto" />
         </div>
       </header>
@@ -532,7 +483,7 @@ const CalNatCaseStudy: React.FC = () => {
 
       {/* ── Nature moment: Redwood forest ── */}
       <NatureMoment
-        src="https://images.unsplash.com/photo-1752359309648-10a0b85c6688?auto=format&fit=crop&w=1920&q=80"
+        src="/case-study/calnat/nature-1.webp"
         alt="Towering redwood trees reaching toward the sky in a California forest"
       />
 
@@ -675,7 +626,7 @@ const CalNatCaseStudy: React.FC = () => {
 
       {/* ── Nature moment: Aerial forest canopy ── */}
       <NatureMoment
-        src="https://images.unsplash.com/photo-1508713714273-c20710bbfcfc?auto=format&fit=crop&w=1920&q=80"
+        src="/case-study/calnat/nature-2.webp"
         alt="Aerial view of a dense green forest canopy"
         className="h-[50vh]"
       />
@@ -993,7 +944,7 @@ const CalNatCaseStudy: React.FC = () => {
 
       {/* ── Nature moment: Giant sequoia ── */}
       <NatureMoment
-        src="https://images.unsplash.com/photo-1753514424689-699af0877cde?auto=format&fit=crop&w=1920&q=80"
+        src="/case-study/calnat/nature-3.webp"
         alt="A giant sequoia tree towering in Sequoia National Park, California"
         className="h-[70vh]"
       >
@@ -1174,7 +1125,7 @@ const CalNatCaseStudy: React.FC = () => {
 
       {/* ── Nature moment: Golden sunrise mountains ── */}
       <NatureMoment
-        src="https://images.unsplash.com/photo-1743309411498-a0f4f4b96b65?auto=format&fit=crop&w=1920&q=80"
+        src="/case-study/calnat/nature-4.webp"
         alt="Golden sunrise illuminating a foggy California mountain landscape"
         className="h-[50vh]"
       />

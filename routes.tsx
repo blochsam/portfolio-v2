@@ -3,6 +3,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import AppShell from './AppShell';
 import ExperienceDefault from './components/ExperienceDefault';
 import NotFound from './components/NotFound';
+import ErrorBoundary from './components/ErrorBoundary';
 
 /* Route-level code splitting — heavy pages load on demand */
 const Experience3DRoute = React.lazy(() => import('./components/Experience3DRoute'));
@@ -12,15 +13,17 @@ const ProjectCaseStudy = React.lazy(() => import('./components/ProjectCaseStudy'
 
 function LazyRoute({ children }: { children: React.ReactNode }) {
   return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen bg-[#121212] flex items-center justify-center">
-          <div className="w-6 h-6 border-2 border-[#24A2A7] border-t-transparent rounded-full animate-spin" />
-        </div>
-      }
-    >
-      {children}
-    </Suspense>
+    <ErrorBoundary>
+      <Suspense
+        fallback={
+          <div className="min-h-screen bg-[#121212] flex items-center justify-center">
+            <div className="w-6 h-6 border-2 border-[#24A2A7] border-t-transparent rounded-full animate-spin" />
+          </div>
+        }
+      >
+        {children}
+      </Suspense>
+    </ErrorBoundary>
   );
 }
 

@@ -1,9 +1,15 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { COLORS } from '../constants';
+import { usePageMeta } from '../utils/usePageMeta';
 
 const NotFound: React.FC = () => {
   const navigate = useNavigate();
+
+  usePageMeta({
+    title: '404 — Page Not Found | Sam Bloch',
+    description: 'This page doesn\'t exist. Head back to Sam Bloch\'s portfolio to explore projects, resume, and more.',
+  });
 
   return (
     <div className="fixed inset-0 bg-[#121212] flex flex-col items-center justify-center p-8 text-center">

@@ -1,11 +1,14 @@
 import React, { useEffect, Suspense, lazy } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { AppShellContext } from '../types';
+import { usePageMeta } from '../utils/usePageMeta';
+import { ROUTE_META } from '../data/routeMeta';
 
 const Experience3D = lazy(() => import('./Experience3D'));
 
 const Experience3DRoute: React.FC = () => {
   const context = useOutletContext<AppShellContext>();
+  usePageMeta(ROUTE_META['/3d']);
 
   useEffect(() => {
     sessionStorage.setItem('experienceMode', '3d');

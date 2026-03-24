@@ -6,6 +6,21 @@ import { CONTENT_MAP, COLORS, LOGO } from '../constants';
 import { PortfolioContent, SplineObjectId } from '../types';
 import { Menu, X } from 'lucide-react';
 
+interface SplineEvent {
+  target: {
+    uuid?: string;
+    id?: string;
+    name?: string;
+    parent?: SplineEvent['target'] | null;
+  };
+}
+
+interface SplineApp {
+  addEventListener: (event: string, cb: (e: SplineEvent) => void) => void;
+  emitEvent: (event: string, id: string) => void;
+  emitEventReverse: (event: string, id: string) => void;
+}
+
 interface Experience3DProps {
   setSelectedContent: (content: PortfolioContent | null) => void;
   openAbout: () => void;
@@ -17,7 +32,7 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showDeskHint, setShowDeskHint] = useState(true);
   const [hintFading, setHintFading] = useState(false);
-  const splineAppRef = useRef<any>(null);
+  const splineAppRef = useRef<SplineApp | null>(null);
   const hintTimeoutRef = useRef<number | null>(null);
   const lastHoverPosRef = useRef<{ x: number; y: number } | null>(null);
   const lastMousePosRef = useRef({ x: 0, y: 0 });
@@ -52,8 +67,8 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
     };
   }, []);
 
-  const findContentInHierarchy = useCallback((obj: any): PortfolioContent | null => {
-    let current = obj;
+  const findContentInHierarchy = useCallback((obj: SplineEvent['target']): PortfolioContent | null => {
+    let current: SplineEvent['target'] | null = obj;
     while (current) {
       const keysToTest = [current.uuid, current.id, current.name];
       for (const k of keysToTest) {
@@ -65,8 +80,8 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
     return null;
   }, []);
 
-  const findContentKeyInHierarchy = useCallback((obj: any): string | null => {
-    let current = obj;
+  const findContentKeyInHierarchy = useCallback((obj: SplineEvent['target']): string | null => {
+    let current: SplineEvent['target'] | null = obj;
     while (current) {
       const keysToTest = [current.uuid, current.id, current.name];
       for (const k of keysToTest) {
@@ -78,9 +93,9 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
     return null;
   }, []);
 
-  const onLoad = (splineApp: any) => {
+  const onLoad = (splineApp: SplineApp) => {
     splineAppRef.current = splineApp;
-    splineApp.addEventListener('mouseHover', (e: any) => {
+    splineApp.addEventListener('mouseHover', (e: SplineEvent) => {
       const key = findContentKeyInHierarchy(e.target);
       if (key) {
         hoverFrom3DRef.current = true;
@@ -91,7 +106,7 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
         if (splineWrapperRef.current) splineWrapperRef.current.style.cursor = '';
       }
     });
-    splineApp.addEventListener('mouseDown', (e: any) => {
+    splineApp.addEventListener('mouseDown', (e: SplineEvent) => {
       const content = findContentInHierarchy(e.target);
       
       if (!content) return;
@@ -105,8 +120,8 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
             html5: true
           });
           meow.play();
-        } catch (err) {
-          console.warn("Could not play meow sound", err);
+        } catch {
+          // Sound playback failed silently
         }
       }
 

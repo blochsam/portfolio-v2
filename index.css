@@ -260,6 +260,60 @@ a, button, [role="button"], input[type="submit"], input[type="button"], select, 
   outline-offset: 2px;
 }
 
+/* Falling rose petal animation (Fudge case study) */
+@keyframes fall-petal {
+  0% {
+    transform: translateY(-10vh) translateX(0) rotate(0deg) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: var(--petal-opacity, 0.7);
+  }
+  50% {
+    transform: translateY(45vh) translateX(var(--petal-drift, 30px)) rotate(180deg) scale(var(--petal-scale, 1));
+  }
+  90% {
+    opacity: var(--petal-opacity, 0.7);
+  }
+  100% {
+    transform: translateY(110vh) translateX(var(--petal-drift-end, -20px)) rotate(360deg) scale(var(--petal-scale, 1));
+    opacity: 0;
+  }
+}
+
+.falling-petal {
+  animation: fall-petal var(--petal-dur, 12s) ease-in-out infinite;
+  animation-delay: var(--petal-del, 0s);
+}
+
+/* Rose-tinted highlight reveal (Fudge) */
+.highlight-reveal-rose {
+  background: linear-gradient(120deg, rgba(196, 30, 99, 0.18) 0%, rgba(196, 30, 99, 0.18) 100%);
+  background-repeat: no-repeat;
+  background-size: 0% 40%;
+  background-position: 0 88%;
+  transition: background-size 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s;
+}
+
+.highlight-reveal-rose.revealed {
+  background-size: 100% 40%;
+}
+
+/* Rose-tinted glow border (Fudge) */
+.glow-border-rose {
+  transition: border-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+.glow-border-rose:hover {
+  border-color: rgba(196, 30, 99, 0.35) !important;
+  box-shadow: 0 0 20px rgba(196, 30, 99, 0.12), 0 0 40px rgba(196, 30, 99, 0.04);
+}
+
+/* Prevent flash on delayed entrance animations (tailwindcss-animate) */
+[class*="animate-in"] {
+  animation-fill-mode: both;
+}
+
 /* Respect user motion preferences */
 @media (prefers-reduced-motion: reduce) {
   *,

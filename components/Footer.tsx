@@ -40,12 +40,14 @@ const Footer: React.FC<FooterProps> = ({ className = "", isInline = false }) => 
         </a>
 
         <a
-          href="#"
-          className="hover:text-[#24A2A7] transition-all opacity-30 cursor-not-allowed flex items-center justify-center gap-2 min-w-[44px] min-h-[44px]"
+          href="https://github.com/blochsam"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-[#24A2A7] transition-all flex items-center justify-center gap-2 group min-w-[44px] min-h-[44px]"
           aria-label="GitHub"
-          onClick={(e) => e.preventDefault()}
         >
-          <span className="hidden lg:inline">GITHUB</span>
+          <Github className="w-4 h-4" strokeWidth={1.5} />
+          <span className="hidden lg:inline opacity-80 group-hover:opacity-100 transition-opacity">GITHUB</span>
         </a>
 
         <button

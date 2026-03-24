@@ -21,13 +21,12 @@ export const AudioPlayer: React.FC = () => {
       onload: () => {
         setLoadError(false);
       },
-      onloaderror: (id, error) => {
-        console.error("Howler Load Error:", error, "ID:", id);
+      onloaderror: (_id, _error) => {
         if (sound.state() === 'unloaded') {
           setLoadError(true);
         }
       },
-      onplayerror: (id, error) => {
+      onplayerror: () => {
         sound.once('unlock', () => {
           sound.play();
         });
@@ -102,7 +101,7 @@ export const AudioPlayer: React.FC = () => {
   if (loadError) {
     return (
       <div
-        className="fixed left-6 z-50 flex items-center gap-2 px-4 py-2 bg-red-900/20 border border-red-900/50 rounded-full backdrop-blur-md transition-[bottom] duration-300 ease-out"
+        className="fixed left-6 z-50 flex items-center gap-2 px-4 py-2 bg-red-900/20 border border-red-900/50 rounded-full backdrop-blur-md transition-[bottom] duration-300 ease-out pointer-events-auto"
         style={{ bottom: bottomOffset }}
       >
         <AlertCircle className="w-4 h-4 text-red-500" />
@@ -113,12 +112,12 @@ export const AudioPlayer: React.FC = () => {
 
   return (
     <div
-      className="fixed left-6 z-50 flex items-center transition-[bottom] duration-300 ease-out"
+      className="fixed left-6 z-50 flex items-center transition-[bottom] duration-300 ease-out pointer-events-none"
       style={{ bottom: bottomOffset }}
     >
       <button
         onClick={toggle}
-        className="p-3 rounded-full border-2 transition-all hover:scale-110 active:scale-90 group backdrop-blur-md relative"
+        className="p-3 rounded-full border-2 transition-all hover:scale-110 active:scale-90 group backdrop-blur-md relative pointer-events-auto"
         style={{
           borderColor: playing ? BRAND_COLORS.teal : '#333333',
           backgroundColor: playing ? `${BRAND_COLORS.teal}20` : 'rgba(0,0,0,0.4)'

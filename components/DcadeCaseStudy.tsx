@@ -3,31 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, X } from 'lucide-react';
 import { COLORS } from '../constants';
 import DcadeHeroAnimation from './DcadeHeroAnimation';
-
-/* ─── Scroll reveal (same pattern as CalNat) ─── */
-function useScrollReveal() {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const targets = el.querySelectorAll('[data-reveal]');
-    if (!targets.length) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('revealed');
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -60px 0px' }
-    );
-    targets.forEach((t) => observer.observe(t));
-    return () => observer.disconnect();
-  }, []);
-  return ref;
-}
+import { useScrollReveal, CountUp } from './CaseStudyShared';
 
 /* ─── Scroll progress bar ─── */
 const ScrollProgress: React.FC = () => {
@@ -57,14 +33,14 @@ const ScrollProgress: React.FC = () => {
   );
 };
 
-/* ─── Overline label ─── */
+/* ─── Overline label (arcade theme) ─── */
 const Overline: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <p data-reveal className="arcade-reveal text-[13px] font-semibold uppercase tracking-[0.2em] text-[#24A2A7] mb-6 font-mono">
     {children}
   </p>
 );
 
-/* ─── Image with lightbox ─── */
+/* ─── Image with lightbox (arcade theme) ─── */
 const Img: React.FC<{
   src: string;
   alt: string;
@@ -83,38 +59,6 @@ const Img: React.FC<{
     {caption && <p className="text-[12px] text-[#9a9a9f] mt-3 tracking-wide font-mono">{caption}</p>}
   </button>
 );
-
-/* ─── Animated count-up number ─── */
-const CountUp: React.FC<{ end: number; prefix?: string; suffix?: string; duration?: number }> = ({ end, prefix = '', suffix = '', duration = 2000 }) => {
-  const [count, setCount] = useState(0);
-  const ref = useRef<HTMLSpanElement>(null);
-  const started = useRef(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !started.current) {
-          started.current = true;
-          const t0 = performance.now();
-          const tick = (now: number) => {
-            const progress = Math.min((now - t0) / duration, 1);
-            const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
-            setCount(Math.floor(eased * end));
-            if (progress < 1) requestAnimationFrame(tick);
-          };
-          requestAnimationFrame(tick);
-        }
-      },
-      { threshold: 0.3 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [end, duration]);
-
-  return <span ref={ref}>{prefix}{count.toLocaleString()}{suffix}</span>;
-};
 
 /* ─── TiltCard (3D hover) ─── */
 const TiltCard: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => {
@@ -146,21 +90,25 @@ const TerminalText: React.FC<{ text: string; delay?: number; className?: string 
   const started = useRef(false);
 
   useEffect(() => {
+    let intervalId: ReturnType<typeof setInterval> | null = null;
     const timeout = setTimeout(() => {
       if (started.current) return;
       started.current = true;
       let i = 0;
-      const interval = setInterval(() => {
+      intervalId = setInterval(() => {
         i++;
         setDisplayed(text.slice(0, i));
         if (i >= text.length) {
-          clearInterval(interval);
+          clearInterval(intervalId!);
+          intervalId = null;
           setTimeout(() => setShowCursor(false), 2000);
         }
       }, 45);
-      return () => clearInterval(interval);
     }, delay);
-    return () => clearTimeout(timeout);
+    return () => {
+      clearTimeout(timeout);
+      if (intervalId) clearInterval(intervalId);
+    };
   }, [text, delay]);
 
   return (
@@ -308,7 +256,7 @@ const SpecCard: React.FC<{
     <div className="h-full rounded-xl border border-white/[0.06] bg-white/[0.02] p-6 glow-border transition-colors">
       <div className="text-3xl mb-4" style={{ filter: `drop-shadow(0 0 8px ${color}40)` }}>{icon}</div>
       <h4 className="text-base font-bold text-white mb-2 tracking-tight">{title}</h4>
-      <p className="text-[14px] text-[#9a9a9f] leading-relaxed">{description}</p>
+      <p className="text-[15px] text-[#9a9a9f] leading-relaxed">{description}</p>
     </div>
   </TiltCard>
 );
@@ -443,10 +391,10 @@ const DcadeCaseStudy: React.FC = () => {
 
       {/* ─── Lightbox ─── */}
       {lightbox && (
-        <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-6 md:p-12"
+        <div className="fixed inset-0 z-[200] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-6 md:p-12"
           onClick={() => setLightbox(null)} role="dialog" aria-label="Enlarged image">
           <button onClick={() => setLightbox(null)}
-            className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/20 transition-all z-[101]"
+            className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/20 transition-all z-[201]"
             aria-label="Close">
             <X className="w-5 h-5" />
           </button>
@@ -831,7 +779,7 @@ const DcadeCaseStudy: React.FC = () => {
           {/* Skills used */}
           <div className="mt-10 grid grid-cols-2 gap-x-8 gap-y-4 max-w-xl mx-auto">
             <div data-reveal className="arcade-reveal">
-              <h4 className="text-[11px] font-mono font-bold text-[#24A2A7] uppercase tracking-widest mb-3">Technical</h4>
+              <h4 className="text-[12px] font-mono font-bold text-[#24A2A7] uppercase tracking-widest mb-3">Technical</h4>
               <ul className="space-y-2 text-left">
                 {['Raspberry Pi / Linux', 'A/V Signal Routing', '3D Printing & CAD', 'Soldering & Wiring', 'SSH & Networking', 'RetroPie Configuration'].map((skill, i) => (
                   <li key={skill} data-reveal className="arcade-reveal text-[13px] text-[#9a9a9f] flex items-center gap-2" style={{ transitionDelay: `${i * 60}ms` }}>
@@ -842,7 +790,7 @@ const DcadeCaseStudy: React.FC = () => {
               </ul>
             </div>
             <div data-reveal className="arcade-reveal" style={{ transitionDelay: '100ms' }}>
-              <h4 className="text-[11px] font-mono font-bold text-[#FFB800] uppercase tracking-widest mb-3">Soft Skills</h4>
+              <h4 className="text-[12px] font-mono font-bold text-[#FFB800] uppercase tracking-widest mb-3">Soft Skills</h4>
               <ul className="space-y-2 text-left">
                 {['Self-Directed Learning', 'Project Scoping', 'User-Centered Design', 'Creative Problem Solving', 'Resourcefulness', 'Physical Prototyping'].map((skill, i) => (
                   <li key={skill} data-reveal className="arcade-reveal text-[13px] text-[#9a9a9f] flex items-center gap-2" style={{ transitionDelay: `${(i * 60) + 100}ms` }}>
@@ -879,7 +827,7 @@ const DcadeCaseStudy: React.FC = () => {
       </section>
 
       {/* ─── Footer ─── */}
-      <section className="pt-14 pb-24 text-center px-6 border-t border-white/[0.04]">
+      <section className="pt-14 pb-32 text-center px-6 border-t border-white/[0.04]">
         <p className="text-[13px] font-mono text-white/30 mb-6">A Raspberry Pi Arcade &middot; 2020</p>
         <button onClick={() => navigate('/projects')} className="inline-flex items-center gap-2 text-white font-medium text-sm hover:text-[#24A2A7] transition-colors duration-300">
           <ArrowLeft className="w-4 h-4" />

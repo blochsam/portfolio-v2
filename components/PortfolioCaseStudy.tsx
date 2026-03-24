@@ -4,29 +4,7 @@ import { ArrowLeft, Download, X } from 'lucide-react';
 import { COLORS } from '../constants';
 import InteractiveSitemap from './InteractiveSitemap';
 import { SITEMAP } from '../sitemap';
-
-/* ─── Scroll-triggered animations (unified: data-reveal / .revealed) ─── */
-function useAnimateOnScroll() {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const targets = el.querySelectorAll('[data-reveal]');
-    if (!targets.length) return;
-    const observer = new IntersectionObserver(
-      entries => entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('revealed');
-          observer.unobserve(entry.target);
-        }
-      }),
-      { threshold: 0.1, rootMargin: '0px 0px -60px 0px' }
-    );
-    targets.forEach(t => observer.observe(t));
-    return () => observer.disconnect();
-  }, []);
-  return ref;
-}
+import { useScrollReveal as useAnimateOnScroll, CaseStudyImage as Img } from './CaseStudyShared';
 
 /* ═══════════════════════════════════
    SUB-COMPONENTS
@@ -74,9 +52,19 @@ const BeforeAfterSlider: React.FC<{
       </div>
       <div
         ref={containerRef}
-        className="relative w-full aspect-[16/10] overflow-hidden rounded-2xl border border-white/[0.08] glow-border cursor-col-resize select-none"
+        tabIndex={0}
+        role="slider"
+        aria-label="Before and after comparison"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={Math.round(pos)}
+        className="relative w-full aspect-[16/10] overflow-hidden rounded-2xl border border-white/[0.08] glow-border cursor-col-resize select-none focus-visible:outline-2 focus-visible:outline-[#24A2A7] focus-visible:outline-offset-2"
         onMouseDown={e => { dragging.current = true; update(e.clientX); }}
         onTouchStart={e => { dragging.current = true; update(e.touches[0].clientX); }}
+        onKeyDown={e => {
+          if (e.key === 'ArrowLeft') { e.preventDefault(); setPos(p => Math.max(0, p - 2)); }
+          else if (e.key === 'ArrowRight') { e.preventDefault(); setPos(p => Math.min(100, p + 2)); }
+        }}
       >
         <img src={before} alt={beforeLabel} className="absolute inset-0 w-full h-full object-cover" draggable={false} />
         <div className="absolute inset-0" style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}>
@@ -156,7 +144,20 @@ const DragGallery: React.FC<{
 
   return (
     <div>
-      <div ref={trackRef} className="flex gap-6 overflow-x-auto scrollbar-thin pb-4 cursor-grab snap-x snap-mandatory" onMouseDown={down}>
+      <div
+        ref={trackRef}
+        className="flex gap-6 overflow-x-auto scrollbar-thin pb-4 cursor-grab snap-x snap-mandatory"
+        tabIndex={0}
+        role="region"
+        aria-label="Scrollable image gallery"
+        onMouseDown={down}
+        onKeyDown={e => {
+          const track = trackRef.current;
+          if (!track) return;
+          if (e.key === 'ArrowLeft') { e.preventDefault(); track.scrollBy({ left: -300, behavior: 'smooth' }); }
+          else if (e.key === 'ArrowRight') { e.preventDefault(); track.scrollBy({ left: 300, behavior: 'smooth' }); }
+        }}
+      >
         {images.map((img, i) => (
           <button key={i} type="button" className="shrink-0 w-[80vw] md:w-[45vw] lg:w-[34vw] snap-start group text-left" onClick={() => { if (!moved.current) onOpen(img); }}>
             <div className="relative overflow-hidden rounded-xl border border-white/[0.06] transition-all duration-500 group-hover:border-white/[0.15]">
@@ -234,21 +235,6 @@ const Ch: React.FC<{ num: string; title: string }> = ({ num, title }) => (
   </div>
 );
 
-/* Sharp image with lightbox trigger */
-const Img: React.FC<{
-  src: string; alt: string; caption?: string;
-  onOpen: (img: { src: string; alt: string }) => void;
-  className?: string;
-  loading?: 'lazy' | 'eager';
-}> = ({ src, alt, caption, onOpen, className = '', loading = 'lazy' }) => (
-  <button type="button" onClick={() => onOpen({ src, alt })} className={`group block w-full text-left cursor-zoom-in ${className}`}>
-    <div className="overflow-hidden rounded-xl border border-white/[0.06] glow-border transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-[#24A2A7]/8">
-      <img src={src} alt={alt} className="w-full h-auto transition-transform duration-500 group-hover:scale-[1.02]" loading={loading} />
-    </div>
-    {caption && <p className="text-[12px] font-mono text-[#9a9a9f] mt-3">{caption}</p>}
-  </button>
-);
-
 /* Expandable accordion section */
 const Expandable: React.FC<{ title: string; children: React.ReactNode; defaultOpen?: boolean }> = ({ title, children, defaultOpen = false }) => {
   const [open, setOpen] = useState(defaultOpen);
@@ -259,7 +245,7 @@ const Expandable: React.FC<{ title: string; children: React.ReactNode; defaultOp
         <span className={`text-white/40 text-2xl font-light transition-transform duration-300 shrink-0 ${open ? 'rotate-45' : ''}`}>+</span>
       </button>
       <div className={`overflow-hidden transition-all duration-500 ${open ? 'max-h-[500px] opacity-100 pb-6' : 'max-h-0 opacity-0'}`}>
-        <div className="text-[#9a9a9f] text-[15px] leading-[1.8]">{children}</div>
+        <div className="text-[#9a9a9f] text-[17px] leading-[1.8]">{children}</div>
       </div>
     </div>
   );
@@ -303,7 +289,7 @@ const PortfolioCaseStudy: React.FC = () => {
 
   const handleDownloadPDF = async () => {
     const { generateCaseStudyPdfHtml } = await import('../utils/generateCaseStudyPdf');
-    const html = generateCaseStudyPdfHtml('portfolio-v1', window.location.origin);
+    const html = generateCaseStudyPdfHtml('portfolio', window.location.origin);
     const blob = new Blob([html], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     const win = window.open(url, '_blank', 'width=900,height=700');
@@ -363,8 +349,8 @@ const PortfolioCaseStudy: React.FC = () => {
 
         {/* Lightbox */}
         {lightbox && (
-          <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-6 md:p-12 animate-in fade-in duration-300" onClick={() => setLightbox(null)} role="dialog" aria-label="Enlarged image">
-            <button onClick={() => setLightbox(null)} className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/20 transition-all z-[101]" aria-label="Close">
+          <div className="fixed inset-0 z-[200] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-6 md:p-12 animate-in fade-in duration-300" onClick={() => setLightbox(null)} role="dialog" aria-label="Enlarged image">
+            <button onClick={() => setLightbox(null)} className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/20 transition-all z-[201]" aria-label="Close">
               <X className="w-5 h-5" />
             </button>
             <img src={lightbox.src} alt={lightbox.alt} className="max-w-full max-h-[85vh] rounded-2xl object-contain" onClick={e => e.stopPropagation()} />
@@ -501,7 +487,7 @@ const PortfolioCaseStudy: React.FC = () => {
                 <span className="text-[32px] font-black leading-none shrink-0 text-[#24A2A7]/15 tracking-tight">{goal.num}</span>
                 <div>
                   <h3 className="text-lg font-bold text-white mb-2">{goal.title}</h3>
-                  <p className="text-[#9a9a9f] text-[15px] leading-relaxed">{goal.desc}</p>
+                  <p className="text-[#9a9a9f] text-[17px] leading-[1.8]">{goal.desc}</p>
                 </div>
               </div>
             ))}
@@ -601,7 +587,7 @@ const PortfolioCaseStudy: React.FC = () => {
                 </div>
                 <div className="p-8 pt-5">
                   <h3 className="text-2xl font-black tracking-tight text-white mb-3">2D Editorial</h3>
-                  <p className="text-[#9a9a9f] text-[15px] leading-relaxed">
+                  <p className="text-[#9a9a9f] text-[17px] leading-[1.8]">
                     The clean, scrollable version. Mobile visitors and lower-spec machines get this by default. Reads well, loads fast, doesn't ask your GPU for anything.
                   </p>
                 </div>
@@ -615,7 +601,7 @@ const PortfolioCaseStudy: React.FC = () => {
                 </div>
                 <div className="p-8 pt-5">
                   <h3 className="text-2xl font-black tracking-tight text-white mb-3">3D Workstation</h3>
-                  <p className="text-[#9a9a9f] text-[15px] leading-relaxed">
+                  <p className="text-[#9a9a9f] text-[17px] leading-[1.8]">
                     A Spline-powered room where you're at my desk. Orbit the camera, click objects — each one maps to a content theme. The guitar opens my About page.
                   </p>
                 </div>
@@ -625,7 +611,7 @@ const PortfolioCaseStudy: React.FC = () => {
             {/* Interactive Sitemap */}
             <div data-reveal className="dsb-fade-up">
               <p className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-white/25 mb-4">Site Architecture</p>
-              <p className="text-[#9a9a9f] text-[15px] leading-relaxed mb-5 max-w-2xl">
+              <p className="text-[#9a9a9f] text-[17px] leading-[1.8] mb-5 max-w-2xl">
                 Two entry points, shared navigation, one content source. Here's how it all connects.
               </p>
               <InteractiveSitemap data={SITEMAP} />
@@ -840,7 +826,7 @@ const PortfolioCaseStudy: React.FC = () => {
         </section>
 
         {/* ═══ CTA ═══ */}
-        <section className="py-14 px-6 md:px-12 text-center border-t border-white/[0.04]">
+        <section className="pt-14 pb-32 px-6 md:px-12 text-center border-t border-white/[0.04]">
           <p data-reveal className="dsb-fade-up text-white/25 text-[11px] font-mono uppercase tracking-[0.2em] mb-6">
             Built with React 19 &middot; TypeScript &middot; Tailwind v4 &middot; Spline &middot; Claude AI
           </p>

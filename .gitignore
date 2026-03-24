@@ -15,6 +15,10 @@ dist-ssr
 # Environment variables
 .env*
 
+# Loose content / asset staging
+content for smart lockers/
+level-up-stuff/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

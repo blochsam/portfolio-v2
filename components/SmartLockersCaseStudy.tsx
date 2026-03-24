@@ -1,31 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, X } from 'lucide-react';
-
-/* ─── Scroll-reveal hook (shared pattern) ─── */
-function useScrollReveal() {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const targets = el.querySelectorAll('[data-reveal]');
-    if (!targets.length) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('revealed');
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -60px 0px' }
-    );
-    targets.forEach((t) => observer.observe(t));
-    return () => observer.disconnect();
-  }, []);
-  return ref;
-}
+import { useScrollReveal, CountUp } from './CaseStudyShared';
 
 /* ─── Scroll progress bar ─── */
 const ScrollProgress: React.FC = () => {
@@ -98,7 +74,7 @@ const IndustrialMoment: React.FC<{
       className="absolute inset-0 industrial-parallax"
       style={{ backgroundImage: `url(${src})` }}
     />
-    <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c]/60 via-[#0a0f1c]/20 to-[#0a0f1c]/60" />
+    <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c]/90 via-[#0a0f1c]/75 to-[#0a0f1c]/90" />
     {children && (
       <div className="relative z-10 flex flex-col items-center justify-center h-full px-6 text-center">
         {children}
@@ -106,38 +82,6 @@ const IndustrialMoment: React.FC<{
     )}
   </div>
 );
-
-/* ─── Animated count-up ─── */
-const CountUp: React.FC<{ end: number; prefix?: string; suffix?: string; duration?: number }> = ({ end, prefix = '', suffix = '', duration = 2000 }) => {
-  const [count, setCount] = useState(0);
-  const ref = useRef<HTMLSpanElement>(null);
-  const started = useRef(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !started.current) {
-          started.current = true;
-          const t0 = performance.now();
-          const tick = (now: number) => {
-            const progress = Math.min((now - t0) / duration, 1);
-            const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
-            setCount(Math.floor(eased * end));
-            if (progress < 1) requestAnimationFrame(tick);
-          };
-          requestAnimationFrame(tick);
-        }
-      },
-      { threshold: 0.3 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [end, duration]);
-
-  return <span ref={ref}>{prefix}{count.toLocaleString()}{suffix}</span>;
-};
 
 /* ─── Process flow (blueprint style) ─── */
 const ProcessFlow: React.FC<{ steps: string[] }> = ({ steps }) => (
@@ -231,6 +175,15 @@ const SmartLockersCaseStudy: React.FC = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  const handleDownloadPDF = async () => {
+    const { generateCaseStudyPdfHtml } = await import('../utils/generateCaseStudyPdf');
+    const html = generateCaseStudyPdfHtml('smart-lockers', window.location.origin);
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const win = window.open(url, '_blank', 'width=900,height=700');
+    if (win) { win.onload = () => URL.revokeObjectURL(url); } else { URL.revokeObjectURL(url); }
+  };
+
   const openLightbox = (img: { src: string; alt: string }) => setLightbox(img);
 
   return (
@@ -295,7 +248,7 @@ const SmartLockersCaseStudy: React.FC = () => {
       {/* ─── Lightbox ─── */}
       {lightbox && (
         <div
-          className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-4"
+          className="fixed inset-0 z-[200] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-4"
           onClick={() => setLightbox(null)}
         >
           <button onClick={() => setLightbox(null)} className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition z-10">
@@ -319,13 +272,15 @@ const SmartLockersCaseStudy: React.FC = () => {
       </button>
 
       {/* ─── PDF Download FAB ─── */}
-      <button
-        onClick={() => {}}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-[#24A2A7] text-[#0a0f1c] flex items-center justify-center shadow-lg shadow-[#24A2A7]/20 hover:scale-110 active:scale-90 transition-transform"
-        aria-label="Download PDF"
-      >
-        <Download className="w-5 h-5" />
-      </button>
+      <div className="fixed bottom-32 md:bottom-24 right-6 z-[70] no-print">
+        <button
+          onClick={handleDownloadPDF}
+          className="w-16 h-16 rounded-full bg-[#24A2A7] text-[#0a0f1c] flex items-center justify-center shadow-2xl shadow-[#24A2A7]/20 hover:scale-110 active:scale-90 transition-all"
+          title="Download Case Study PDF"
+        >
+          <Download className="w-8 h-8" />
+        </button>
+      </div>
 
       {/* ══════════════════════════════════════════════════
           HERO
@@ -337,13 +292,14 @@ const SmartLockersCaseStudy: React.FC = () => {
           className="absolute inset-0 will-change-transform"
         >
           <img
-            src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1920&q=80"
+            src="/case-study/smart-lockers/tech-1.webp"
             alt="Server room"
             className="w-full h-full object-cover"
             loading="eager"
             fetchPriority="high"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c]/70 via-[#0a0f1c]/50 to-[#0a0f1c]" />
+          <div className="absolute inset-0 bg-[#0a0f1c]/75" />
+          <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at center, rgba(10,15,28,0.88) 0%, rgba(10,15,28,0.55) 70%, rgba(10,15,28,0.35) 100%)' }} />
         </div>
 
         {/* Hero content */}
@@ -351,11 +307,11 @@ const SmartLockersCaseStudy: React.FC = () => {
           <p data-reveal className="blueprint-reveal text-[13px] font-mono uppercase tracking-[0.25em] text-[#24A2A7] mb-6">
             Systems Engineering · Quicken Loans · 2019
           </p>
-          <h1 data-reveal className="blueprint-reveal text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[0.95] mb-6">
+          <h1 data-reveal className="blueprint-reveal text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[0.95] mb-6" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.8), 0 0 40px rgba(0,0,0,0.4)' }}>
             <span className="text-white">Smart</span>{' '}
             <span className="teal-gradient">Lockers</span>
           </h1>
-          <p data-reveal className="blueprint-reveal text-lg md:text-xl text-[#c5c5ca] max-w-2xl leading-relaxed font-light">
+          <p data-reveal className="blueprint-reveal text-lg md:text-xl text-[#c5c5ca] max-w-2xl leading-relaxed font-light" style={{ textShadow: '0 2px 16px rgba(0,0,0,0.7)' }}>
             A self-service tech distribution system—web portal, Raspberry Pi prototype, and 3D-printed hardware—built by two interns and presented to the SVP.
           </p>
         </div>
@@ -382,8 +338,8 @@ const SmartLockersCaseStudy: React.FC = () => {
       </section>
 
       {/* ─── Industrial moment 1 ─── */}
-      <IndustrialMoment src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=80">
-        <p className="text-2xl md:text-4xl font-bold text-white mb-4 font-mono" style={{ textShadow: '0 2px 16px rgba(0,0,0,0.6)' }}>
+      <IndustrialMoment src="/case-study/smart-lockers/tech-2.webp">
+        <p className="text-2xl md:text-4xl font-bold text-white mb-4 font-mono" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.8), 0 0 40px rgba(0,0,0,0.4)' }}>
           "Why wait for IT <em className="not-italic text-[#24A2A7]">when you can serve yourself?</em>"
         </p>
       </IndustrialMoment>
@@ -491,8 +447,8 @@ const SmartLockersCaseStudy: React.FC = () => {
       </section>
 
       {/* ─── Industrial moment 2 ─── */}
-      <IndustrialMoment src="https://images.unsplash.com/photo-1597852074816-d933c7d2b988?auto=format&fit=crop&w=1920&q=80">
-        <p className="text-xl md:text-2xl font-mono text-white/80" style={{ textShadow: '0 2px 16px rgba(0,0,0,0.6)' }}>
+      <IndustrialMoment src="/case-study/smart-lockers/locker-1.webp">
+        <p className="text-xl md:text-2xl font-mono text-white" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.8), 0 0 40px rgba(0,0,0,0.4)' }}>
           <span className="text-[#24A2A7]">[BUILD LOG]</span> From concept to working prototype in one summer.
         </p>
       </IndustrialMoment>
@@ -580,8 +536,8 @@ const SmartLockersCaseStudy: React.FC = () => {
       </section>
 
       {/* ─── Industrial moment 3 ─── */}
-      <IndustrialMoment src="https://images.unsplash.com/photo-1563770660941-20978e870e26?auto=format&fit=crop&w=1920&q=80" height="50vh">
-        <p className="text-xl md:text-2xl font-mono text-white/80" style={{ textShadow: '0 2px 16px rgba(0,0,0,0.6)' }}>
+      <IndustrialMoment src="/case-study/smart-lockers/locker-2.webp" height="50vh">
+        <p className="text-xl md:text-2xl font-mono text-white" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.8), 0 0 40px rgba(0,0,0,0.4)' }}>
           <span className="text-[#24A2A7]">[DEPLOY]</span> From proof-of-concept to physical prototype.
         </p>
       </IndustrialMoment>
@@ -646,8 +602,8 @@ const SmartLockersCaseStudy: React.FC = () => {
       </section>
 
       {/* ─── Industrial moment 4 ─── */}
-      <IndustrialMoment src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1920&q=80" height="50vh">
-        <p className="text-2xl md:text-4xl font-bold text-white mb-4" style={{ textShadow: '0 2px 16px rgba(0,0,0,0.6)' }}>
+      <IndustrialMoment src="/case-study/smart-lockers/office-1.webp" height="50vh">
+        <p className="text-2xl md:text-4xl font-bold text-white mb-4" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.8), 0 0 40px rgba(0,0,0,0.4)' }}>
           "Two interns. One summer. <em className="not-italic text-[#24A2A7]">An SVP meeting.</em>"
         </p>
       </IndustrialMoment>
@@ -702,8 +658,8 @@ const SmartLockersCaseStudy: React.FC = () => {
       </section>
 
       {/* ─── Industrial moment 5 ─── */}
-      <IndustrialMoment src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=1920&q=80" height="50vh">
-        <p className="text-xl md:text-2xl font-mono text-white/80" style={{ textShadow: '0 2px 16px rgba(0,0,0,0.6)' }}>
+      <IndustrialMoment src="/case-study/smart-lockers/tech-3.webp" height="50vh">
+        <p className="text-xl md:text-2xl font-mono text-white" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.8), 0 0 40px rgba(0,0,0,0.4)' }}>
           <span className="text-[#24A2A7]">[REFLECT]</span> What building real hardware taught me about building software.
         </p>
       </IndustrialMoment>
@@ -819,7 +775,7 @@ const SmartLockersCaseStudy: React.FC = () => {
       {/* ══════════════════════════════════════════════════
           FOOTER
           ══════════════════════════════════════════════════ */}
-      <footer className="relative z-10 text-center py-20 border-t border-[#24A2A7]/10">
+      <footer className="relative z-10 text-center pt-20 pb-32 border-t border-[#24A2A7]/10">
         <p className="text-[13px] text-[#9a9a9f] tracking-wide font-mono">
           Systems Engineering &middot; Quicken Loans &middot; 2019
         </p>
