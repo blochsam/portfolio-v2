@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense, lazy } from 'react';
+import React, { useState, useEffect, Suspense, lazy, Component } from 'react';
 import { useOutletContext, useLocation } from 'react-router-dom';
 import Experience2D from './Experience2D';
 import { AppShellContext } from '../types';
@@ -21,6 +21,36 @@ const Experience3DLoadingFallback = () => (
     </div>
   </div>
 );
+
+/**
+ * Catches WebGL/Spline crashes and falls back to the 2D experience
+ * instead of showing a raw error screen.
+ */
+interface WebGLErrorBoundaryProps {
+  children: React.ReactNode;
+  onFallback: () => void;
+}
+
+class WebGLErrorBoundary extends Component<WebGLErrorBoundaryProps, { hasError: boolean }> {
+  state = { hasError: false };
+
+  static getDerivedStateFromError(): { hasError: boolean } {
+    return { hasError: true };
+  }
+
+  componentDidUpdate(_prevProps: WebGLErrorBoundaryProps, prevState: { hasError: boolean }) {
+    if (this.state.hasError && !prevState.hasError) {
+      this.props.onFallback();
+    }
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return null; // Parent will render 2D instead
+    }
+    return this.props.children;
+  }
+}
 
 const ExperienceDefault: React.FC = () => {
   const [is3D, setIs3D] = useState<boolean | null>(null);
@@ -57,14 +87,16 @@ const ExperienceDefault: React.FC = () => {
   }
 
   return is3D ? (
-    <div className="animate-in fade-in duration-1000 h-screen w-screen overflow-hidden">
-      <Suspense fallback={<Experience3DLoadingFallback />}>
-        <Experience3D
-          setSelectedContent={context.setSelectedContent}
-          openAbout={context.openAbout}
-        />
-      </Suspense>
-    </div>
+    <WebGLErrorBoundary onFallback={() => setIs3D(false)}>
+      <div className="animate-in fade-in duration-1000 h-screen w-screen overflow-hidden">
+        <Suspense fallback={<Experience3DLoadingFallback />}>
+          <Experience3D
+            setSelectedContent={context.setSelectedContent}
+            openAbout={context.openAbout}
+          />
+        </Suspense>
+      </div>
+    </WebGLErrorBoundary>
   ) : (
     <div className="animate-in fade-in duration-1000">
       <Experience2D
