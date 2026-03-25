@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import AudioPlayer from './components/AudioPlayer';
 import Footer from './components/Footer';
 import Overlay from './components/Overlay';
-import AboutOverlay from './components/AboutOverlay';
 import { PortfolioContent, AppShellContext } from './types';
+
+/* #6 Lazy-load AboutOverlay — defers ~6 images until user opens it */
+const AboutOverlay = React.lazy(() => import('./components/AboutOverlay'));
 
 const AppShell: React.FC = () => {
   const [selectedContent, setSelectedContent] = useState<PortfolioContent | null>(null);
@@ -23,8 +25,14 @@ const AppShell: React.FC = () => {
   }, [location.pathname]);
 
   const isOverlayOpen = selectedContent !== null || isAboutOpen;
-  const isSubpage = location.pathname.startsWith('/resume') ||
-    location.pathname.startsWith('/projects');
+
+  // Lock body scroll when any overlay is open (prevents iOS Safari background scroll)
+  useEffect(() => {
+    document.body.style.overflow = isOverlayOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [isOverlayOpen]);
+
+  /* Footer is always fixed across all pages */
 
   const context: AppShellContext = {
     setSelectedContent,
@@ -33,17 +41,29 @@ const AppShell: React.FC = () => {
 
   return (
     <div className="relative w-full h-full bg-[#121212]">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200] focus:px-6 focus:py-3 focus:rounded-full focus:bg-[#24A2A7] focus:text-[#121212] focus:font-black focus:uppercase focus:text-[10px] focus:tracking-widest focus:shadow-xl"
+      >
+        Skip to content
+      </a>
       <AudioPlayer />
-      <Outlet context={context} />
+      <main id="main-content">
+        <Outlet context={context} />
+      </main>
       <Overlay
         content={selectedContent}
         onClose={() => setSelectedContent(null)}
       />
-      <AboutOverlay
-        isOpen={isAboutOpen}
-        onClose={() => setIsAboutOpen(false)}
-      />
-      {!isOverlayOpen && !isSubpage && <Footer />}
+      <Suspense fallback={null}>
+        <AboutOverlay
+          isOpen={isAboutOpen}
+          onClose={() => setIsAboutOpen(false)}
+        />
+      </Suspense>
+      {!isOverlayOpen && (
+        <Footer />
+      )}
     </div>
   );
 };

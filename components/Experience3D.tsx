@@ -6,6 +6,21 @@ import { CONTENT_MAP, COLORS, LOGO } from '../constants';
 import { PortfolioContent, SplineObjectId } from '../types';
 import { Menu, X } from 'lucide-react';
 
+interface SplineEvent {
+  target: {
+    uuid?: string;
+    id?: string;
+    name?: string;
+    parent?: SplineEvent['target'] | null;
+  };
+}
+
+interface SplineApp {
+  addEventListener: (event: string, cb: (e: SplineEvent) => void) => void;
+  emitEvent: (event: string, id: string) => void;
+  emitEventReverse: (event: string, id: string) => void;
+}
+
 interface Experience3DProps {
   setSelectedContent: (content: PortfolioContent | null) => void;
   openAbout: () => void;
@@ -17,15 +32,30 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showDeskHint, setShowDeskHint] = useState(true);
   const [hintFading, setHintFading] = useState(false);
-  const splineAppRef = useRef<any>(null);
+  const splineAppRef = useRef<SplineApp | null>(null);
   const hintTimeoutRef = useRef<number | null>(null);
   const lastHoverPosRef = useRef<{ x: number; y: number } | null>(null);
   const lastMousePosRef = useRef({ x: 0, y: 0 });
   const hoverFrom3DRef = useRef(false);
+  const splineWrapperRef = useRef<HTMLDivElement>(null);
 
   const menuItems = (Object.keys(CONTENT_MAP) as SplineObjectId[]).filter(
     (id) => id !== '1dfa5782-8ffc-47dc-9562-db86cba5ee72'
   );
+
+  // Close mobile menu on Escape + lock body scroll
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    document.body.style.overflow = 'hidden';
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsMobileMenuOpen(false);
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = '';
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isMobileMenuOpen]);
 
   // Samulation hint: show on first visit, fade after ~4 seconds
   useEffect(() => {
@@ -41,8 +71,8 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
     };
   }, []);
 
-  const findContentInHierarchy = useCallback((obj: any): PortfolioContent | null => {
-    let current = obj;
+  const findContentInHierarchy = useCallback((obj: SplineEvent['target']): PortfolioContent | null => {
+    let current: SplineEvent['target'] | null = obj;
     while (current) {
       const keysToTest = [current.uuid, current.id, current.name];
       for (const k of keysToTest) {
@@ -54,8 +84,8 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
     return null;
   }, []);
 
-  const findContentKeyInHierarchy = useCallback((obj: any): string | null => {
-    let current = obj;
+  const findContentKeyInHierarchy = useCallback((obj: SplineEvent['target']): string | null => {
+    let current: SplineEvent['target'] | null = obj;
     while (current) {
       const keysToTest = [current.uuid, current.id, current.name];
       for (const k of keysToTest) {
@@ -67,17 +97,20 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
     return null;
   }, []);
 
-  const onLoad = (splineApp: any) => {
+  const onLoad = (splineApp: SplineApp) => {
     splineAppRef.current = splineApp;
-    splineApp.addEventListener('mouseHover', (e: any) => {
+    splineApp.addEventListener('mouseHover', (e: SplineEvent) => {
       const key = findContentKeyInHierarchy(e.target);
       if (key) {
         hoverFrom3DRef.current = true;
         lastHoverPosRef.current = { x: lastMousePosRef.current.x, y: lastMousePosRef.current.y };
         setHoveredMenuId(key);
+        if (splineWrapperRef.current) splineWrapperRef.current.style.cursor = 'pointer';
+      } else {
+        if (splineWrapperRef.current) splineWrapperRef.current.style.cursor = '';
       }
     });
-    splineApp.addEventListener('mouseDown', (e: any) => {
+    splineApp.addEventListener('mouseDown', (e: SplineEvent) => {
       const content = findContentInHierarchy(e.target);
       
       if (!content) return;
@@ -91,8 +124,8 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
             html5: true
           });
           meow.play();
-        } catch (err) {
-          console.warn("Could not play meow sound", err);
+        } catch {
+          // Sound playback failed silently
         }
       }
 
@@ -110,8 +143,8 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
       {/* Background Loading State (Visible behind Spline) */}
       <div className="absolute inset-0 flex flex-col items-center justify-center z-0">
         <div className="text-center animate-pulse">
-          <span className="text-[10px] font-mono uppercase tracking-[0.8em] text-white/20 mb-4 block">Uplink established</span>
-          <h2 className="text-xl font-black uppercase tracking-[0.4em] text-white/10">Initializing Samulation...</h2>
+          <span className="text-[10px] font-mono uppercase tracking-[0.8em] text-white/50 mb-4 block">Uplink established</span>
+          <h2 className="text-xl font-black uppercase tracking-[0.4em] text-white/40">Initializing Samulation...</h2>
         </div>
       </div>
 
@@ -128,13 +161,16 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
                 setHoveredMenuId(null);
                 lastHoverPosRef.current = null;
                 hoverFrom3DRef.current = false;
+                if (splineWrapperRef.current) splineWrapperRef.current.style.cursor = '';
               }
             }
           }}
+          ref={splineWrapperRef}
           onMouseLeave={() => {
             setHoveredMenuId(null);
             lastHoverPosRef.current = null;
             hoverFrom3DRef.current = false;
+            if (splineWrapperRef.current) splineWrapperRef.current.style.cursor = '';
           }}
         >
           <Spline 
@@ -170,18 +206,35 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
         <div className="hidden md:flex flex-col gap-2">
           <button
             onClick={() => navigate('/', { state: { force2D: true } })}
-            className="group flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-all bg-black/40 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95"
+            className="group flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-[color,border-color,transform] bg-black/40 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95"
           >
             <svg className="w-4 h-4 group-hover:rotate-180 transition-transform duration-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
             </svg>
             Switch to Static Site
           </button>
+          <button
+            onClick={() => navigate('/projects')}
+            className="group flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-[color,border-color,transform] bg-black/40 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              {/* Folder body */}
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 19V9a2 2 0 012-2h4l2-2h6a2 2 0 012 2v0H3z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 19h16a2 2 0 002-2V9H3v10z" />
+              {/* Folder flap — rotates open on hover */}
+              <path
+                className="origin-bottom transition-transform duration-300 group-hover:-rotate-[20deg] group-hover:-translate-y-[1px]"
+                strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5}
+                d="M3 9h18a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2v2z"
+              />
+            </svg>
+            Projects
+          </button>
         </div>
       </div>
 
       {/* HUD: Top Right Menu (Desktop) */}
-      <div className="absolute top-10 right-10 z-20 hidden md:flex flex-nowrap justify-end items-center gap-6 lg:gap-10 max-w-[70vw] overflow-hidden">
+      <div className="absolute top-10 right-10 z-20 hidden md:flex flex-nowrap justify-end items-center gap-6 lg:gap-10 max-w-[70vw] overflow-visible">
         {menuItems.map(uuid => (
           <button 
             key={uuid}
@@ -201,29 +254,31 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
                 setSelectedContent(CONTENT_MAP[uuid]);
               }
             }}
-            className={`text-[10px] font-black uppercase tracking-[0.4em] transition-all duration-300 relative group py-2 whitespace-nowrap
-              ${hoveredMenuId === uuid ? 'text-[#24A2A7]' : 'text-gray-500 hover:text-white'}`}
+            className={`text-xs font-black uppercase tracking-[0.3em] transition-[color,transform] duration-300 relative group py-2 whitespace-nowrap
+              ${hoveredMenuId === uuid ? 'text-[#24A2A7] scale-110' : 'text-gray-400 hover:text-white'}`}
+            style={hoveredMenuId === uuid ? { textShadow: '0 0 12px rgba(36, 162, 167, 0.6)' } : undefined}
           >
             {CONTENT_MAP[uuid].title.split(' ')[0]}
-            <span className={`absolute -bottom-1 left-0 h-[2px] bg-[#24A2A7] transition-all duration-500 
-              ${hoveredMenuId === uuid ? 'w-full' : 'w-0'}`}>
+            <span className={`absolute -bottom-1 left-0 h-[2px] bg-[#24A2A7] transition-[width,box-shadow] duration-500
+              ${hoveredMenuId === uuid ? 'w-full shadow-[0_0_8px_rgba(36,162,167,0.5)]' : 'w-0'}`}>
             </span>
           </button>
         ))}
         {/* Responsive Resume item: remains in-line, hides if screen gets too small (below lg) */}
-        <button 
+        <button
           onMouseEnter={() => {
             hoverFrom3DRef.current = false;
             setHoveredMenuId('resume-btn');
           }}
           onMouseLeave={() => setHoveredMenuId(null)}
           onClick={() => navigate('/resume')}
-          className={`hidden lg:block text-[10px] font-black uppercase tracking-[0.4em] transition-all duration-300 relative group py-2 whitespace-nowrap
-            ${hoveredMenuId === 'resume-btn' ? 'text-[#24A2A7]' : 'text-gray-500 hover:text-white'}`}
+          className={`hidden lg:block text-xs font-black uppercase tracking-[0.3em] transition-[color,transform] duration-300 relative group py-2 whitespace-nowrap
+            ${hoveredMenuId === 'resume-btn' ? 'text-[#24A2A7] scale-110' : 'text-gray-400 hover:text-white'}`}
+          style={hoveredMenuId === 'resume-btn' ? { textShadow: '0 0 12px rgba(36, 162, 167, 0.6)' } : undefined}
         >
           Resume
-          <span className={`absolute -bottom-1 left-0 h-[2px] bg-[#24A2A7] transition-all duration-500 
-            ${hoveredMenuId === 'resume-btn' ? 'w-full' : 'w-0'}`}>
+          <span className={`absolute -bottom-1 left-0 h-[2px] bg-[#24A2A7] transition-[width,box-shadow] duration-500
+            ${hoveredMenuId === 'resume-btn' ? 'w-full shadow-[0_0_8px_rgba(36,162,167,0.5)]' : 'w-0'}`}>
           </span>
         </button>
       </div>
@@ -232,7 +287,7 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
       <div className="md:hidden absolute top-8 right-8 z-[110]">
         <button 
           onClick={() => setIsMobileMenuOpen(true)}
-          className="p-3 bg-black/40 backdrop-blur-md border border-white/5 rounded-full text-gray-400 hover:text-white transition-all shadow-xl"
+          className="p-3 bg-black/40 backdrop-blur-md border border-white/5 rounded-full text-gray-400 hover:text-white transition-colors shadow-xl"
           aria-label="Open Menu"
         >
           <Menu className="w-6 h-6" />
@@ -241,7 +296,7 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
 
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-[120] bg-[#121212] flex flex-col items-center justify-center p-8 animate-in fade-in duration-300">
+        <div className="fixed inset-0 z-[120] bg-[#121212] flex flex-col items-center justify-center p-8 animate-in fade-in duration-300" role="dialog" aria-modal="true" aria-label="Navigation menu">
           <button 
             onClick={() => setIsMobileMenuOpen(false)}
             className="absolute top-8 right-8 p-2 text-gray-400 hover:text-white transition-colors"

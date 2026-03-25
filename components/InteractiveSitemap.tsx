@@ -38,7 +38,7 @@ const SitemapNodeComponent: React.FC<{
     <div className="select-none">
       <button
         onClick={() => hasChildren && onToggle(node.id)}
-        className={`w-full flex items-center gap-3 py-2.5 px-4 rounded-xl text-left transition-all duration-200 group hover:bg-white/5 ${
+        className={`w-full flex items-center gap-3 py-2.5 px-4 rounded-xl text-left transition-[background-color] duration-200 group hover:bg-white/5 ${
           hasChildren ? 'cursor-pointer' : 'cursor-default'
         }`}
       >

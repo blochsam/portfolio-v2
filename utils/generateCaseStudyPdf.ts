@@ -10,7 +10,7 @@ const TEXT_MEDIUM = '#374151';
 const TEXT_MUTED = '#6b7280';
 
 export function generateCaseStudyPdfHtml(projectId: string, baseUrl: string): string {
-  if (projectId === 'portfolio-v1') {
+  if (projectId === 'portfolio') {
     return generatePortfolioCaseStudyPdf(baseUrl);
   }
   if (projectId === 'dcade') {
@@ -21,6 +21,15 @@ export function generateCaseStudyPdfHtml(projectId: string, baseUrl: string): st
   }
   if (projectId === 'zoo-report') {
     return generateZooReportCaseStudyPdf(baseUrl);
+  }
+  if (projectId === 'uc-calnat') {
+    return generateCalNatCaseStudyPdf(baseUrl);
+  }
+  if (projectId === 'smart-lockers') {
+    return generateSmartLockersCaseStudyPdf(baseUrl);
+  }
+  if (projectId === 'fudge') {
+    return generateFudgeCaseStudyPdf(baseUrl);
   }
   return generateUnderConstructionPdf(baseUrl);
 }
@@ -143,7 +152,7 @@ function generateZooReportCaseStudyPdf(baseUrl: string): string {
       <p class="subtitle">UX Research & Mobile Prototyping · Paper Prototypes, Figma Wireframes</p>
     </header>
 
-    <div class="img-block">${img('/case-study/zoo-report-mockup.png', 'Augmented Reality Detroit Zoo App — Explore, animal info, and Donate screens', 'App screens: Explore, Giraffe, Donate')}</div>
+    <div class="img-block">${img('/case-study/zoo-report-mockup.webp', 'Augmented Reality Detroit Zoo App — Explore, animal info, and Donate screens', 'App screens: Explore, Giraffe, Donate')}</div>
 
     <section>
       <p>The Augmented Reality Detroit Zoo App is a mobile app concept for the Detroit Zoo. Visitors can explore the park on a map, learn about animals with rich profiles and fun facts, engage with a social feed of visitor posts, and donate to support conservation. The project moved from research and paper prototyping to a clickable digital wireframe, with user testing at each stage.</p>
@@ -154,7 +163,7 @@ function generateZooReportCaseStudyPdf(baseUrl: string): string {
       <p>The goal was to design an experience that helps zoo visitors navigate exhibits, connect with animal stories, and take action through donations. Key flows include exploration (map and search), animal profiles (facts, habitat, social content), and a streamlined donation path—all with a consistent, accessible mobile UI and purple accent branding.</p>
     </section>
 
-    <div class="img-block">${img('/case-study/detroit-zoo-logo.png', 'Detroit Zoo Logo', 'Detroit Zoo')}</div>
+    <div class="img-block">${img('/case-study/detroit-zoo-logo.webp', 'Detroit Zoo Logo', 'Detroit Zoo')}</div>
 
     <section>
       <div class="section-label">PAPER PROTOTYPE DEMO</div>
@@ -266,16 +275,20 @@ function generateDcadeCaseStudyPdf(baseUrl: string): string {
   <div class="doc">
     <header class="header">
       <div class="logo"><span>SAM</span> <span>BLOCH</span></div>
-      <p class="meta">The D-Cade · 2020</p>
+      <p class="meta">A Raspberry Pi Arcade · 2020</p>
       <h1>The D-Cade</h1>
-      <p class="subtitle">Hardware Engineer, Carpenter & UI Customizer · Raspberry Pi, RetroPie, 3D Printing, A/V Signal Conversion</p>
+      <p class="subtitle">A busted Sega Dreamcast. A $35 computer. 200+ hours of soldering, printing, and coding.</p>
     </header>
 
     <section>
-      <p>A custom-built Sega Dreamcast cabinet—a relic of a previous era—sat broken and dormant. I gutted the failed internals and replaced them with a Raspberry Pi architecture, creating a refurbished, Linux-powered retro gaming hub with 35+ titles. The D-Cade now serves as primary entertainment for patients at a private medical practice.</p>
+      <p>A custom-built Sega Dreamcast cabinet sat broken and dormant. I gutted the failed internals and replaced them with a Raspberry Pi architecture, creating a refurbished, Linux-powered retro gaming hub with 35+ titles. The D-Cade now serves as primary entertainment for patients at a private medical practice in South Lyon, Michigan.</p>
+      <table>
+        <tr><th>35+ Retro Games</th><th>1 Raspberry Pi</th><th>200+ Build Hours</th></tr>
+        <tr><td>Curated ROM library</td><td>$35 core computer</td><td>Soldering, printing, coding</td></tr>
+      </table>
     </section>
 
-    <div class="img-block">${img('/case-study/d-cade-hero.png', 'The D-Cade cabinet', 'The D-Cade arcade cabinet')}</div>
+    <div class="img-block">${img('/case-study/d-cade-hero.webp', 'The D-Cade cabinet', 'The D-Cade arcade cabinet')}</div>
 
     <section>
       <div class="section-label">CONTEXT & CHALLENGE</div>
@@ -304,7 +317,7 @@ function generateDcadeCaseStudyPdf(baseUrl: string): string {
       <p><strong>Analog-to-Digital Audio Bridge:</strong> To preserve the "thump" of the original cabinet's vintage speakers, I routed the signal through a dedicated soundboard and soldering-iron-modified connections—resulting in high-fidelity audio that could cut through the noise of an a cappella house rehearsal.</p>
     </section>
 
-    <div class="img-block">${img('/case-study/d-cade-splash.png', 'Custom D-Cade splash screen', 'Custom D-Cade splash screen')}</div>
+    <div class="img-block">${img('/case-study/d-cade-splash.webp', 'Custom D-Cade splash screen', 'Custom D-Cade splash screen')}</div>
 
     <section>
       <div class="section-label">DESIGN DECISIONS: WHY "D-CADE"?</div>
@@ -323,7 +336,24 @@ function generateDcadeCaseStudyPdf(baseUrl: string): string {
 
     <section>
       <div class="section-label">OUTCOMES & LEGACY</div>
-      <p>The D-Cade transitioned from a personal project to public infrastructure. It served as the focal point for social gatherings at the D-House and proved robust enough to be donated—now the primary entertainment for patients in a doctor's office waiting room.</p>
+      <p>The D-Cade transitioned from a personal project to public infrastructure. It served as the focal point for social gatherings at the D-House for two years and proved robust enough to be donated—now the primary entertainment for patients in a doctor's office waiting room in South Lyon, Michigan.</p>
+    </section>
+
+    <section>
+      <div class="section-label">THE CREW</div>
+      <table>
+        <tr><th>Name</th><th>Role</th></tr>
+        <tr><td><strong>Sam</strong></td><td>Chief Architect — hardware, software, fabrication</td></tr>
+        <tr><td><strong>Alec "Milk"</strong></td><td>Gameplay Tester</td></tr>
+        <tr><td><strong>Logan</strong></td><td>Gameplay Tester</td></tr>
+        <tr><td><strong>Ethan</strong></td><td>Gameplay Tester</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <div class="section-label">SKILLS</div>
+      <p><strong>Technical:</strong> Raspberry Pi, RetroPie/Linux, 3D Printing (Tinkercad), Soldering & A/V Wiring, GPIO Configuration, ROM Management</p>
+      <p><strong>Soft:</strong> Self-directed learning, resourcefulness, problem-solving under constraint, documentation</p>
     </section>
   </div>
 
@@ -395,6 +425,11 @@ function generateLevelUpCaseStudyPdf(baseUrl: string): string {
     .img-caption { font-size: 0.65rem; color: ${TEXT_MUTED}; margin-top: 0.25rem; }
     ul { margin: 0.5rem 0 1rem 1.5rem; color: ${TEXT_DARK}; font-size: 0.9rem; }
     li { margin-bottom: 0.25rem; }
+    .stats { display: flex; gap: 1.5rem; margin: 1rem 0; flex-wrap: wrap; }
+    .stat { text-align: center; }
+    .stat-num { font-size: 1.5rem; font-weight: 700; color: ${TEAL}; }
+    .stat-label { font-size: 0.7rem; color: ${TEXT_MUTED}; }
+    blockquote { border-left: 3px solid ${TEAL}; padding-left: 1rem; margin: 1rem 0; font-style: italic; color: ${TEXT_MEDIUM}; font-size: 0.85rem; }
     .footer {
       position: fixed;
       bottom: 0;
@@ -416,57 +451,99 @@ function generateLevelUpCaseStudyPdf(baseUrl: string): string {
   <div class="doc">
     <header class="header">
       <div class="logo"><span>SAM</span> <span>BLOCH</span></div>
-      <p class="meta">Level Up · 2025</p>
+      <p class="meta">Course Design, Full-Stack Development & Instruction · 2023–2026</p>
       <h1>Level Up</h1>
-      <p class="subtitle">Course Designer, Full-Stack Developer & Adjunct Instructor · Next.js 14, PostgreSQL (Prisma), Gemini API, Google Cloud Run, Tailwind CSS</p>
+      <p class="subtitle">How a campus tour at Google turned into a custom-built LMS, a four-week intensive on career readiness, and my first time at the front of a classroom.</p>
     </header>
 
+    <div class="stats">
+      <div class="stat"><div class="stat-num">4</div><div class="stat-label">Students, 4 Weeks</div></div>
+      <div class="stat"><div class="stat-num">5</div><div class="stat-label">Google Panelists</div></div>
+      <div class="stat"><div class="stat-num">1</div><div class="stat-label">Custom LMS from Scratch</div></div>
+    </div>
+
+    ${img('/case-study/level-up/qu-google-tour-2023.webp', 'QU in LA students at Google campus, summer 2023', 'Summer 2023 — QU in LA students at Google&#39;s Spruce Goose hangar')}
+
     <section>
-      <p>As a Program Manager at Google and an adjunct instructor at Quinnipiac University, I saw a gap in how students transition from "academic theory" to "workplace impact." I designed Leveling Up—a 3-credit hybrid course for the Quinnipiac in LA program—to bridge this gap. Standard LMS platforms like Canvas or Blackboard are built for broad administration, not specialized pedagogy. I built Level Up, a custom production-ready Next.js application that powers the course's core activities, manages the student lifecycle, and uses generative AI for real-time feedback and grading assistance.</p>
+      <div class="section-label">THE SPARK</div>
+      <p>In the summer of 2023, Quinnipiac's "QU in LA" program brought a group of students to Los Angeles. I'd just finished my MS at Quinnipiac and volunteered to host them at Google's Playa Vista campus. I put together two panels, got Krista Phillip (a QU alum and Google product lead) to join, and toured them through the Spruce Goose hangar.</p>
+      <p>The students were sharp, full of questions I remembered asking myself not that long ago. But I kept noticing a gap: they were smart and motivated, but nobody had taught them the practical, strategic work of actually building a career.</p>
     </section>
 
-    <div class="img-block">${img('/case-study/level-up-dashboard.png', 'Level Up dashboard', 'Level Up dashboard')}</div>
+    <section>
+      <div class="section-label">THE PARTNERSHIP</div>
+      <p>Over the next year, I stayed in touch with Andres Rosende, the program coordinator at Quinnipiac's School of Communications. We kept circling back to the same problem: students were graduating with strong academic credentials but limited practical tools for actually landing a job.</p>
+      <p>What if I designed an entire course? Andres and the school gave me the green light. I would design the curriculum, build the platform, and teach it myself as an adjunct professor during the Spring 2026 QU in LA cohort.</p>
+    </section>
 
     <section>
-      <div class="section-label">THE COURSE: PEDAGOGICAL DESIGN</div>
-      <p>The 14-week curriculum is built around four thematic arcs: Digital Brand (1–4), The Network (5–8), Workplace Impact (9–11), and The Start (12–14).</p>
+      <div class="section-label">THE COURSE: FOUR WEEKS, FOUR MODULES</div>
+      <p>I built the course around two books: Meg Jay's <em>The Defining Decade</em> and Robert Cialdini's <em>Pre-Suasion</em>. Four weeks. Each module built on the last. Every part had readings, written reflections, and assignments that forced students to actually do the thing, not just learn about it.</p>
       <table>
-        <tr><th>Arc</th><th>Weeks</th><th>Key Deliverable</th></tr>
-        <tr><td><strong>Digital Brand</strong></td><td>1–4</td><td>Narrative-driven LinkedIn bio & Identity Capital audit.</td></tr>
-        <tr><td><strong>The Network</strong></td><td>5–8</td><td>30-minute Coffee Chat & "Unthought Known" reflection.</td></tr>
-        <tr><td><strong>Workplace Impact</strong></td><td>9–11</td><td>Efficiency Project at Google Playa Vista.</td></tr>
-        <tr><td><strong>The Start</strong></td><td>12–14</td><td>Personal Action Plan & AI-driven STAR method practice.</td></tr>
+        <tr><th>Module</th><th>Week</th><th>Key Activities</th></tr>
+        <tr><td><strong>Building Your Brand</strong></td><td>1</td><td>LinkedIn bio, identity capital audit, professional headshot, resume update. Posted to discussion board for peer review.</td></tr>
+        <tr><td><strong>Building Your Network</strong></td><td>2</td><td>Weak ties, coffee chat openers, 3 real LinkedIn outreach messages, a 30-minute networking meeting, handwritten thank-you letter.</td></tr>
+        <tr><td><strong>Building Your Impact</strong></td><td>3</td><td>Head-up vs. head-down work, pre-suasion, 12-minute efficiency presentation at Google with live feedback from five engineers.</td></tr>
+        <tr><td><strong>Building Your Start</strong></td><td>4</td><td>AI-driven interview practice (STAR method), creative application strategies, comprehensive Personal Action Plan.</td></tr>
+      </table>
+      <p>The final deliverable was a Personal Action Plan: top 10 target companies, springboard job listings with overqualification justifications, a professional bio, 5 STAR interview stories, a cover letter template, references, and an accountability reflection.</p>
+    </section>
+
+    ${img('/case-study/level-up-dashboard.webp', 'Level Up LMS dashboard', 'The student dashboard — assignments, deadlines, and course materials in one view')}
+
+    <section>
+      <div class="section-label">THE PLATFORM</div>
+      <p>I could have used Canvas or Blackboard. But those platforms are built for broad university administration, not for a four-student intensive with AI-driven interview practice and automated assignment analysis. So I built <strong>levelupqu.com</strong> — a production Next.js application running on Cloud Run, storing data in PostgreSQL via Prisma, and integrating Gemini for real-time AI features.</p>
+      <p><strong>AI Interview Practice:</strong> Students paste a real job posting, and the system generates behavioral questions. They respond out loud using the Web Speech API, and Gemini evaluates their answers for STAR method structure.</p>
+      <p><strong>AI-Assisted Grading:</strong> When a student uploads a reflection PDF, Gemini analyzes it against the assignment rubric. I still read everything myself, but the AI gives me a content summary and suggested feedback points.</p>
+      <p><strong>LevelUpBot:</strong> A course-aware chatbot for logistics ("When is the residency?" or "What's the PAP due date?"). Engineered the system prompt to refuse anything academic — it won't summarize readings or interpret course concepts.</p>
+    </section>
+
+    ${img('/case-study/level-up-interview.webp', 'AI Interview Practice interface', 'AI Interview Practice — voice-to-text with real-time STAR method feedback')}
+
+    <section>
+      <div class="section-label">THE CLASSROOM</div>
+      <p>February 4, 2026. Four students. In my welcome email, I told them straight: "To be totally candid: this is my first time teaching, and I couldn't have asked for a better inaugural cohort." We met Wednesday evenings at 6:30. By week two, they were sending real LinkedIn messages to professionals they'd never met. By week three, they were practicing pre-suasion techniques and building a pitch presentation.</p>
+    </section>
+
+    <section>
+      <div class="section-label">THE RESIDENCY: FEBRUARY 27 AT GOOGLE</div>
+      <p>Google's Playa Vista campus. 8:30 AM to 5 PM. A full-day residency I'd been building toward since the first class session. I recruited five Google colleagues to run three panel blocks: early career insights, leadership perspectives, and a judging panel where the students would pitch their capstone project and get live feedback on their logic, ROI math, and presentation skills.</p>
+      <p>The students presented "Stop Sleeping Your Day Away" — a process improvement pitch for an app called Sheep Counter. They came in with real data: 56% of people hit snooze, their group loses about 2 hours every morning getting ready. They built a working prototype, scaled their ROI math to Google's 187,000 employees, and calculated over a million minutes of productivity gains.</p>
+    </section>
+
+    <section>
+      <div class="section-label">IN THEIR WORDS</div>
+      <blockquote>"No shade to anyone, but we took a class at Quinnipiac that was meant to give us similar tools, but this class was handled much more effectively." — Post-residency survey</blockquote>
+      <blockquote>"It's crazy to think this course was only four weeks long, and yet, I feel like I've learned an entire semester's worth of important knowledge and skills." — Post-residency survey</blockquote>
+      <blockquote>"It is probably the most I've felt like an 'adult' in my life and showed me things I didn't know I was capable of." — On the Google residency</blockquote>
+      <blockquote>"I have never felt more prepared to begin building my career in the way I have always desired." — Personal Action Plan</blockquote>
+    </section>
+
+    <section>
+      <div class="section-label">ENGINEERING CHALLENGES</div>
+      <p><strong>Timezone Integrity:</strong> Due dates stored as "11:59 PM" kept mismatching between the server (UTC) and students' local time in LA. Fixed by standardizing the database on UTC and building a React bridge that converts datetime-local values to ISO on submission and re-localizes them for the student view.</p>
+      <p><strong>Syllabus-to-Context Pipeline:</strong> The chatbot needed to stay current as I tweaked the course week-to-week. Built a "Context Notebook" architecture where the bot's system prompt gets dynamically injected with the latest data from the Module, Assignment, and Material tables in PostgreSQL.</p>
+    </section>
+
+    <section>
+      <div class="section-label">TECH STACK</div>
+      <table>
+        <tr><th>Technology</th><th>Role</th></tr>
+        <tr><td><strong>Next.js 14</strong></td><td>Full-stack framework (App Router)</td></tr>
+        <tr><td><strong>PostgreSQL + Prisma</strong></td><td>Database and ORM</td></tr>
+        <tr><td><strong>Gemini API</strong></td><td>Interview practice, grading assistance, chatbot</td></tr>
+        <tr><td><strong>Google Cloud Run</strong></td><td>Containerized deployment</td></tr>
+        <tr><td><strong>Tailwind CSS</strong></td><td>UI styling</td></tr>
+        <tr><td><strong>NextAuth.js</strong></td><td>Authentication (@quinnipiac.edu allowlist)</td></tr>
+        <tr><td><strong>Web Speech API</strong></td><td>Voice-to-text for interview practice</td></tr>
       </table>
     </section>
 
     <section>
-      <div class="section-label">THE PLATFORM: SYSTEMS & ARCHITECTURE</div>
-      <p><strong>AI-Driven Interview Practice:</strong> Students paste job postings; Gemini 2.5 Flash generates behavioral questions. Web Speech API for voice-to-text. AI evaluates STAR method structure.</p>
-      <p><strong>AI-Assisted Grading:</strong> PDF submissions trigger automated analysis against assignment rubrics. Instructor receives content summary and suggested feedback.</p>
-      <p><strong>LevelUpBot:</strong> Course-aware chatbot with strict system prompt for academic integrity—refuses to summarize readings or interpret content.</p>
-    </section>
-
-    <div class="img-block">${img('/case-study/level-up-interview.png', 'AI Interview Practice', 'AI Interview Practice')}</div>
-
-    <section>
-      <div class="section-label">ENGINEERING CHALLENGES</div>
-      <p><strong>Timezone Integrity:</strong> Standardized database on UTC; React bridge converts datetime-local to ISO and re-localizes for student view.</p>
-      <p><strong>Syllabus-to-Context Pipeline:</strong> Context Notebook architecture—bot's system prompt dynamically injected with Module, Assignment, and Material data from PostgreSQL.</p>
-    </section>
-
-    <section>
-      <div class="section-label">DEVELOPMENT JOURNEY</div>
-      <ul>
-        <li><strong>Modeling:</strong> Prisma schema for Users (allowlist), Assignments, Submissions.</li>
-        <li><strong>Deployment:</strong> Google Cloud Build + Cloud Run.</li>
-        <li><strong>UI/UX:</strong> Tailwind CSS, "professional-noir" dashboard-first design.</li>
-        <li><strong>Security:</strong> NextAuth.js with @quinnipiac.edu allowlist.</li>
-      </ul>
-    </section>
-
-    <section>
-      <div class="section-label">OUTCOMES</div>
-      <p>Students present capstone projects at Google Playa Vista. Custom build reduced administrative overhead by 30%. The thesis: a well-scoped custom solution is superior to a generic one when pedagogy is specialized.</p>
+      <div class="section-label">LOOKING BACK</div>
+      <p>I posted about the experience on LinkedIn. One of the Google volunteers commented: "Rewarding experience to interact with brilliant peers and students."</p>
+      <p>This project sits at the intersection of everything I care about: building software that solves real problems, teaching people things that matter, and doing it all while holding down the day job. The LMS is production code. The curriculum is mine. The students are real people with real careers ahead of them.</p>
     </section>
   </div>
 
@@ -565,12 +642,16 @@ function generatePortfolioCaseStudyPdf(baseUrl: string): string {
     <header class="header">
       <div class="logo"><span>SAM</span> <span>BLOCH</span></div>
       <p class="meta">Portfolio Redesign · 2025</p>
-      <h1>Personal Portfolio Redesign</h1>
-      <p class="subtitle">UX Architect & Full-Stack Strategist · React, Spline, Gemini API</p>
+      <h1>The Samulation</h1>
+      <p class="subtitle">A dual-view portfolio — 2D editorial site and interactive 3D workstation, one React codebase</p>
     </header>
 
     <section>
-      <p>I redesigned my portfolio from a static, text-heavy site into a dual-view experience that demonstrates systems thinking, technical capability, and inclusive design. The result—the Samulation—serves an accessible 2D editorial experience by default and an immersive 3D workstation for capable devices, with consistent navigation and content across both.</p>
+      <p>I rebuilt my portfolio from scratch as a dual-view experience — a 2D editorial site and an interactive 3D workstation, running from one React codebase. The 2D side reads like a magazine. The 3D side lets you explore my desk, click objects, and discover content spatially.</p>
+      <table>
+        <tr><th>2 Parallel Experiences</th><th>5+ Case Studies</th><th>6 Interactive Objects</th><th>Zero Templates</th></tr>
+        <tr><td>2D editorial + 3D workstation</td><td>Immersive, scroll-driven</td><td>Guitar, monitors, desk</td><td>Built from scratch</td></tr>
+      </table>
     </section>
 
     <section>
@@ -583,7 +664,7 @@ function generatePortfolioCaseStudyPdf(baseUrl: string): string {
         <tr><td><strong>Integrate 3D design</strong></td><td>Use Spline and meshy.ai for spatial experience</td></tr>
         <tr><td><strong>Ship something that proves the thesis</strong></td><td>A portfolio that demonstrates the skills it describes</td></tr>
       </table>
-      <div class="img-grid">${img('/case-study/before-home.png', 'Before: Home', 'Previous portfolio home')}${img('/case-study/before-about.png', 'Before: About', 'Previous portfolio about')}</div>
+      <div class="img-grid">${img('/case-study/before-home.webp', 'Before: Home', 'Previous portfolio home')}${img('/case-study/before-about.webp', 'Before: About', 'Previous portfolio about')}</div>
     </section>
 
     <section>
@@ -607,17 +688,17 @@ function generatePortfolioCaseStudyPdf(baseUrl: string): string {
         <tr><td><strong>Editorial minimalism</strong></td><td>Let content breathe. Scannable hierarchy.</td></tr>
         <tr><td><strong>Human integrity</strong></td><td>SamBot—AI companion powered by Gemini—converses in my voice.</td></tr>
       </table>
-      <div class="img-block full">${img('/case-study/wireframe.png', 'Wireframe', 'Structure before build')}</div>
+      <div class="img-block full">${img('/case-study/wireframe.webp', 'Wireframe', 'Structure before build')}</div>
     </section>
 
     <section>
       <div class="section-label">SOLUTION OVERVIEW</div>
       <p><strong>The Samulation</strong> is a dual-layered portfolio: 2D editorial (accessible, default for mobile) and 3D workstation (Spline-powered, clickable objects). A toggle lets visitors switch at any time.</p>
-      <div class="img-block full">${img('/case-study/3d-scene.png', '3D workstation', 'The Samulation')}</div>
+      <div class="img-block full">${img('/case-study/3d-scene.webp', '3D workstation', 'The Samulation')}</div>
       <div class="section-label" style="margin-top: 1rem;">PROCESS: SPLINE · MESHY.AI · REACT</div>
-      <div class="img-grid img-grid-3">${img('/case-study/spline-workflow.png', 'Spline', 'Building Sam\'s Desk')}${img('/case-study/meshy-workflow.png', 'Meshy.ai', '3D asset generation')}${img('/case-study/code-screenshot.png', 'Code', 'index.html')}</div>
+      <div class="img-grid img-grid-3">${img('/case-study/spline-workflow.webp', 'Spline', 'Building Sam\'s Desk')}${img('/case-study/meshy-workflow.webp', 'Meshy.ai', '3D asset generation')}${img('/case-study/code-screenshot.webp', 'Code', 'index.html')}</div>
       <div class="section-label" style="margin-top: 1.5rem;">THE RESULT: LIVE SITE</div>
-      <div class="img-grid">${img('/case-study/hero-desktop.png', 'Hero', 'New site')}${img('/case-study/resume-page.png', 'Resume', 'New site')}</div>
+      <div class="img-grid">${img('/case-study/hero-desktop.webp', 'Hero', 'New site')}${img('/case-study/resume-page.webp', 'Resume', 'New site')}</div>
     </section>
 
     <section>
@@ -660,6 +741,594 @@ function generatePortfolioCaseStudyPdf(baseUrl: string): string {
         if (img.complete) checkDone();
         else img.onload = img.onerror = checkDone;
       });
+      if (imgs.length === 0) setTimeout(function(){ window.print(); }, 500);
+    })();
+  </script>
+</body>
+</html>`;
+}
+
+function generateCalNatCaseStudyPdf(baseUrl: string): string {
+  const origin = baseUrl.replace(/\/$/, '');
+  const img = (path: string, alt: string, caption: string) =>
+    `<div class="img-block"><img src="${origin}${path}" alt="${alt}"><p class="img-caption">${caption}</p></div>`;
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>UC California Climate Stewards — Sam Bloch</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #ffffff;
+      color: ${TEXT_DARK};
+      line-height: 1.6;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .doc { max-width: 700px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+    .header { border-bottom: 2px solid ${TEAL}; padding-bottom: 1rem; margin-bottom: 2rem; }
+    .logo span:first-child { color: ${TEXT_DARK}; font-weight: 800; font-size: 1.75rem; letter-spacing: -1px; }
+    .logo span:last-child { color: ${TEAL}; font-weight: 800; font-size: 1.75rem; letter-spacing: -1px; }
+    .meta { color: ${TEAL}; font-size: 0.75rem; margin-top: 0.5rem; }
+    h1 { font-size: 1.5rem; font-weight: 700; margin: 1rem 0 0.5rem; color: ${TEXT_DARK}; }
+    .subtitle { color: ${TEXT_MUTED}; font-size: 0.9rem; }
+    section { margin-bottom: 2rem; page-break-inside: avoid; }
+    .section-label { color: ${TEAL}; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+    p { color: ${TEXT_DARK}; font-size: 0.9rem; margin-bottom: 1rem; }
+    .stats { display: flex; gap: 1.5rem; margin: 1rem 0; flex-wrap: wrap; }
+    .stat { text-align: center; }
+    .stat-num { font-size: 1.5rem; font-weight: 700; color: ${TEAL}; }
+    .stat-label { font-size: 0.7rem; color: ${TEXT_MUTED}; }
+    .img-block img { width: 100%; height: auto; border: 1px solid #e5e7eb; border-radius: 0.5rem; }
+    .img-caption { font-size: 0.65rem; color: ${TEXT_MUTED}; margin-top: 0.25rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.85rem; }
+    th, td { border: 1px solid #e5e7eb; padding: 0.6rem 0.8rem; text-align: left; }
+    th { background: #f3f4f6; color: ${TEXT_DARK}; font-weight: 600; }
+    td { color: ${TEXT_DARK}; }
+    td strong { color: ${TEAL}; }
+    ul { margin: 0.5rem 0 1rem 1.5rem; color: ${TEXT_DARK}; font-size: 0.9rem; }
+    li { margin-bottom: 0.25rem; }
+    .deliverables { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin: 1rem 0; }
+    .deliverable { border: 1px solid #e5e7eb; border-radius: 0.5rem; padding: 0.75rem; }
+    .deliverable strong { font-size: 0.8rem; display: block; margin-bottom: 0.25rem; }
+    .deliverable span { font-size: 0.75rem; color: ${TEXT_MUTED}; }
+    .role-item { margin-bottom: 0.75rem; }
+    .role-title { font-size: 0.8rem; font-weight: 600; color: ${TEAL}; }
+    .role-desc { font-size: 0.8rem; color: ${TEXT_MEDIUM}; }
+    .timeline-item { display: flex; gap: 1rem; margin-bottom: 0.5rem; border-bottom: 1px solid #f3f4f6; padding-bottom: 0.5rem; }
+    .timeline-date { font-size: 0.75rem; font-weight: 600; color: ${TEAL}; width: 60px; flex-shrink: 0; }
+    .timeline-event { font-size: 0.8rem; color: ${TEXT_MEDIUM}; }
+    .footer {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      padding: 0.75rem 1.5rem;
+      border-top: 1px solid #e5e7eb;
+      display: flex; justify-content: space-between;
+      font-size: 0.7rem; color: ${TEXT_MUTED}; background: #ffffff;
+    }
+    .footer a { color: ${TEAL}; text-decoration: none; }
+    @media print { .doc { padding-bottom: 3rem; } }
+  </style>
+</head>
+<body>
+  <div class="doc">
+    <header class="header">
+      <div class="logo"><span>SAM</span> <span>BLOCH</span></div>
+      <p class="meta">Design Thinking · Fall 2024</p>
+      <h1>UC California Climate Stewards</h1>
+      <p class="subtitle">Community Platform Design · Stakeholder Research · Prototyping</p>
+    </header>
+
+    <section>
+      <p>As a certified Climate Steward, I sourced and led a four-month Design Thinking engagement to build a community platform for UC Environmental Stewards — a program with 9,000+ alumni across 58 California counties and zero post-graduation connective tissue. Our five-person team ran stakeholder interviews, analyzed survey data from 1,302 alumni, and delivered two functioning prototypes alongside a comprehensive implementation guide.</p>
+    </section>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-num">9,000+</div><div class="stat-label">Certified Alumni</div></div>
+      <div class="stat"><div class="stat-num">240K+</div><div class="stat-label">Volunteer Hours</div></div>
+      <div class="stat"><div class="stat-num">58</div><div class="stat-label">Counties Served</div></div>
+      <div class="stat"><div class="stat-num">$6M+</div><div class="stat-label">Impact Value</div></div>
+    </div>
+
+    <section>
+      <div class="section-label">CONTEXT</div>
+      <p>UC Environmental Stewards runs two certification courses (California Naturalist and Climate Stewards) through UC Agriculture & Natural Resources. The program has been running for 13 years across 70+ partner organizations. In April 2024 they created a brand-new "Community of Practice Educator" role to address the alumni engagement gap. I emailed the director on August 28, 2024 and proposed a collaboration with my graduate program's Design Thinking cohort. By September 6 we had our first working session.</p>
+      <table>
+        <tr><th>Role</th><th>Person</th><th>Detail</th></tr>
+        <tr><td><strong>Academic Director</strong></td><td>Gregory C. Ira</td><td>Program strategy</td></tr>
+        <tr><td><strong>CoP Educator</strong></td><td>Ali Stefancich</td><td>New role, April 2024</td></tr>
+        <tr><td><strong>Regional Specialists</strong></td><td>5 across California</td><td>Community education</td></tr>
+        <tr><td><strong>Total Staff</strong></td><td>8 people</td><td>9,000+ alumni statewide</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <div class="section-label">THE CHALLENGE</div>
+      <p>Alumni were investing $1,500–$2,000 and 40+ hours into certification courses, then graduating into silence. No follow-up resources, no community, no clear next step.</p>
+      <table>
+        <tr><th>Barrier</th><th>Impact</th></tr>
+        <tr><td><strong>Geographic dispersion</strong></td><td>9,000 alumni scattered across 58 counties</td></tr>
+        <tr><td><strong>Diverse demographics</strong></td><td>College students to retirees with varying tech comfort</td></tr>
+        <tr><td><strong>Broken volunteer tracking</strong></td><td>Portal so painful that hours went unreported</td></tr>
+        <tr><td><strong>Minimal staffing</strong></td><td>8 staff members statewide, all with full workloads</td></tr>
+        <tr><td><strong>No engagement framework</strong></td><td>CoP Educator role was brand new—no precedent</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <div class="section-label">RESEARCH</div>
+      <p>We ran 15-minute ethnographic listening sessions with alumni recruited through the program newsletter. Three conversations stood out, alongside survey data from 1,302 respondents:</p>
+      <ul>
+        <li><strong>Early graduate:</strong> Only person showing up to events in her region. Wanted the 2022 statewide conference revived.</li>
+        <li><strong>Prospective student:</strong> Wanted certification for professional legitimacy. Acknowledged attendance drops off quickly.</li>
+        <li><strong>Retired alumna:</strong> Pointed out a Facebook group had just 17 members. Volunteered to help brainstorm.</li>
+      </ul>
+      <p>Key survey findings: 80% satisfied with course content, 73% volunteered after certification, 59% said their capstone project still has impact, and 25% changed career direction as a result.</p>
+    </section>
+
+    <section>
+      <div class="section-label">USER NEEDS</div>
+      <p>We mapped interview and survey data into four categories:</p>
+      <table>
+        <tr><th>Category</th><th>Description</th></tr>
+        <tr><td><strong>Functional</strong></td><td>Resource libraries, event calendars, job boards — basic infrastructure</td></tr>
+        <tr><td><strong>Emotional</strong></td><td>Feeling like you belong to something after graduation</td></tr>
+        <tr><td><strong>Psychological</strong></td><td>Staying current, continuing to learn, avoiding knowledge decay</td></tr>
+        <tr><td><strong>Social</strong></td><td>Connecting with other alumni regardless of location</td></tr>
+      </table>
+      <p>Prioritized requirements: (1) Social engagement platforms, (2) Simplified volunteer tracking, (3) Access to educational materials, (4) Volunteer opportunity discovery, (5) Alumni story sharing, (6) Direct staff accessibility.</p>
+    </section>
+
+    <section>
+      <div class="section-label">IDEATION</div>
+      <p>We generated 15 concepts including SharePoint Hub, Geo-Leaders, Virtual Classrooms, Swag Programs, and Mentorship Connect. Ali narrowed us to four finalists. We merged overlapping concepts into a "Digital Resource Platform" idea and moved to two distinct prototypes.</p>
+      <p><strong>Client picks:</strong> "What's Next?" Training (attacks post-graduation void), Digital Resource Platform (centralized hub), and Mentorship Connect (bridges generational gaps).</p>
+    </section>
+
+    ${img('/case-study/calnat-discord.webp', 'Discord server prototype', 'Live Discord prototype with regional channels and program features')}
+
+    <section>
+      <div class="section-label">PROTOTYPES</div>
+      <p><strong>Discord (Recommended):</strong> A fully configured server with regional channels for Northern, Central, Southern, and Desert California. Program-specific channels for Alumni Spotlight, Mentorship Connect, and Geo-Leaders. Free at base level, real-time communication, and self-sustaining once community takes hold.</p>
+      <p><strong>SharePoint:</strong> A comprehensive site with document management, alumni directories, event calendars, and engagement analytics. Enterprise-grade security built on existing Microsoft 365 infrastructure, but requires paid subscription and IT expertise.</p>
+    </section>
+
+    <section>
+      <div class="section-label">OUTCOME</div>
+      <p>On December 5, 2024, we delivered a Learning Guide recommending Discord as the primary community platform. The logic: it's free, low-maintenance, and becomes self-sustaining once a critical mass of members starts engaging. That matters when you have 8 staff members and 9,000 alumni.</p>
+    </section>
+
+    <section>
+      <div class="section-label">DELIVERABLES</div>
+      <div class="deliverables">
+        <div class="deliverable"><strong>Learning Guide</strong><span>Implementation roadmap with assumptions, test plan, and resource needs</span></div>
+        <div class="deliverable"><strong>Discord Server</strong><span>Live prototype with channels, roles, and demo content</span></div>
+        <div class="deliverable"><strong>SharePoint Deck</strong><span>Enterprise alternative with full capabilities breakdown</span></div>
+        <div class="deliverable"><strong>Design Criteria</strong><span>User needs analysis, SWOT, prioritized requirements</span></div>
+        <div class="deliverable"><strong>Research Package</strong><span>Interview data, survey analysis, design brief, concept pitches</span></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-label">WHAT I LEARNED</div>
+      <ul>
+        <li><strong>Being the insider changes everything.</strong> I took the same course these alumni took. That made every interview more honest and every design decision more grounded.</li>
+        <li><strong>Design for the people who maintain it.</strong> Discord won partly because it can become self-sustaining. The best design acknowledges operational reality.</li>
+        <li><strong>Geography is a design variable.</strong> 58 counties means no single engagement model works everywhere. Regional channels were the architecture.</li>
+        <li><strong>The real deliverable was momentum.</strong> We showed Ali's team they could start small, iterate quickly, and build without waiting for a massive budget.</li>
+      </ul>
+    </section>
+
+    <section>
+      <div class="section-label">MY ROLE</div>
+      <div class="role-item"><span class="role-title">Project originator</span><br><span class="role-desc">Sourced the client through my own Climate Stewards certification</span></div>
+      <div class="role-item"><span class="role-title">Client relationship lead</span><br><span class="role-desc">Primary point of contact with Ali throughout the engagement</span></div>
+      <div class="role-item"><span class="role-title">Subject matter expert</span><br><span class="role-desc">Brought firsthand experience as a certified Climate Steward</span></div>
+      <div class="role-item"><span class="role-title">Ideation lead</span><br><span class="role-desc">Pushed Geo-Leaders, statewide conference revival, and hub group concepts</span></div>
+      <div class="role-item"><span class="role-title">Research coordinator</span><br><span class="role-desc">Drafted alumni recruitment materials and coordinated listening sessions</span></div>
+      <div class="role-item"><span class="role-title">Deliverable author</span><br><span class="role-desc">Co-authored the Design Brief, Design Criteria, Prototype Report, and Learning Guide</span></div>
+    </section>
+
+    <section>
+      <div class="section-label">TIMELINE</div>
+      <div class="timeline-item"><span class="timeline-date">Aug 28</span><span class="timeline-event">Emailed program director. Connected with Ali same day.</span></div>
+      <div class="timeline-item"><span class="timeline-date">Sep 6</span><span class="timeline-event">First team working session with Ali (virtual).</span></div>
+      <div class="timeline-item"><span class="timeline-date">Sep 22</span><span class="timeline-event">Design Brief v2.0 delivered.</span></div>
+      <div class="timeline-item"><span class="timeline-date">Oct 18</span><span class="timeline-event">Newsletter out. First alumni listening sessions.</span></div>
+      <div class="timeline-item"><span class="timeline-date">Oct 28</span><span class="timeline-event">Design Criteria document issued.</span></div>
+      <div class="timeline-item"><span class="timeline-date">Nov 22</span><span class="timeline-event">Discord and SharePoint prototypes presented.</span></div>
+      <div class="timeline-item"><span class="timeline-date">Dec 5</span><span class="timeline-event">Learning Guide delivered. Engagement complete.</span></div>
+    </section>
+  </div>
+
+  <div class="footer">
+    <span>www.sam-bloch.com</span>
+    <a href="https://www.linkedin.com/in/blochsam/">linkedin.com/in/blochsam</a>
+    <a href="mailto:sam@sam-bloch.com">sam@sam-bloch.com</a>
+  </div>
+
+  <script>
+    (function(){
+      var imgs = document.querySelectorAll('img');
+      var loaded = 0;
+      function checkDone() {
+        loaded++;
+        if (loaded >= imgs.length) setTimeout(function(){ window.print(); }, 300);
+      }
+      imgs.forEach(function(img) {
+        if (img.complete) checkDone();
+        else img.onload = img.onerror = checkDone;
+      });
+      if (imgs.length === 0) setTimeout(function(){ window.print(); }, 500);
+    })();
+  </script>
+</body>
+</html>`;
+}
+
+function generateSmartLockersCaseStudyPdf(baseUrl: string): string {
+  const origin = baseUrl.replace(/\/$/, '');
+  const img = (path: string, alt: string, caption: string) =>
+    `<div class="img-block"><img src="${origin}${path}" alt="${alt}"><p class="img-caption">${caption}</p></div>`;
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Lockers — Sam Bloch</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #ffffff;
+      color: ${TEXT_DARK};
+      line-height: 1.6;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .doc { max-width: 700px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+    .header {
+      border-bottom: 2px solid ${TEAL};
+      padding-bottom: 1rem;
+      margin-bottom: 2rem;
+    }
+    .logo span:first-child { color: ${TEXT_DARK}; font-weight: 800; font-size: 1.75rem; letter-spacing: -1px; }
+    .logo span:last-child { color: ${TEAL}; font-weight: 800; font-size: 1.75rem; letter-spacing: -1px; }
+    .meta { color: ${TEAL}; font-size: 0.75rem; margin-top: 0.5rem; }
+    h1 { font-size: 1.5rem; font-weight: 700; margin: 1rem 0 0.5rem; color: ${TEXT_DARK}; }
+    .subtitle { color: ${TEXT_MUTED}; font-size: 0.9rem; }
+    section { margin-bottom: 2rem; page-break-inside: avoid; }
+    .section-label { color: ${TEAL}; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+    p { color: ${TEXT_DARK}; font-size: 0.9rem; margin-bottom: 1rem; }
+    ul { margin: 0.5rem 0 1rem 1.5rem; color: ${TEXT_DARK}; font-size: 0.9rem; }
+    li { margin-bottom: 0.25rem; }
+    .img-block img { width: 100%; height: auto; border: 1px solid #e5e7eb; border-radius: 0.5rem; }
+    .img-caption { font-size: 0.65rem; color: ${TEXT_MUTED}; margin-top: 0.25rem; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 0.75rem 1.5rem;
+      border-top: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: ${TEXT_MUTED};
+      background: #ffffff;
+    }
+    .footer a { color: ${TEAL}; text-decoration: none; }
+    @media print { .doc { padding-bottom: 3rem; } }
+  </style>
+</head>
+<body>
+  <div class="doc">
+    <header class="header">
+      <div class="logo"><span>SAM</span> <span>BLOCH</span></div>
+      <p class="meta">Systems Engineering · Quicken Loans · 2019</p>
+      <h1>Smart Lockers</h1>
+      <p class="subtitle">A self-service tech distribution system — web portal, Raspberry Pi prototype, and 3D-printed hardware — built by two interns and presented to the SVP.</p>
+    </header>
+
+    <div class="two-col">
+      ${img('/case-study/smart-lockers/welcome-hero.avif', 'Welcome screen', 'Welcome screen')}
+      ${img('/case-study/smart-lockers/request-form.avif', 'Request form', 'Request form')}
+    </div>
+
+    <section>
+      <table>
+        <tr><th>2 Interns</th><th>1 Working Prototype</th><th>4 Device Types</th><th>1 SVP Presentation</th></tr>
+        <tr><td>Sam & Matthew</td><td>Raspberry Pi + 3D print</td><td>Laptops, mice, keyboards, monitors</td><td>Infrastructure & Operations</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <div class="section-label">THE PROBLEM</div>
+      <p>Quicken Loans distributed loaner tech — laptops, peripherals, monitors — manually through IT staff. Employees submitted tickets, waited for assignment, then tracked down the right person. With the company growing fast, the manual process that worked for 500 people wouldn't scale to 5,000.</p>
+    </section>
+
+    <section>
+      <div class="section-label">THE SOLUTION</div>
+      <p>We designed and built a self-service smart locker system. Employees browse available tech through a web portal, submit a request, and receive a PIN code tied to a specific locker on their floor. Walk up, enter the PIN, grab the device. No tickets, no waiting, no IT bottleneck.</p>
+    </section>
+
+    <section>
+      <div class="section-label">THE WEB PORTAL</div>
+      <p>Built with PHP, SQL, and Bootstrap. The portal guides users through a four-step flow: browse available devices, select what they need, submit a request, and receive a confirmation with their floor, locker number, and PIN code. The backend manages inventory, tracks assignments, and handles returns automatically.</p>
+    </section>
+
+    <div class="two-col">
+      ${img('/case-study/smart-lockers/laptops-page.avif', 'Loaner laptops screen', 'Browse available devices')}
+      ${img('/case-study/smart-lockers/confirmation.avif', 'Confirmation screen', 'PIN and locker assignment')}
+    </div>
+
+    <section>
+      <div class="section-label">THE ARCHITECTURE</div>
+      <p>Three layers working together: a PHP/SQL web application for user-facing requests, a Python REST API for locker control logic, and a Raspberry Pi kiosk with touchscreen and badge scanner for physical interaction. Each layer was developed in parallel by the two-person team.</p>
+    </section>
+
+    <section>
+      <div class="section-label">THE HARDWARE</div>
+      <p>The physical prototype included a Raspberry Pi with a touchscreen display and badge scanner, housed in a custom 3D-printed enclosure. We designed and printed the mounting brackets ourselves when off-the-shelf cases didn't fit the kiosk form factor. The prototype proved the concept was viable and could be manufactured at scale.</p>
+    </section>
+
+    ${img('/case-study/smart-lockers/hackweek.avif', 'Hack Week presentation', 'Hack Week — presenting to the tech department')}
+
+    <section>
+      <div class="section-label">THE IMPACT</div>
+      <p>What started as two interns noticing a problem became a working prototype presented at Hack Week, then to the SVP of Infrastructure & Operations. The system demonstrated measurable improvements: faster device distribution, automated accountability tracking, and reduced IT overhead for routine equipment requests.</p>
+    </section>
+
+    <section>
+      <div class="section-label">TEAM & ROLES</div>
+      <p><strong>Sam Bloch</strong> — Built the entire web application (PHP, SQL, HTML/CSS/JS with Bootstrap). Designed the user flow. Helped transfer the Python script onto the Raspberry Pi. 3D-modeled and printed the custom kiosk enclosure. Co-presented at Hack Week and to the SVP.</p>
+      <p><strong>Matthew Brown</strong> — Developed the Python application controlling locker logic and device inventory. Built the REST API connecting the web portal to the physical hardware. Taught Sam Python fundamentals throughout the project.</p>
+    </section>
+
+    <section>
+      <div class="section-label">TIMELINE</div>
+      <ul>
+        <li><strong>Early Summer:</strong> Identified the problem. Pitched the concept. Got the green light.</li>
+        <li><strong>Weeks 1–3:</strong> Built the web portal and API in parallel with daily syncs.</li>
+        <li><strong>Weeks 4–5:</strong> Connected web app to API. Built the Raspberry Pi kiosk.</li>
+        <li><strong>Week 6:</strong> 3D-printed enclosure. Integrated all components.</li>
+        <li><strong>Hack Week:</strong> Presented to the tech department. Landed an SVP meeting.</li>
+      </ul>
+    </section>
+
+    <section>
+      <div class="section-label">KEY TAKEAWAYS</div>
+      <ul>
+        <li><strong>Hardware forces you to think differently</strong> — Bugs mean re-soldering, not redeploying. Physical systems punish sloppy logic.</li>
+        <li><strong>Complementary skills multiply output</strong> — Sam handled web/3D, Matthew handled Python/API. Different strengths, shared ownership.</li>
+        <li><strong>A demo is worth a thousand decks</strong> — Walking up to a locker and entering a PIN convinced leadership faster than any slide deck.</li>
+        <li><strong>Intern projects can have real impact</strong> — When driven by initiative rather than assignment, even interns can land an SVP meeting.</li>
+      </ul>
+    </section>
+
+    <section>
+      <div class="section-label">KEY DECISIONS</div>
+      <ul>
+        <li><strong>PHP + SQL for the web portal</strong> — Matched our skillset and the company's existing stack.</li>
+        <li><strong>RFID + PIN dual authentication</strong> — Two-factor security without IT overhead.</li>
+        <li><strong>Raspberry Pi over a full PC</strong> — $35, low power, and GPIO access for badge readers.</li>
+        <li><strong>3D-printed enclosure</strong> — Off-the-shelf didn't fit the kiosk form factor.</li>
+        <li><strong>Hack Week as launch pad</strong> — Built-in audience of the entire tech department.</li>
+      </ul>
+    </section>
+  </div>
+
+  <div class="footer">
+    <span>www.sam-bloch.com</span>
+    <a href="https://www.linkedin.com/in/blochsam/">linkedin.com/in/blochsam</a>
+    <a href="mailto:sam@sam-bloch.com">sam@sam-bloch.com</a>
+  </div>
+
+  <script>
+    (function(){
+      var imgs = document.querySelectorAll('img');
+      var loaded = 0;
+      function checkDone() {
+        loaded++;
+        if (loaded >= imgs.length) setTimeout(function(){ window.print(); }, 300);
+      }
+      imgs.forEach(function(img) {
+        if (img.complete) checkDone();
+        else img.onload = img.onerror = checkDone;
+      });
+      if (imgs.length === 0) setTimeout(function(){ window.print(); }, 500);
+    })();
+  </script>
+</body>
+</html>`;
+}
+
+function generateFudgeCaseStudyPdf(baseUrl: string): string {
+  const origin = baseUrl.replace(/\/$/, '');
+  const img = (path: string, alt: string, caption: string) =>
+    `<div class="img-block"><img src="${origin}${path}" alt="${alt}"><p class="img-caption">${caption}</p></div>`;
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fudge — Sam Bloch</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #ffffff;
+      color: ${TEXT_DARK};
+      line-height: 1.6;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .doc { max-width: 700px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+    .header { border-bottom: 2px solid ${TEAL}; padding-bottom: 1rem; margin-bottom: 2rem; }
+    .logo span:first-child { color: ${TEXT_DARK}; font-weight: 800; font-size: 1.75rem; letter-spacing: -1px; }
+    .logo span:last-child { color: ${TEAL}; font-weight: 800; font-size: 1.75rem; letter-spacing: -1px; }
+    .meta { color: ${TEAL}; font-size: 0.75rem; margin-top: 0.5rem; }
+    h1 { font-size: 1.5rem; font-weight: 700; margin: 1rem 0 0.5rem; color: ${TEXT_DARK}; }
+    .subtitle { color: ${TEXT_MUTED}; font-size: 0.9rem; }
+    section { margin-bottom: 2rem; page-break-inside: avoid; }
+    .section-label { color: ${TEAL}; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+    p { color: ${TEXT_DARK}; font-size: 0.9rem; margin-bottom: 1rem; }
+    .stats { display: flex; gap: 1.5rem; margin: 1rem 0; flex-wrap: wrap; }
+    .stat { text-align: center; }
+    .stat-num { font-size: 1.5rem; font-weight: 700; color: ${TEAL}; }
+    .stat-label { font-size: 0.7rem; color: ${TEXT_MUTED}; }
+    .img-block { margin: 1rem 0; page-break-inside: avoid; }
+    .img-block img { width: 100%; height: auto; border: 1px solid #e5e7eb; border-radius: 0.5rem; }
+    .img-caption { font-size: 0.65rem; color: ${TEXT_MUTED}; margin-top: 0.25rem; }
+    .screenshots { display: flex; gap: 0.75rem; justify-content: center; margin: 1rem 0; flex-wrap: wrap; }
+    .screenshots img { width: 130px; border-radius: 0.75rem; border: 1px solid #e5e7eb; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.85rem; }
+    th, td { border: 1px solid #e5e7eb; padding: 0.6rem 0.8rem; text-align: left; }
+    th { background: #f3f4f6; color: ${TEXT_DARK}; font-weight: 600; }
+    td { color: ${TEXT_DARK}; }
+    td strong { color: ${TEAL}; }
+    ul { margin: 0.5rem 0 1rem 1.5rem; color: ${TEXT_DARK}; font-size: 0.9rem; }
+    li { margin-bottom: 0.25rem; }
+    .role-item { margin-bottom: 0.75rem; }
+    .role-title { font-size: 0.8rem; font-weight: 600; color: ${TEAL}; }
+    .role-desc { font-size: 0.8rem; color: ${TEXT_MEDIUM}; }
+    .timeline-item { display: flex; gap: 1rem; margin-bottom: 0.5rem; border-bottom: 1px solid #f3f4f6; padding-bottom: 0.5rem; }
+    .timeline-date { font-size: 0.75rem; font-weight: 600; color: ${TEAL}; width: 80px; flex-shrink: 0; }
+    .timeline-event { font-size: 0.8rem; color: ${TEXT_MEDIUM}; }
+    .footer {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      padding: 0.75rem 1.5rem;
+      border-top: 1px solid #e5e7eb;
+      display: flex; justify-content: space-between;
+      font-size: 0.7rem; color: ${TEXT_MUTED}; background: #ffffff;
+    }
+    .footer a { color: ${TEAL}; text-decoration: none; }
+    @media print { .doc { padding-bottom: 3rem; } }
+  </style>
+</head>
+<body>
+  <div class="doc">
+    <header class="header">
+      <div class="logo"><span>SAM</span> <span>BLOCH</span></div>
+      <p class="meta">Full-Stack PWA · Spring 2026</p>
+      <h1>Fudge</h1>
+      <p class="subtitle">A Progressive Web App for Group Trip Coordination</p>
+    </header>
+
+    <section>
+      <p>Fudge is a full-featured progressive web app built to coordinate a 16-person group trip to Mackinac Island, Michigan for the 2026 MSCI Spring Conference. The app replaced scattered Google Sheets, group texts, and Venmo requests with a single hub for itinerary management, room assignments, travel logistics, and island recommendations — built solo with Claude as an AI engineering partner.</p>
+    </section>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-num">16</div><div class="stat-label">Trip Members</div></div>
+      <div class="stat"><div class="stat-num">7</div><div class="stat-label">Core Pages</div></div>
+      <div class="stat"><div class="stat-num">10+</div><div class="stat-label">Features</div></div>
+      <div class="stat"><div class="stat-num">1</div><div class="stat-label">Developer</div></div>
+    </div>
+
+    <section>
+      <div class="section-label">THE PROBLEM</div>
+      <p>Coordinating 16 people across multiple days meant logistics scattered across group texts, Google Docs, and verbal reminders. Key information got buried, people missed events, and one person always ended up as the unpaid project manager fielding every question.</p>
+      <table>
+        <tr><th>Pain Point</th><th>Impact</th></tr>
+        <tr><td><strong>Spreadsheet trap</strong></td><td>Logistics scattered across 5+ platforms nobody consistently checks</td></tr>
+        <tr><td><strong>Payment chaos</strong></td><td>Venmo requests lost in the noise, no tracking</td></tr>
+        <tr><td><strong>Decision paralysis</strong></td><td>16 opinions, no single source of truth</td></tr>
+        <tr><td><strong>Organizer burden</strong></td><td>One person fielding every question constantly</td></tr>
+        <tr><td><strong>Information decay</strong></td><td>Ferry schedules, drive times buried in old messages</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <div class="section-label">FEATURE WALKTHROUGH</div>
+      <div class="screenshots">
+        <img src="${origin}/case-study/fudge/fudge-splash.webp" alt="Splash" />
+        <img src="${origin}/case-study/fudge/fudge-login.webp" alt="Login" />
+        <img src="${origin}/case-study/fudge/fudge-itinerary.webp" alt="Itinerary" />
+        <img src="${origin}/case-study/fudge/fudge-explore.webp" alt="Explore" />
+      </div>
+      <ul>
+        <li><strong>Passwordless Auth:</strong> Magic link login with identity claiming system — 16 profiles pre-seeded by admin</li>
+        <li><strong>Dynamic Itinerary:</strong> Day-by-day schedule with role-based filtering, auto-advances to current day</li>
+        <li><strong>Room Assignments:</strong> Visual cards with profile photos and tappable phone numbers</li>
+        <li><strong>Travel Coordinator:</strong> Booking guidelines, driving logistics, ferry info, and travel advisory</li>
+        <li><strong>Explore Mackinac:</strong> Curated island guide with veteran picks, cost estimates, and directions</li>
+        <li><strong>Resource Hub:</strong> Group playlist, packing list, judging guides, and professional development</li>
+      </ul>
+    </section>
+
+    <section>
+      <div class="section-label">TECHNICAL ARCHITECTURE</div>
+      <table>
+        <tr><th>Technology</th><th>Role</th></tr>
+        <tr><td><strong>Next.js 15</strong></td><td>App Router & Server Components</td></tr>
+        <tr><td><strong>React 19</strong></td><td>Component-based UI framework</td></tr>
+        <tr><td><strong>Supabase</strong></td><td>Auth, PostgreSQL database, Storage</td></tr>
+        <tr><td><strong>Tailwind CSS</strong></td><td>Utility-first styling</td></tr>
+        <tr><td><strong>Vercel</strong></td><td>Edge deployment & CI/CD</td></tr>
+        <tr><td><strong>Sharp</strong></td><td>Server-side image compression</td></tr>
+      </table>
+      <p><strong>Key decisions:</strong> Identity claiming system (pre-populated user rows with UUID migration on signup), server-side image compression (256x256 JPEG Q75, 188KB total for 16 avatars), position: fixed header with ResizeObserver spacer, PWA-first architecture with service worker and install tutorial.</p>
+    </section>
+
+    <section>
+      <div class="section-label">BUILDING WITH CLAUDE</div>
+      <p>Claude served as a full engineering partner — implementing features across React, API routes, and SQL while I directed architecture, design decisions, and quality control. Every feature started with my product specification and ended with my manual testing.</p>
+      <table>
+        <tr><th>My Role</th><th>Claude's Role</th></tr>
+        <tr><td>Defined features from real trip pain points</td><td>Implemented across React, API routes, SQL</td></tr>
+        <tr><td>Chose Dorothy Draper visual direction</td><td>Generated responsive layouts from descriptions</td></tr>
+        <tr><td>Selected tech stack and architecture</td><td>Built database schemas and Row Level Security</td></tr>
+        <tr><td>Tested every flow, caught edge cases</td><td>Debugged cross-browser CSS and auth issues</td></tr>
+        <tr><td>Deployed with custom domain + SSL</td><td>Iterated rapidly based on feedback</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <div class="section-label">KEY TAKEAWAYS</div>
+      <ul>
+        <li><strong>AI pair programming is a skill, not a shortcut.</strong> Directing Claude required clear communication, technical literacy, and the judgment to know when something was right.</li>
+        <li><strong>Ship for your users, not your resume.</strong> Every feature was weighed against a simple question: does this reduce confusion for 16 people?</li>
+        <li><strong>PWAs are underrated.</strong> No app store, no downloads, no updates to push. Just a URL, a service worker, and a manifest.</li>
+        <li><strong>Scope is the real enemy.</strong> The trip date was a hard deadline — if it wasn't essential, it didn't ship.</li>
+      </ul>
+    </section>
+
+    <section>
+      <div class="section-label">TIMELINE</div>
+      <div class="timeline-item"><div class="timeline-date">Feb 2026</div><div class="timeline-event">Architecture & authentication system</div></div>
+      <div class="timeline-item"><div class="timeline-date">Feb 2026</div><div class="timeline-event">Core pages — itinerary, rooms, travel</div></div>
+      <div class="timeline-item"><div class="timeline-date">Mar 2026</div><div class="timeline-event">Admin dashboard, payment tracking</div></div>
+      <div class="timeline-item"><div class="timeline-date">Mar 2026</div><div class="timeline-event">Explore, resources, PWA polish</div></div>
+      <div class="timeline-item"><div class="timeline-date">Mar 2026</div><div class="timeline-event">Production deployment to fudge.sam-bloch.com</div></div>
+      <div class="timeline-item"><div class="timeline-date">May 2026</div><div class="timeline-event">Trip day — the real test</div></div>
+    </section>
+
+    <section>
+      <div class="section-label">MY ROLES</div>
+      <div class="role-item"><div class="role-title">Product Manager</div><div class="role-desc">Defined every feature from real group trip pain points</div></div>
+      <div class="role-item"><div class="role-title">Designer (UX + Visual)</div><div class="role-desc">Dorothy Draper-inspired mobile-first design system</div></div>
+      <div class="role-item"><div class="role-title">Technical Architect</div><div class="role-desc">Selected stack, designed database schema and auth flow</div></div>
+      <div class="role-item"><div class="role-title">AI Collaborator & Director</div><div class="role-desc">Directed Claude as a full engineering partner</div></div>
+      <div class="role-item"><div class="role-title">QA & Deployment</div><div class="role-desc">Tested every flow, deployed with custom domain + SSL</div></div>
+    </section>
+  </div>
+
+  <div class="footer">
+    <span>www.sam-bloch.com</span>
+    <a href="https://www.linkedin.com/in/blochsam/">linkedin.com/in/blochsam</a>
+    <a href="mailto:sam@sam-bloch.com">sam@sam-bloch.com</a>
+  </div>
+
+  <script>
+    (function() {
+      var imgs = Array.from(document.querySelectorAll('img'));
+      var loaded = 0;
+      function checkDone() { loaded++; if (loaded >= imgs.length) setTimeout(function(){ window.print(); }, 600); }
+      imgs.forEach(function(img) { if (img.complete) checkDone(); else img.onload = img.onerror = checkDone; });
       if (imgs.length === 0) setTimeout(function(){ window.print(); }, 500);
     })();
   </script>

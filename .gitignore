@@ -15,6 +15,14 @@ dist-ssr
 # Environment variables
 .env*
 
+# Loose content / asset staging
+content for smart lockers/
+level-up-stuff/
+interactive-spline-portfolio/
+Brand_Refresh_Proposal.pdf
+brand-refresh-proposal.py
+favicon-1.ico
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

@@ -1,0 +1,29 @@
+{
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/about", "destination": "/", "statusCode": 301 },
+    { "source": "/smart-lockers", "destination": "/projects/smart-lockers", "statusCode": 301 },
+    { "source": "/the-d-cade", "destination": "/projects/dcade", "statusCode": 301 },
+    { "source": "/augmented-zoo-reality", "destination": "/projects/zoo-report", "statusCode": 301 },
+    { "source": "/personal-projects", "destination": "/projects", "statusCode": 301 },
+    { "source": "/web-development", "destination": "/projects", "statusCode": 301 },
+    { "source": "/ux-design", "destination": "/projects", "statusCode": 301 },
+    { "source": "/mcfm", "destination": "/projects", "statusCode": 301 },
+    { "source": "/typography", "destination": "/projects", "statusCode": 301 },
+    { "source": "/msu-it-wiki", "destination": "/projects", "statusCode": 301 },
+    { "source": "/project-management", "destination": "/projects", "statusCode": 301 },
+    { "source": "/spartan-speech", "destination": "/projects", "statusCode": 301 },
+    { "source": "/alaskan-red-king-crab", "destination": "/projects", "statusCode": 301 },
+    { "source": "/msu-art-department", "destination": "/projects", "statusCode": 301 },
+    { "source": "/discogs", "destination": "/projects", "statusCode": 301 },
+    { "source": "/research-writing", "destination": "/projects", "statusCode": 301 },
+    { "source": "/walled-lake-app", "destination": "/projects", "statusCode": 301 },
+    { "source": "/spartan-dischords", "destination": "/projects", "statusCode": 301 },
+    { "source": "/arrangements", "destination": "/projects", "statusCode": 301 },
+    { "source": "/shelbyka-photo", "destination": "/projects", "statusCode": 301 },
+    { "source": "/video", "destination": "/projects", "statusCode": 301 }
+  ],
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}

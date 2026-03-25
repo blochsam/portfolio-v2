@@ -7,6 +7,9 @@ body {
   color: white;
   margin: 0;
   overflow-x: hidden;
+  /* Firefox scrollbar (standard) */
+  scrollbar-width: thin;
+  scrollbar-color: #24A2A7 #121212;
 }
 
 .font-mono {
@@ -41,4 +44,315 @@ body {
   background: linear-gradient(to bottom, rgba(36, 162, 167, 0.1) 0%, transparent 50%, rgba(36, 162, 167, 0.1) 100%);
   pointer-events: none;
   animation: scanline 8s linear infinite;
+}
+
+/* Shared overlay animations (used by Overlay + AboutOverlay) */
+@keyframes snappyEntrance {
+  0% {
+    transform: scale(0.95) translateY(30px);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+.snappy-entrance {
+  animation: snappyEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.overlay-content {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(36, 162, 167, 0.3) transparent;
+}
+
+.overlay-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.overlay-content::-webkit-scrollbar-thumb {
+  background: rgba(36, 162, 167, 0.3);
+  border-radius: 10px;
+}
+
+/* Inset scrollbar so it sits within rounded overlay container */
+.overlay-scroll-inset {
+  scrollbar-gutter: stable;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(36, 162, 167, 0.25) transparent;
+}
+
+.overlay-scroll-inset::-webkit-scrollbar {
+  width: 6px;
+}
+
+.overlay-scroll-inset::-webkit-scrollbar-track {
+  background: transparent;
+  margin-top: 2.5rem;    /* match border-radius so track doesn't bleed outside */
+  margin-bottom: 2.5rem;
+}
+
+.overlay-scroll-inset::-webkit-scrollbar-thumb {
+  background: rgba(36, 162, 167, 0.25);
+  border-radius: 10px;
+}
+
+.overlay-scroll-inset::-webkit-scrollbar-thumb:hover {
+  background: rgba(36, 162, 167, 0.45);
+}
+
+/* Overlay section entrance animations */
+.about-reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.about-reveal.about-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger overlay sections */
+.about-reveal:nth-child(1) { transition-delay: 0ms; }
+.about-reveal:nth-child(2) { transition-delay: 80ms; }
+.about-reveal:nth-child(3) { transition-delay: 160ms; }
+.about-reveal:nth-child(4) { transition-delay: 240ms; }
+.about-reveal:nth-child(5) { transition-delay: 320ms; }
+.about-reveal:nth-child(6) { transition-delay: 400ms; }
+
+/* Thin horizontal scrollbar for showcase sections */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(36, 162, 167, 0.25) transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  height: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(36, 162, 167, 0.25);
+  border-radius: 10px;
+}
+
+/* Removed global scroll-behavior: smooth — it causes scroll to feel "stuck"
+   because the browser finishes its smooth animation before accepting new input.
+   Use programmatic scrollTo({ behavior: 'smooth' }) for anchor links instead. */
+
+/* Scroll-reveal animations */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scroll-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered children within a revealed parent */
+.scroll-reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scroll-reveal-stagger.revealed > *:nth-child(1) { transition-delay: 0ms; opacity: 1; transform: translateY(0); }
+.scroll-reveal-stagger.revealed > *:nth-child(2) { transition-delay: 100ms; opacity: 1; transform: translateY(0); }
+.scroll-reveal-stagger.revealed > *:nth-child(3) { transition-delay: 200ms; opacity: 1; transform: translateY(0); }
+.scroll-reveal-stagger.revealed > *:nth-child(4) { transition-delay: 300ms; opacity: 1; transform: translateY(0); }
+.scroll-reveal-stagger.revealed > *:nth-child(5) { transition-delay: 400ms; opacity: 1; transform: translateY(0); }
+.scroll-reveal-stagger.revealed > *:nth-child(6) { transition-delay: 500ms; opacity: 1; transform: translateY(0); }
+
+/* Apple-tier reveal animations (CalNat case study) */
+.apple-reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.apple-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Nature parallax image sections */
+.nature-parallax {
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+}
+
+@media (max-width: 768px), (hover: none) {
+  .nature-parallax {
+    background-attachment: scroll;
+  }
+}
+
+/* iOS Safari reports hover:hover on iPads with keyboards but still breaks fixed attachment */
+@supports (-webkit-touch-callout: none) {
+  .nature-parallax {
+    background-attachment: scroll;
+  }
+}
+
+/* Floating ambient particles (scale + opacity only — no translate to avoid scroll jitter) */
+@keyframes float-particle {
+  0%, 100% { opacity: 0; transform: scale(1); }
+  30% { opacity: 0.12; transform: scale(1.1); }
+  60% { opacity: 0.18; transform: scale(1); }
+  85% { opacity: 0.06; transform: scale(1.15); }
+}
+
+.floating-particle {
+  animation: float-particle var(--fp-dur, 12s) ease-in-out infinite;
+  animation-delay: var(--fp-del, 0s);
+}
+
+/* Bubbly idle bob animation (Animal Crossing style) */
+@keyframes bubbly-bob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-6px) rotate(1.5deg); }
+  50% { transform: translateY(-2px) rotate(0deg); }
+  75% { transform: translateY(-8px) rotate(-1.5deg); }
+}
+
+.bubbly-bob {
+  animation: bubbly-bob 4s ease-in-out infinite;
+}
+
+/* Text highlight reveal (teal highlighter swipe) */
+.highlight-reveal {
+  background: linear-gradient(120deg, rgba(36, 162, 167, 0.18) 0%, rgba(36, 162, 167, 0.18) 100%);
+  background-repeat: no-repeat;
+  background-size: 0% 40%;
+  background-position: 0 88%;
+  transition: background-size 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s;
+}
+
+.highlight-reveal.revealed {
+  background-size: 100% 40%;
+}
+
+/* Gradient border glow on hover */
+.glow-border {
+  transition: border-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+.glow-border:hover {
+  border-color: rgba(36, 162, 167, 0.35) !important;
+  box-shadow: 0 0 20px rgba(36, 162, 167, 0.12), 0 0 40px rgba(36, 162, 167, 0.04);
+}
+
+/* Staggered directional reveal animations */
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-50px);
+  transition: opacity 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(50px);
+  transition: opacity 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.reveal-left.revealed, .reveal-right.revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Skip layout/paint for off-screen sections to reduce scroll jank */
+.content-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
+}
+
+/* Restore pointer cursor on interactive elements (Tailwind Preflight removes it) */
+a, button, [role="button"], input[type="submit"], input[type="button"], select, summary {
+  cursor: pointer;
+}
+
+/* Focus-visible: keyboard navigation indicator */
+*:focus-visible {
+  outline: 2px solid #24A2A7;
+  outline-offset: 2px;
+}
+
+/* Falling rose petal animation (Fudge case study) */
+@keyframes fall-petal {
+  0% {
+    transform: translateY(-10vh) translateX(0) rotate(0deg) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: var(--petal-opacity, 0.7);
+  }
+  50% {
+    transform: translateY(45vh) translateX(var(--petal-drift, 30px)) rotate(180deg) scale(var(--petal-scale, 1));
+  }
+  90% {
+    opacity: var(--petal-opacity, 0.7);
+  }
+  100% {
+    transform: translateY(110vh) translateX(var(--petal-drift-end, -20px)) rotate(360deg) scale(var(--petal-scale, 1));
+    opacity: 0;
+  }
+}
+
+.falling-petal {
+  animation: fall-petal var(--petal-dur, 12s) ease-in-out infinite;
+  animation-delay: var(--petal-del, 0s);
+}
+
+/* Rose-tinted highlight reveal (Fudge) */
+.highlight-reveal-rose {
+  background: linear-gradient(120deg, rgba(196, 30, 99, 0.18) 0%, rgba(196, 30, 99, 0.18) 100%);
+  background-repeat: no-repeat;
+  background-size: 0% 40%;
+  background-position: 0 88%;
+  transition: background-size 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s;
+}
+
+.highlight-reveal-rose.revealed {
+  background-size: 100% 40%;
+}
+
+/* Rose-tinted glow border (Fudge) */
+.glow-border-rose {
+  transition: border-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+.glow-border-rose:hover {
+  border-color: rgba(196, 30, 99, 0.35) !important;
+  box-shadow: 0 0 20px rgba(196, 30, 99, 0.12), 0 0 40px rgba(196, 30, 99, 0.04);
+}
+
+/* Prevent flash on delayed entrance animations (tailwindcss-animate) */
+[class*="animate-in"] {
+  animation-fill-mode: both;
+}
+
+/* Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .scanline-overlay {
+    animation: none;
+  }
 }
