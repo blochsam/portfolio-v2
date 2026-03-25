@@ -1,4 +1,5 @@
 {
+  "buildCommand": "vite build",
   "trailingSlash": false,
   "redirects": [
     { "source": "/about", "destination": "/", "statusCode": 301 },
