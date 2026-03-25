@@ -1,20 +1,44 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# The Samulation
 
-# Run and deploy your AI Studio app
+My personal portfolio site. Built with React, rendered in 3D (or 2D if your browser says no thanks).
 
-This contains everything you need to run your app locally.
+**Live:** [sam-bloch.com](https://sam-bloch.com)
 
-View your app in AI Studio: https://ai.studio/apps/drive/1vpzgDkU8aQPYfayZ2iEPOH_2oZ316JFO
+## What's in here
 
-## Run Locally
+- **3D desk scene** powered by [Spline](https://spline.design/) — click around, find the cat
+- **2D editorial fallback** that loads automatically on mobile or when WebGL gives up
+- **7 case study pages** with scroll-reveal animations, interactive sitemaps, and PDF export
+- **Pre-rendered HTML** for SEO (Playwright generates static pages at build time)
+- **Per-route meta tags** so LinkedIn/Slack/iMessage show real previews, not blank cards
 
-**Prerequisites:**  Node.js
+## Stack
 
+| Layer | Tool |
+|-------|------|
+| Framework | React 19 + React Router v7 |
+| Styling | Tailwind CSS v4 |
+| 3D | Spline (WebGL) |
+| Build | Vite 6 |
+| Deploy | Vercel |
+| Tests | Vitest + Testing Library |
+| Pre-render | Playwright (headless) |
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Running locally
+
+```bash
+npm install
+npm run dev        # localhost:3000
+npm test           # 103 tests
+npm run build      # production build + pre-render 10 routes
+```
+
+## License & Usage
+
+This is my personal portfolio — the code, copy, case studies, and design are mine.
+
+You're welcome to look around, learn from the architecture, or reference patterns for your own projects. That's why it's public. But please don't clone this repo and put your name on it. The case studies describe real work I did, and the 3D scene was hand-built in Spline over 200+ hours (the D-Cade alone took longer than some of my actual projects).
+
+If something here helps you build your own portfolio, that's great. If you have questions about how something works, open an issue — I'm happy to explain.
+
+**TL;DR:** Look, learn, get inspired. Don't copy-paste and deploy as your own.
