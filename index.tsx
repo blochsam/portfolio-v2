@@ -1,14 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
-import { inject as injectAnalytics } from '@vercel/analytics';
-import { injectSpeedInsights } from '@vercel/speed-insights';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { router } from './routes';
 import './index.css';
-
-// Vercel Analytics — tracks page views automatically, zero-config on Vercel
-injectAnalytics();
-injectSpeedInsights();
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -18,6 +14,8 @@ if (!rootElement) {
 const app = (
   <React.StrictMode>
     <RouterProvider router={router} />
+    <Analytics />
+    <SpeedInsights />
   </React.StrictMode>
 );
 
