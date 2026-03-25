@@ -273,7 +273,7 @@ const FudgeCaseStudy: React.FC = () => {
       {/* Lightbox */}
       {lightbox && (
         <div className="fixed inset-0 z-[200] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-6 md:p-12 animate-in fade-in duration-300" onClick={() => setLightbox(null)} role="dialog" aria-label="Enlarged image">
-          <button onClick={() => setLightbox(null)} className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/20 transition-all z-[201]" aria-label="Close">
+          <button onClick={() => setLightbox(null)} className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/20 transition-[color,background-color] z-[201]" aria-label="Close">
             <X className="w-5 h-5" />
           </button>
           <img src={lightbox.src} alt={lightbox.alt} className="max-w-full max-h-[85vh] rounded-2xl object-contain" onClick={(e) => e.stopPropagation()} />
@@ -281,14 +281,14 @@ const FudgeCaseStudy: React.FC = () => {
       )}
 
       {/* Back button */}
-      <button onClick={() => navigate('/projects')} className="fixed top-8 left-8 md:left-12 z-[60] flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-all bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95 no-print" aria-label="Back to projects">
+      <button onClick={() => navigate('/projects')} className="fixed top-8 left-8 md:left-12 z-[60] flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-[color,border-color,transform] bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95 no-print" aria-label="Back to projects">
         <ArrowLeft className="w-4 h-4" />
         Back to Archive
       </button>
 
       {/* PDF download FAB */}
       <div className="fixed bottom-28 md:bottom-24 right-6 z-[70] no-print">
-        <button onClick={handleDownloadPDF} className="w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all hover:scale-110 active:scale-90 group" style={{ backgroundColor: FUDGE.teal, color: 'white' }} title="Download Case Study PDF">
+        <button onClick={handleDownloadPDF} className="w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-transform hover:scale-110 active:scale-90 group" style={{ backgroundColor: FUDGE.teal, color: 'white' }} title="Download Case Study PDF">
           <Download className="w-8 h-8" />
         </button>
       </div>
@@ -742,7 +742,7 @@ const FudgeCaseStudy: React.FC = () => {
         <div data-reveal className="apple-reveal flex flex-col sm:flex-row gap-4 justify-center" style={{ transitionDelay: '200ms' }}>
           <a
             href="mailto:sam@sam-bloch.com"
-            className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full font-semibold text-white text-sm transition-all hover:scale-105 active:scale-95"
+            className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full font-semibold text-white text-sm transition-transform hover:scale-105 active:scale-95"
             style={{ backgroundColor: FUDGE.teal }}
           >
             Say Hello
@@ -751,7 +751,7 @@ const FudgeCaseStudy: React.FC = () => {
             href="https://fudge.sam-bloch.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full font-semibold text-sm border border-white/10 text-white/70 hover:text-white hover:border-white/20 transition-all hover:scale-105 active:scale-95"
+            className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full font-semibold text-sm border border-white/10 text-white/70 hover:text-white hover:border-white/20 transition-[color,border-color,transform] hover:scale-105 active:scale-95"
           >
             Visit Fudge ↗
           </a>

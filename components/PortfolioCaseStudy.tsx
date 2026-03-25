@@ -160,7 +160,7 @@ const DragGallery: React.FC<{
       >
         {images.map((img, i) => (
           <button key={i} type="button" className="shrink-0 w-[80vw] md:w-[45vw] lg:w-[34vw] snap-start group text-left" onClick={() => { if (!moved.current) onOpen(img); }}>
-            <div className="relative overflow-hidden rounded-xl border border-white/[0.06] transition-all duration-500 group-hover:border-white/[0.15]">
+            <div className="relative overflow-hidden rounded-xl border border-white/[0.06] transition-[border-color] duration-500 group-hover:border-white/[0.15]">
               <img src={img.src} alt={img.alt} className="w-full h-auto transition-transform duration-500 group-hover:scale-[1.03]" loading="lazy" draggable={false} />
               {/* Step badge */}
               <div className="absolute top-3 left-3 flex items-center gap-2 bg-black/60 backdrop-blur-sm rounded-full px-3 py-1.5">
@@ -244,7 +244,7 @@ const Expandable: React.FC<{ title: string; children: React.ReactNode; defaultOp
         <h3 className="text-lg md:text-xl font-bold text-white group-hover:text-[#24A2A7] transition-colors pr-4">{title}</h3>
         <span className={`text-white/40 text-2xl font-light transition-transform duration-300 shrink-0 ${open ? 'rotate-45' : ''}`}>+</span>
       </button>
-      <div className={`overflow-hidden transition-all duration-500 ${open ? 'max-h-[500px] opacity-100 pb-6' : 'max-h-0 opacity-0'}`}>
+      <div className={`overflow-hidden transition-[max-height,opacity] duration-500 ${open ? 'max-h-[500px] opacity-100 pb-6' : 'max-h-0 opacity-0'}`}>
         <div className="text-[#9a9a9f] text-[17px] leading-[1.8]">{children}</div>
       </div>
     </div>
@@ -350,7 +350,7 @@ const PortfolioCaseStudy: React.FC = () => {
         {/* Lightbox */}
         {lightbox && (
           <div className="fixed inset-0 z-[200] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-6 md:p-12 animate-in fade-in duration-300" onClick={() => setLightbox(null)} role="dialog" aria-label="Enlarged image">
-            <button onClick={() => setLightbox(null)} className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/20 transition-all z-[201]" aria-label="Close">
+            <button onClick={() => setLightbox(null)} className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/20 transition-[color,background-color] z-[201]" aria-label="Close">
               <X className="w-5 h-5" />
             </button>
             <img src={lightbox.src} alt={lightbox.alt} className="max-w-full max-h-[85vh] rounded-2xl object-contain" onClick={e => e.stopPropagation()} />
@@ -358,14 +358,14 @@ const PortfolioCaseStudy: React.FC = () => {
         )}
 
         {/* Back */}
-        <button onClick={() => navigate('/projects')} className="fixed top-8 left-8 md:left-12 z-[60] flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-all bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95 no-print" aria-label="Back to projects">
+        <button onClick={() => navigate('/projects')} className="fixed top-8 left-8 md:left-12 z-[60] flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-[color,border-color,transform] bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95 no-print" aria-label="Back to projects">
           <ArrowLeft className="w-4 h-4" />
           Back to Archive
         </button>
 
         {/* PDF Download */}
         <div className="fixed bottom-32 md:bottom-24 right-6 z-[70] no-print">
-          <button onClick={handleDownloadPDF} className="w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all hover:scale-110 active:scale-90" style={{ backgroundColor: COLORS.teal, color: COLORS.charcoal }} title="Download Case Study PDF">
+          <button onClick={handleDownloadPDF} className="w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-transform hover:scale-110 active:scale-90" style={{ backgroundColor: COLORS.teal, color: COLORS.charcoal }} title="Download Case Study PDF">
             <Download className="w-8 h-8" />
           </button>
         </div>
@@ -682,7 +682,7 @@ const PortfolioCaseStudy: React.FC = () => {
               <p className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-white/25 mb-4">Stack</p>
               <div className="flex flex-wrap gap-3">
                 {['React 19', 'TypeScript 5.8', 'Vite 6', 'Tailwind v4', 'React Router v7', 'Spline', 'Meshy.ai', 'Claude AI'].map((tech, i) => (
-                  <span key={tech} data-reveal className="dsb-fade-up px-4 py-2 rounded-full border border-white/[0.06] bg-white/[0.02] text-[12px] text-[#9a9a9f] font-mono glow-border hover:text-white/70 transition-all duration-300" style={{ transitionDelay: `${i * 60}ms` }}>
+                  <span key={tech} data-reveal className="dsb-fade-up px-4 py-2 rounded-full border border-white/[0.06] bg-white/[0.02] text-[12px] text-[#9a9a9f] font-mono glow-border hover:text-white/70 transition-colors duration-300" style={{ transitionDelay: `${i * 60}ms` }}>
                     {tech}
                   </span>
                 ))}
@@ -816,7 +816,7 @@ const PortfolioCaseStudy: React.FC = () => {
               const domain = 'sam-bloch.com';
               window.location.href = `mailto:${user}@${domain}`;
             }}
-            className="group px-10 py-5 bg-[#24A2A7] text-black font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:brightness-110 transition-all shadow-xl active:scale-95 inline-flex items-center gap-3"
+            className="group px-10 py-5 bg-[#24A2A7] text-black font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:brightness-110 transition-[filter,transform] shadow-xl active:scale-95 inline-flex items-center gap-3"
           >
             Let's Connect
             <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">

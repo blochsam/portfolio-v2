@@ -10,6 +10,7 @@ const Experience3DRoute = React.lazy(() => import('./components/Experience3DRout
 const ResumePage = React.lazy(() => import('./components/ResumePage'));
 const ProjectsPage = React.lazy(() => import('./components/ProjectsPage'));
 const ProjectCaseStudy = React.lazy(() => import('./components/ProjectCaseStudy'));
+const PrivacyPolicyPage = React.lazy(() => import('./components/PrivacyPolicyPage'));
 
 function LazyRoute({ children }: { children: React.ReactNode }) {
   return (
@@ -37,6 +38,7 @@ export const router = createBrowserRouter([
       { path: 'resume', element: <LazyRoute><ResumePage /></LazyRoute> },
       { path: 'projects', element: <LazyRoute><ProjectsPage /></LazyRoute> },
       { path: 'projects/:projectId', element: <LazyRoute><ProjectCaseStudy /></LazyRoute> },
+      { path: 'privacy-policy', element: <LazyRoute><PrivacyPolicyPage /></LazyRoute> },
       { path: '*', element: <NotFound /> },
     ],
   },

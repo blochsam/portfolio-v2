@@ -131,7 +131,7 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
   return (
     <div ref={scrollRef} className="min-h-screen bg-[#121212] text-white selection:bg-[#24A2A7]/30 overflow-x-hidden">
       {/* Editorial Navigation */}
-      <header className="fixed top-0 w-full z-50 bg-[#121212]/95 backdrop-blur-md border-b border-white/5 p-4 md:p-6 md:px-12 flex justify-between items-center">
+      <header className="fixed top-0 w-full z-50 bg-[#121212]/[0.97] border-b border-white/5 p-4 md:p-6 md:px-12 flex justify-between items-center">
         <div className="transition-transform scale-75 md:scale-100 origin-left">
           {LOGO}
         </div>
@@ -147,12 +147,12 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
               onClick={item.action}
               onMouseEnter={() => setHoveredNav(item.id)}
               onMouseLeave={() => setHoveredNav(null)}
-              className={`text-xs font-black uppercase tracking-[0.3em] transition-all duration-300 relative py-2 whitespace-nowrap
+              className={`text-xs font-black uppercase tracking-[0.3em] transition-[color,transform] duration-300 relative py-2 whitespace-nowrap
                 ${hoveredNav === item.id ? 'text-[#24A2A7] scale-110' : 'text-gray-400 hover:text-white'}`}
               style={hoveredNav === item.id ? { textShadow: '0 0 12px rgba(36, 162, 167, 0.6)' } : undefined}
             >
               {item.label}
-              <span className={`absolute -bottom-1 left-0 h-[2px] bg-[#24A2A7] transition-all duration-500
+              <span className={`absolute -bottom-1 left-0 h-[2px] bg-[#24A2A7] transition-[width,box-shadow] duration-500
                 ${hoveredNav === item.id ? 'w-full shadow-[0_0_8px_rgba(36,162,167,0.5)]' : 'w-0'}`}>
               </span>
             </button>
@@ -161,7 +161,7 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
             onClick={() => navigate('/3d')}
             onMouseEnter={() => setHoveredNav('3d')}
             onMouseLeave={() => setHoveredNav(null)}
-            className={`px-5 py-2.5 rounded-full border text-xs font-black uppercase tracking-[0.3em] transition-all duration-300 active:scale-95 whitespace-nowrap
+            className={`px-5 py-2.5 rounded-full border text-xs font-black uppercase tracking-[0.3em] transition-[color,border-color,background-color,transform] duration-300 active:scale-95 whitespace-nowrap
               ${hoveredNav === '3d' ? 'border-[#24A2A7] text-[#24A2A7] bg-[#24A2A7]/10 scale-105' : 'border-[#24A2A7]/30 text-[#24A2A7] hover:bg-[#24A2A7]/10'}`}
             style={hoveredNav === '3d' ? { boxShadow: '0 0 16px rgba(36, 162, 167, 0.3)' } : undefined}
           >
@@ -230,7 +230,7 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
             <div className="mt-8 md:mt-10 2xl:mt-12 flex flex-wrap gap-4 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 duration-1000 delay-500">
               <button
                 onClick={handleSecureMail}
-                className="group px-8 py-4 2xl:px-10 2xl:py-5 bg-[#24A2A7] text-black font-black uppercase text-[10px] 2xl:text-xs tracking-[0.2em] rounded-full hover:brightness-110 transition-all shadow-xl active:scale-95 flex items-center gap-3"
+                className="group px-8 py-4 2xl:px-10 2xl:py-5 bg-[#24A2A7] text-black font-black uppercase text-[10px] 2xl:text-xs tracking-[0.2em] rounded-full hover:brightness-110 transition-[filter,transform] shadow-xl active:scale-95 flex items-center gap-3"
               >
                 Let's Connect
                 <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -239,7 +239,7 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
               </button>
               <button
                 onClick={() => navigate('/projects')}
-                className="px-8 py-4 2xl:px-10 2xl:py-5 border border-white/10 text-gray-400 hover:text-white hover:border-white/30 font-black uppercase text-[10px] 2xl:text-xs tracking-[0.2em] rounded-full transition-all active:scale-95"
+                className="px-8 py-4 2xl:px-10 2xl:py-5 border border-white/10 text-gray-400 hover:text-white hover:border-white/30 font-black uppercase text-[10px] 2xl:text-xs tracking-[0.2em] rounded-full transition-[color,border-color,transform] active:scale-95"
               >
                 View Work
               </button>
@@ -250,11 +250,11 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
               {/* Google wordmark */}
               <svg className="h-[18px] md:h-[22px] 2xl:h-[28px] shrink-0" viewBox="0 0 272 92" fill="currentColor"><path d="M115.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18C71.25 34.32 81.24 25 93.5 25s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44S80.99 39.2 80.99 47.18c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z"/><path d="M163.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18C119.25 34.32 129.24 25 141.5 25s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44s-12.51 5.46-12.51 13.44c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z"/><path d="M209.75 26.34v39.82c0 16.38-9.66 23.07-21.08 23.07-10.75 0-17.22-7.19-19.66-13.07l8.48-3.53c1.51 3.61 5.21 7.87 11.17 7.87 7.31 0 11.84-4.51 11.84-13v-3.19h-.34c-2.18 2.69-6.38 5.04-11.68 5.04-11.09 0-21.25-9.66-21.25-22.09 0-12.52 10.16-22.26 21.25-22.26 5.29 0 9.49 2.35 11.68 4.96h.34v-3.61h9.25zm-8.56 20.92c0-7.81-5.21-13.52-11.84-13.52-6.72 0-12.35 5.71-12.35 13.52 0 7.73 5.63 13.36 12.35 13.36 6.63 0 11.84-5.63 11.84-13.36z"/><path d="M225 3v65h-9.5V3h9.5z"/><path d="M262.02 54.48l7.56 5.04c-2.44 3.61-8.32 9.83-18.48 9.83-12.6 0-22.01-9.74-22.01-22.18 0-13.19 9.49-22.18 20.92-22.18 11.51 0 17.14 9.16 18.98 14.11l1.01 2.52-29.65 12.28c2.27 4.45 5.8 6.72 10.75 6.72 4.96 0 8.4-2.44 10.92-6.14zm-23.27-7.98l19.82-8.23c-1.09-2.77-4.37-4.7-8.23-4.7-4.96 0-11.84 4.37-11.59 12.93z"/><path d="M35.29 41.19V32H67c.31 1.64.47 3.58.47 5.68 0 7.06-1.93 15.79-8.15 22.01-6.05 6.3-13.78 9.66-24.02 9.66C16.32 69.35.36 53.89.36 34.91.36 15.93 16.32.47 35.3.47c10.5 0 17.98 4.12 23.6 9.49l-6.64 6.64c-4.03-3.78-9.49-6.72-16.97-6.72-13.86 0-24.7 11.17-24.7 25.03 0 13.86 10.84 25.03 24.7 25.03 8.99 0 14.11-3.61 17.39-6.89 2.66-2.66 4.41-6.46 5.1-11.65l-22.49-.21z"/></svg>
               {/* YouTube full wordmark */}
-              <img src="/youtube-logo.svg" alt="YouTube" className="h-[22px] md:h-[28px] 2xl:h-[34px] shrink-0" style={{ filter: 'brightness(0) invert(1)' }} />
+              <img src="/youtube-logo.svg" alt="YouTube" className="h-[22px] md:h-[28px] 2xl:h-[34px] shrink-0 brightness-0 invert" />
               {/* Rocket Mortgage full wordmark */}
-              <img src="/rocket-logo.svg" alt="Rocket Mortgage" className="h-[20px] md:h-[24px] 2xl:h-[30px] shrink-0" style={{ filter: 'brightness(0) invert(1)' }} />
+              <img src="/rocket-logo.svg" alt="Rocket Mortgage" className="h-[20px] md:h-[24px] 2xl:h-[30px] shrink-0 brightness-0 invert" />
               {/* MSCI full wordmark */}
-              <img src="/msci-logo.svg" alt="MSCI" className="h-[24px] md:h-[30px] 2xl:h-[36px] shrink-0" style={{ filter: 'brightness(0) invert(1)' }} />
+              <img src="/msci-logo.svg" alt="MSCI" className="h-[24px] md:h-[30px] 2xl:h-[36px] shrink-0 brightness-0 invert" />
             </div>
           </div>
 
@@ -272,12 +272,8 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
                 fetchPriority="high"
                 className="w-full h-full object-cover object-center grayscale"
               />
-              {/* Top + bottom fades (always) */}
-              <div className="absolute inset-x-0 top-0 h-1/4 md:h-1/3 pointer-events-none" style={{ background: 'linear-gradient(to bottom, #121212 0%, transparent 100%)' }} />
-              <div className="absolute inset-x-0 bottom-0 h-1/3 md:h-1/2 pointer-events-none" style={{ background: 'linear-gradient(to top, #121212 0%, transparent 60%)' }} />
-              {/* Side fades — desktop only (mobile portrait is centered, no need) */}
-              <div className="absolute inset-y-0 left-0 w-1/4 pointer-events-none hidden md:block" style={{ background: 'linear-gradient(to right, #121212 0%, transparent 100%)' }} />
-              <div className="absolute inset-y-0 right-0 w-1/4 pointer-events-none hidden md:block" style={{ background: 'linear-gradient(to left, #121212 0%, transparent 100%)' }} />
+              {/* Vignette fade — single element combining all edges */}
+              <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: 'inset 0 80px 60px -20px #121212, inset 0 -100px 80px -20px #121212, inset 60px 0 40px -20px #121212, inset -60px 0 40px -20px #121212' }} />
             </div>
           </div>
         </section>
@@ -285,7 +281,7 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
         {/* ════════════════════════════════════════
             SECTION 2 — FEATURED WORK (#2)
            ════════════════════════════════════════ */}
-        <section className="scroll-reveal px-6 md:px-12 max-w-7xl mx-auto mb-24 relative z-20">
+        <section className="scroll-reveal content-auto px-6 md:px-12 max-w-7xl mx-auto mb-24 relative z-20">
           <div className="flex items-end justify-between mb-8 md:mb-10 border-b border-white/5 pb-6">
             <h2 className="text-lg md:text-xl font-black tracking-tighter uppercase">Selected Work</h2>
             <button
@@ -302,7 +298,7 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
               <button
                 key={project.id}
                 onClick={() => navigate(`/projects/${project.id}`)}
-                className="group relative bg-[#1a1a1a]/40 border border-white/5 rounded-2xl overflow-hidden hover:bg-[#202020] transition-all duration-500 text-left"
+                className="group relative bg-[#1a1a1a]/40 border border-white/5 rounded-2xl overflow-hidden hover:bg-[#202020] transition-[background-color] duration-500 text-left"
                 style={{ transitionDelay: `${i * 100}ms` }}
                 aria-label={`View case study: ${project.title}`}
               >
@@ -314,11 +310,11 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
                       width={640}
                       height={400}
                       loading="lazy"
-                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
+                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-[filter,transform] duration-500"
                       style={{ objectPosition: project.imagePosition ?? 'center' }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] via-transparent to-transparent opacity-60" />
-                    <span className="absolute top-3 left-3 text-[10px] font-mono text-[#24A2A7] font-bold uppercase tracking-widest px-3 py-1 bg-black/60 backdrop-blur-sm rounded-full">
+                    <span className="absolute top-3 left-3 text-[10px] font-mono text-[#24A2A7] font-bold uppercase tracking-widest px-3 py-1 bg-black/80 rounded-full">
                       {project.category}
                     </span>
                   </div>
@@ -326,7 +322,7 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
                 <div className="p-5 md:p-6">
                   <h3 className="text-lg font-black tracking-tight mb-2 group-hover:text-[#24A2A7] transition-colors leading-tight">{project.title}</h3>
                   <p className="text-gray-400 text-sm leading-relaxed line-clamp-2 mb-4">{project.description}</p>
-                  <span className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#24A2A7] group-hover:gap-4 transition-all">
+                  <span className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#24A2A7] group-hover:gap-4 transition-[gap]">
                     View Case Study
                     <svg className="w-3 h-3 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
                   </span>
@@ -339,7 +335,7 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
         {/* ════════════════════════════════════════
             SECTION 3 — FOCUS AREAS (inline expandable, #1 + #8)
            ════════════════════════════════════════ */}
-        <section className="scroll-reveal px-6 md:px-12 max-w-7xl mx-auto mb-24 relative z-20">
+        <section className="scroll-reveal content-auto px-6 md:px-12 max-w-7xl mx-auto mb-24 relative z-20">
           <div className="flex items-end justify-between mb-8 md:mb-10 border-b border-white/5 pb-6">
             <h2 className="text-lg md:text-xl font-black tracking-tighter uppercase">Focus Areas</h2>
           </div>
@@ -375,7 +371,7 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
                           <span key={tag} className="text-[10px] font-bold uppercase tracking-wider text-gray-500 border border-white/5 px-2.5 py-1 rounded-md">{tag}</span>
                         ))}
                       </div>
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${isOpen ? 'bg-[#24A2A7]/10 rotate-180' : 'bg-white/[0.03]'}`}>
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-[background-color,transform] duration-300 ${isOpen ? 'bg-[#24A2A7]/10 rotate-180' : 'bg-white/[0.03]'}`}>
                         <ChevronDown className={`w-4 h-4 transition-colors duration-300 ${isOpen ? 'text-[#24A2A7]' : 'text-gray-500'}`} />
                       </div>
                     </div>
@@ -383,7 +379,7 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
 
                   {/* Expandable content — always in DOM for SEO (#8) */}
                   <div
-                    className="transition-all duration-600 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] overflow-hidden"
+                    className="transition-[max-height,opacity] duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] overflow-hidden"
                     style={{ maxHeight: isOpen ? '1200px' : '0px', opacity: isOpen ? 1 : 0 }}
                   >
                     <div className="px-5 md:px-7 pb-7 md:pb-9">
@@ -431,7 +427,7 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
         {/* ════════════════════════════════════════
             SECTION 4 — ABOUT (condensed)
            ════════════════════════════════════════ */}
-        <section className="scroll-reveal px-6 md:px-12 max-w-5xl mx-auto mb-24 relative z-20">
+        <section className="scroll-reveal content-auto px-6 md:px-12 max-w-5xl mx-auto mb-24 relative z-20">
           <div className="bg-[#1a1a1a]/40 border border-white/5 rounded-[2rem] p-8 md:p-14 lg:p-20 overflow-hidden relative">
             <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-10 lg:gap-16 items-center">
               <div>
@@ -446,7 +442,7 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
                 </p>
                 <button
                   onClick={openAbout}
-                  className="group flex items-center gap-4 px-8 py-4 bg-transparent text-[#24A2A7] border-2 border-[#24A2A7] font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:bg-[#24A2A7] hover:text-[#121212] transition-all shadow-xl active:scale-95"
+                  className="group flex items-center gap-4 px-8 py-4 bg-transparent text-[#24A2A7] border-2 border-[#24A2A7] font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:bg-[#24A2A7] hover:text-[#121212] transition-[color,background-color,transform] shadow-xl active:scale-95"
                 >
                   Full Bio
                   <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">

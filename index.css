@@ -7,6 +7,9 @@ body {
   color: white;
   margin: 0;
   overflow-x: hidden;
+  /* Firefox scrollbar (standard) */
+  scrollbar-width: thin;
+  scrollbar-color: #24A2A7 #121212;
 }
 
 .font-mono {
@@ -59,6 +62,11 @@ body {
   animation: snappyEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+.overlay-content {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(36, 162, 167, 0.3) transparent;
+}
+
 .overlay-content::-webkit-scrollbar {
   width: 4px;
 }
@@ -72,6 +80,8 @@ body {
 .overlay-scroll-inset {
   scrollbar-gutter: stable;
   padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(36, 162, 167, 0.25) transparent;
 }
 
 .overlay-scroll-inset::-webkit-scrollbar {
@@ -115,6 +125,11 @@ body {
 .about-reveal:nth-child(6) { transition-delay: 400ms; }
 
 /* Thin horizontal scrollbar for showcase sections */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(36, 162, 167, 0.25) transparent;
+}
+
 .scrollbar-thin::-webkit-scrollbar {
   height: 4px;
 }
@@ -178,6 +193,13 @@ body {
 }
 
 @media (max-width: 768px), (hover: none) {
+  .nature-parallax {
+    background-attachment: scroll;
+  }
+}
+
+/* iOS Safari reports hover:hover on iPads with keyboards but still breaks fixed attachment */
+@supports (-webkit-touch-callout: none) {
   .nature-parallax {
     background-attachment: scroll;
   }
@@ -247,6 +269,12 @@ body {
 .reveal-left.revealed, .reveal-right.revealed {
   opacity: 1;
   transform: translateX(0);
+}
+
+/* Skip layout/paint for off-screen sections to reduce scroll jank */
+.content-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
 }
 
 /* Restore pointer cursor on interactive elements (Tailwind Preflight removes it) */

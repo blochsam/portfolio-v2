@@ -144,7 +144,7 @@ const Overlay: React.FC<OverlayProps> = ({ content, onClose }) => {
 
         <button
           onClick={onClose}
-          className="absolute top-8 right-8 text-gray-400 hover:text-white transition-all p-3 min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-white/5 rounded-full active:scale-90 z-20"
+          className="absolute top-8 right-8 text-gray-400 hover:text-white transition-[color,background-color,transform] p-3 min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-white/5 rounded-full active:scale-90 z-20"
           aria-label="Close"
         >
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -175,7 +175,7 @@ const Overlay: React.FC<OverlayProps> = ({ content, onClose }) => {
                   width={640}
                   height={480}
                   loading="lazy"
-                  className="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-105"
+                  className="w-full h-full object-cover grayscale transition-[filter,transform] duration-700 group-hover:grayscale-0 group-hover:scale-105"
                   onError={(e) => {
                     (e.target as HTMLImageElement).style.display = 'none';
                   }}
@@ -190,7 +190,7 @@ const Overlay: React.FC<OverlayProps> = ({ content, onClose }) => {
 
         <button
           onClick={onClose}
-          className="w-full py-5 rounded-2xl font-black uppercase tracking-[0.3em] text-[12px] transition-all hover:brightness-110 active:scale-95 shadow-xl flex items-center justify-center gap-4 group relative z-10"
+          className="w-full py-5 rounded-2xl font-black uppercase tracking-[0.3em] text-[12px] transition-[filter,transform] hover:brightness-110 active:scale-95 shadow-xl flex items-center justify-center gap-4 group relative z-10"
           style={{ backgroundColor: COLORS.teal, color: COLORS.charcoal }}
         >
           <svg className="w-5 h-5 transition-transform group-hover:-translate-x-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">

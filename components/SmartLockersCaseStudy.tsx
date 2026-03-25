@@ -52,7 +52,7 @@ const Img: React.FC<{
     onClick={() => onOpen({ src, alt })}
     className={`group block w-full text-left cursor-zoom-in ${className}`}
   >
-    <div className="overflow-hidden rounded-lg border border-[#24A2A7]/20 transition-all duration-500 group-hover:shadow-lg group-hover:shadow-[#24A2A7]/10 group-hover:border-[#24A2A7]/40">
+    <div className="overflow-hidden rounded-lg border border-[#24A2A7]/20 transition-[border-color,box-shadow] duration-500 group-hover:shadow-lg group-hover:shadow-[#24A2A7]/10 group-hover:border-[#24A2A7]/40">
       <img src={src} alt={alt} className="w-full h-auto transition-transform duration-700 group-hover:scale-[1.02]" loading={loading} />
     </div>
     {caption && <p className="text-[12px] text-[#9a9a9f] mt-3 tracking-wide font-mono">{caption}</p>}
@@ -99,7 +99,7 @@ const ProcessFlow: React.FC<{ steps: string[] }> = ({ steps }) => (
 
 /* ─── Spec card (technical detail card) ─── */
 const SpecCard: React.FC<{ icon: string; title: string; desc: string }> = ({ icon, title, desc }) => (
-  <div data-reveal className="blueprint-reveal p-6 rounded-lg border border-[#24A2A7]/10 bg-[#24A2A7]/[0.03] hover:border-[#24A2A7]/25 transition-all duration-500 hover:shadow-lg hover:shadow-[#24A2A7]/5">
+  <div data-reveal className="blueprint-reveal p-6 rounded-lg border border-[#24A2A7]/10 bg-[#24A2A7]/[0.03] hover:border-[#24A2A7]/25 transition-[border-color,box-shadow] duration-500 hover:shadow-lg hover:shadow-[#24A2A7]/5">
     <div className="text-2xl mb-3">{icon}</div>
     <h3 className="text-[16px] font-bold text-white mb-2 font-mono">{title}</h3>
     <p className="text-[15px] text-[#9a9a9f] leading-relaxed">{desc}</p>
@@ -266,7 +266,7 @@ const SmartLockersCaseStudy: React.FC = () => {
       {/* ─── Back button ─── */}
       <button
         onClick={() => navigate('/projects')}
-        className="fixed top-6 left-6 z-50 flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-white/70 bg-[#0a0f1c]/80 backdrop-blur-md border border-[#24A2A7]/10 rounded-full hover:text-[#24A2A7] hover:border-[#24A2A7]/30 transition-all"
+        className="fixed top-6 left-6 z-50 flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-white/70 bg-[#0a0f1c]/80 backdrop-blur-md border border-[#24A2A7]/10 rounded-full hover:text-[#24A2A7] hover:border-[#24A2A7]/30 transition-[color,border-color]"
       >
         <ArrowLeft className="w-4 h-4" /> Back to Archive
       </button>
@@ -275,7 +275,7 @@ const SmartLockersCaseStudy: React.FC = () => {
       <div className="fixed bottom-32 md:bottom-24 right-6 z-[70] no-print">
         <button
           onClick={handleDownloadPDF}
-          className="w-16 h-16 rounded-full bg-[#24A2A7] text-[#0a0f1c] flex items-center justify-center shadow-2xl shadow-[#24A2A7]/20 hover:scale-110 active:scale-90 transition-all"
+          className="w-16 h-16 rounded-full bg-[#24A2A7] text-[#0a0f1c] flex items-center justify-center shadow-2xl shadow-[#24A2A7]/20 hover:scale-110 active:scale-90 transition-transform"
           title="Download Case Study PDF"
         >
           <Download className="w-8 h-8" />
@@ -692,7 +692,7 @@ const SmartLockersCaseStudy: React.FC = () => {
             },
           ].map((item, i) => (
             <TiltCard key={i}>
-              <div data-reveal className="blueprint-reveal h-full p-8 rounded-xl border border-[#24A2A7]/10 bg-[#24A2A7]/[0.02] hover:border-[#24A2A7]/25 transition-all duration-500">
+              <div data-reveal className="blueprint-reveal h-full p-8 rounded-xl border border-[#24A2A7]/10 bg-[#24A2A7]/[0.02] hover:border-[#24A2A7]/25 transition-[border-color,box-shadow] duration-500">
                 <h3 className="text-[17px] font-bold text-white mb-3">{item.title}</h3>
                 <p className="text-[15px] text-[#9a9a9f] leading-[1.7]">{item.body}</p>
               </div>

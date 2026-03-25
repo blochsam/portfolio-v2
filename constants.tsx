@@ -124,7 +124,7 @@ I truly love connecting with people and hearing their stories––especially wh
 };
 
 export const LOGO = (
-  <svg viewBox="0 0 400 100" className="h-12 md:h-16">
+  <svg viewBox="0 0 400 100" className="h-12 md:h-16" role="img" aria-label="Sam Bloch">
     <text x="0" y="70" style={{ fill: '#FFFFFF', fontWeight: 800, fontSize: '64px', letterSpacing: '-2px' }}>SAM</text>
     <text x="150" y="70" style={{ fill: COLORS.teal, fontWeight: 800, fontSize: '64px', letterSpacing: '-2px' }}>BLOCH</text>
   </svg>

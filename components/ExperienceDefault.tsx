@@ -3,13 +3,24 @@ import { useOutletContext, useLocation } from 'react-router-dom';
 import Experience2D from './Experience2D';
 import { AppShellContext } from '../types';
 
-// Eagerly kick off the import on desktop so the 2MB chunk starts downloading
-// immediately instead of waiting for useEffect → setState → re-render.
-const experience3DImport = typeof window !== 'undefined' &&
-  !window.matchMedia('(pointer: coarse)').matches &&
-  window.innerWidth >= 768
-    ? import('./Experience3D')
-    : null;
+// Start loading the 2MB 3D chunk on desktop, but defer to idle so it doesn't
+// compete with first paint. Falls back to immediate import if requestIdleCallback
+// isn't available (Safari <16.4).
+let experience3DImport: Promise<typeof import('./Experience3D')> | null = null;
+
+if (typeof window !== 'undefined' &&
+    !window.matchMedia('(pointer: coarse)').matches &&
+    window.innerWidth >= 768) {
+  if ('requestIdleCallback' in window) {
+    experience3DImport = new Promise((resolve) => {
+      window.requestIdleCallback(() => {
+        resolve(import('./Experience3D'));
+      });
+    });
+  } else {
+    experience3DImport = import('./Experience3D');
+  }
+}
 
 const Experience3D = lazy(() => experience3DImport || import('./Experience3D'));
 

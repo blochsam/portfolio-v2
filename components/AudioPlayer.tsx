@@ -101,7 +101,7 @@ export const AudioPlayer: React.FC = () => {
   if (loadError) {
     return (
       <div
-        className="fixed left-6 z-50 flex items-center gap-2 px-4 py-2 bg-red-900/20 border border-red-900/50 rounded-full backdrop-blur-md transition-[bottom] duration-300 ease-out pointer-events-auto"
+        className="fixed left-6 z-50 flex items-center gap-2 px-4 py-2 bg-red-900/40 border border-red-900/50 rounded-full transition-[bottom] duration-300 ease-out pointer-events-auto"
         style={{ bottom: bottomOffset }}
       >
         <AlertCircle className="w-4 h-4 text-red-500" />
@@ -117,7 +117,7 @@ export const AudioPlayer: React.FC = () => {
     >
       <button
         onClick={toggle}
-        className="p-3 rounded-full border-2 transition-all hover:scale-110 active:scale-90 group backdrop-blur-md relative pointer-events-auto"
+        className="p-3 rounded-full border-2 transition-[border-color,background-color,transform] hover:scale-110 active:scale-90 group relative pointer-events-auto"
         style={{
           borderColor: playing ? BRAND_COLORS.teal : '#333333',
           backgroundColor: playing ? `${BRAND_COLORS.teal}20` : 'rgba(0,0,0,0.4)'
@@ -132,7 +132,7 @@ export const AudioPlayer: React.FC = () => {
       </button>
 
       <div
-        className={`ml-4 px-4 py-2 bg-black/80 text-[11px] font-bold text-[#24A2A7] border border-[#24A2A7]/30 backdrop-blur-md rounded-full pointer-events-none whitespace-nowrap shadow-xl transition-all duration-500 ease-in-out ${
+        className={`ml-4 px-4 py-2 bg-black/90 text-[11px] font-bold text-[#24A2A7] border border-[#24A2A7]/30 rounded-full pointer-events-none whitespace-nowrap shadow-xl transition-[opacity,transform] duration-500 ease-in-out ${
           isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'
         }`}
       >

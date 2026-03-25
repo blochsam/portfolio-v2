@@ -66,7 +66,7 @@ export const CaseStudyImage: React.FC<{
   onOpen,
   className = '',
   loading = 'lazy',
-  wrapperClassName = 'overflow-hidden rounded-2xl border border-white/[0.06] glow-border transition-all duration-700 group-hover:border-white/[0.12] group-hover:shadow-2xl group-hover:shadow-[#24A2A7]/5',
+  wrapperClassName = 'overflow-hidden rounded-2xl border border-white/[0.06] glow-border transition-[border-color,box-shadow] duration-700 group-hover:border-white/[0.12] group-hover:shadow-2xl group-hover:shadow-[#24A2A7]/5',
   captionClassName = 'text-[12px] text-[#9a9a9f] mt-3 tracking-wide',
 }) => (
   <button

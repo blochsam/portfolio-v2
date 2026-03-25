@@ -107,7 +107,7 @@ const AboutOverlay: React.FC<AboutOverlayProps> = ({ isOpen, onClose }) => {
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-6 right-6 md:top-8 md:right-8 text-gray-400 hover:text-white transition-all p-2 hover:bg-white/5 rounded-full active:scale-90 z-[120]"
+          className="absolute top-6 right-6 md:top-8 md:right-8 text-gray-400 hover:text-white transition-[color,background-color,transform] p-2 hover:bg-white/5 rounded-full active:scale-90 z-[120]"
           aria-label="Close"
         >
           <X className="w-6 h-6" />
@@ -140,6 +140,8 @@ const AboutOverlay: React.FC<AboutOverlayProps> = ({ isOpen, onClose }) => {
                   <img
                     src="/about-1.webp"
                     alt="Sam Origins"
+                    width={400}
+                    height={500}
                     className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-[filter] duration-700 ease-out"
                     decoding="async"
                   />
@@ -192,9 +194,9 @@ const AboutOverlay: React.FC<AboutOverlayProps> = ({ isOpen, onClose }) => {
                     { name: 'University of the Pacific', degree: 'M.A. Leadership, Innovation & Change, 2026', focus: 'Organizational leadership in AI era', logo: '/uop.webp' }
                   ].map((school) => (
                     <div key={school.name} className="flex flex-col items-center text-center group">
-                      <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-6 border border-white/5 transition-all group-hover:scale-110 group-hover:border-[#24A2A7]/40 relative">
+                      <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-6 border border-white/5 transition-[transform,border-color] group-hover:scale-110 group-hover:border-[#24A2A7]/40 relative">
                         {/* Tooltip with school name */}
-                        <div className="absolute -top-14 left-1/2 -translate-x-1/2 bg-[#24A2A7] text-black text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap z-20 shadow-xl">
+                        <div className="absolute -top-14 left-1/2 -translate-x-1/2 bg-[#24A2A7] text-black text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-20 shadow-xl">
                           {school.name}
                           <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#24A2A7] rotate-45"></div>
                         </div>
@@ -222,6 +224,8 @@ const AboutOverlay: React.FC<AboutOverlayProps> = ({ isOpen, onClose }) => {
                   <img
                     src="/about-2.webp"
                     alt="Sam Teaching"
+                    width={640}
+                    height={400}
                     className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-[filter] duration-700 ease-out"
                     loading="lazy"
                     decoding="async"
@@ -272,6 +276,8 @@ const AboutOverlay: React.FC<AboutOverlayProps> = ({ isOpen, onClose }) => {
                   <img
                     src="/about-3.webp"
                     alt="Sam Passions"
+                    width={400}
+                    height={500}
                     className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-[filter] duration-700 ease-out"
                     loading="lazy"
                     decoding="async"
@@ -283,7 +289,7 @@ const AboutOverlay: React.FC<AboutOverlayProps> = ({ isOpen, onClose }) => {
             {/* ── Return Button ── */}
             <button
               onClick={onClose}
-              className="w-full py-5 rounded-2xl font-black uppercase tracking-[0.3em] text-[12px] transition-all hover:brightness-110 active:scale-95 shadow-xl flex items-center justify-center gap-4 bg-[#24A2A7] text-[#121212]"
+              className="w-full py-5 rounded-2xl font-black uppercase tracking-[0.3em] text-[12px] transition-[filter,transform] hover:brightness-110 active:scale-95 shadow-xl flex items-center justify-center gap-4 bg-[#24A2A7] text-[#121212]"
             >
               Return
             </button>

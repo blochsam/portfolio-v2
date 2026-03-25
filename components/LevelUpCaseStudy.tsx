@@ -356,7 +356,7 @@ const LevelUpCaseStudy: React.FC = () => {
       className={`block w-full text-left cursor-zoom-in group ${className}`}
     >
       <div
-        className="overflow-hidden border-[3px] transition-all duration-100 group-hover:shadow-[2px_2px_0px_0px_#2d2d2d] group-hover:translate-x-[1px] group-hover:translate-y-[1px]"
+        className="overflow-hidden border-[3px] transition-[box-shadow,transform] duration-100 group-hover:shadow-[2px_2px_0px_0px_#2d2d2d] group-hover:translate-x-[1px] group-hover:translate-y-[1px]"
         style={{ borderRadius: WOBBLY.md, borderColor: INK, boxShadow: `4px 4px 0px 0px ${INK}` }}
       >
         <img src={src} alt={alt} className="w-full h-auto" loading="lazy" />
@@ -570,7 +570,7 @@ const LevelUpCaseStudy: React.FC = () => {
       <ScrollProgress />
 
       {/* ═══════════════════ BACK BUTTON ═══════════════════ */}
-      <button onClick={() => navigate('/projects')} className="fixed top-8 left-8 md:left-12 z-[60] flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-all bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95 no-print" aria-label="Back to projects">
+      <button onClick={() => navigate('/projects')} className="fixed top-8 left-8 md:left-12 z-[60] flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-[color,border-color,transform] bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95 no-print" aria-label="Back to projects">
         <ArrowLeft className="w-4 h-4" />
         Back to Archive
       </button>
@@ -578,7 +578,7 @@ const LevelUpCaseStudy: React.FC = () => {
       {/* ═══════════════════ PDF FAB ═══════════════════ */}
       <button
         onClick={handleDownloadPDF}
-        className="fixed bottom-28 right-8 md:right-12 z-[50] w-16 h-16 flex items-center justify-center border-[3px] transition-all duration-100 no-print hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_#1B7A7E] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
+        className="fixed bottom-28 right-8 md:right-12 z-[50] w-16 h-16 flex items-center justify-center border-[3px] transition-[box-shadow,transform] duration-100 no-print hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_#1B7A7E] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
         style={{
           borderRadius: WOBBLY.circle,
           borderColor: TEAL_DARK,
@@ -1288,7 +1288,7 @@ const LevelUpCaseStudy: React.FC = () => {
               href="https://levelupqu.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 px-8 py-3 border-[3px] text-lg transition-all duration-100 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#1B7A7E] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none no-underline"
+              className="inline-flex items-center justify-center gap-2 px-8 py-3 border-[3px] text-lg transition-[box-shadow,transform] duration-100 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#1B7A7E] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none no-underline"
               style={{
                 borderRadius: WOBBLY.btn,
                 borderColor: TEAL_DARK,
@@ -1305,7 +1305,7 @@ const LevelUpCaseStudy: React.FC = () => {
               href="/level-up-syllabus.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 px-8 py-3 border-[3px] text-lg transition-all duration-100 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#2d2d2d] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none no-underline"
+              className="inline-flex items-center justify-center gap-2 px-8 py-3 border-[3px] text-lg transition-[box-shadow,transform] duration-100 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#2d2d2d] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none no-underline"
               style={{
                 borderRadius: WOBBLY.btn,
                 borderColor: INK,
@@ -1331,7 +1331,7 @@ const LevelUpCaseStudy: React.FC = () => {
           </p>
           <button
             onClick={() => navigate('/projects')}
-            className="inline-flex items-center gap-2 px-6 py-2 border-2 text-base transition-all duration-100 hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#2d2d2d]"
+            className="inline-flex items-center gap-2 px-6 py-2 border-2 text-base transition-[box-shadow,transform] duration-100 hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#2d2d2d]"
             style={{
               borderRadius: WOBBLY.btn,
               borderColor: INK,
@@ -1357,7 +1357,7 @@ const LevelUpCaseStudy: React.FC = () => {
           aria-modal="true"
         >
           <button
-            className="absolute top-6 right-6 z-[201] w-12 h-12 flex items-center justify-center border-[3px] transition-all duration-100 hover:rotate-6"
+            className="absolute top-6 right-6 z-[201] w-12 h-12 flex items-center justify-center border-[3px] transition-transform duration-100 hover:rotate-6"
             style={{
               borderRadius: WOBBLY.circle,
               borderColor: 'white',

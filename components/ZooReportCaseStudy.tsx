@@ -206,7 +206,7 @@ const ZooReportCaseStudy: React.FC = () => {
       {/* Lightbox */}
       {lightbox && (
         <div className="fixed inset-0 z-[200] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-6 md:p-12 animate-in fade-in duration-300" onClick={() => setLightbox(null)} role="dialog" aria-label="Enlarged image">
-          <button onClick={() => setLightbox(null)} className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/20 transition-all z-[201]" aria-label="Close">
+          <button onClick={() => setLightbox(null)} className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/20 transition-[color,background-color] z-[201]" aria-label="Close">
             <X className="w-5 h-5" />
           </button>
           <img src={lightbox.src} alt={lightbox.alt} className="max-w-full max-h-[85vh] rounded-2xl object-contain" onClick={(e) => e.stopPropagation()} />
@@ -214,7 +214,7 @@ const ZooReportCaseStudy: React.FC = () => {
       )}
 
       {/* Back */}
-      <button onClick={() => navigate('/projects')} className="fixed top-8 left-8 md:left-12 z-[60] flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-all bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95 no-print" aria-label="Back to projects">
+      <button onClick={() => navigate('/projects')} className="fixed top-8 left-8 md:left-12 z-[60] flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-[color,border-color,transform] bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95 no-print" aria-label="Back to projects">
         <ArrowLeft className="w-4 h-4" />
         Back to Archive
       </button>
@@ -223,7 +223,7 @@ const ZooReportCaseStudy: React.FC = () => {
       <div className="fixed bottom-28 md:bottom-24 right-6 z-[70] no-print">
         <button
           onClick={handleDownloadPDF}
-          className="w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all hover:scale-110 active:scale-90 group"
+          className="w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-transform hover:scale-110 active:scale-90 group"
           style={{ backgroundColor: COLORS.teal, color: COLORS.charcoal }}
           title="Download Case Study PDF"
         >
@@ -717,7 +717,7 @@ const ZooReportCaseStudy: React.FC = () => {
             const domain = 'sam-bloch.com';
             window.location.href = `mailto:${user}@${domain}`;
           }}
-          className="group px-10 py-5 bg-[#24A2A7] text-black font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:brightness-110 transition-all shadow-xl active:scale-95 inline-flex items-center gap-3"
+          className="group px-10 py-5 bg-[#24A2A7] text-black font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:brightness-110 transition-[filter,transform] shadow-xl active:scale-95 inline-flex items-center gap-3"
         >
           Let's Connect
           <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">

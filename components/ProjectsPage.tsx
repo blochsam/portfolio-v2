@@ -35,7 +35,7 @@ const ProjectsPage: React.FC = () => {
           }
         }}
         aria-label="Back to home"
-        className="fixed top-8 left-8 md:left-12 z-[60] flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-all bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95"
+        className="fixed top-8 left-8 md:left-12 z-[60] flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-[color,border-color,transform] bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95"
       >
         <ArrowLeft className="w-4 h-4" aria-hidden="true" />
         Back
@@ -55,7 +55,7 @@ const ProjectsPage: React.FC = () => {
                   onClick={() => setFilter(cat)}
                   aria-pressed={filter === cat}
                   aria-label={`Filter by ${cat}`}
-                  className={`px-5 py-3 min-h-[44px] rounded-full text-[10px] font-bold uppercase tracking-widest transition-all border ${
+                  className={`px-5 py-3 min-h-[44px] rounded-full text-[10px] font-bold uppercase tracking-widest transition-[color,background-color,border-color,box-shadow] border ${
                     filter === cat
                     ? 'bg-[#24A2A7] border-[#24A2A7] text-black shadow-[0_0_20px_rgba(36,162,167,0.3)]'
                     : 'bg-white/5 border-white/10 text-gray-400 hover:border-[#24A2A7]/50'
@@ -76,7 +76,7 @@ const ProjectsPage: React.FC = () => {
                 placeholder="Search projects..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-full py-3 pl-12 pr-6 text-sm focus:outline-none focus:border-[#24A2A7] transition-all placeholder:text-gray-400"
+                className="w-full bg-white/5 border border-white/10 rounded-full py-3 pl-12 pr-6 text-sm focus:outline-none focus:border-[#24A2A7] transition-[border-color] placeholder:text-gray-400"
               />
             </div>
           </div>
@@ -99,7 +99,7 @@ const ProjectsPage: React.FC = () => {
               type="button"
               onClick={() => navigate(`/projects/${project.id}`)}
               aria-label={`View case study: ${project.title}`}
-              className="group relative bg-[#1a1a1a]/40 border border-white/5 rounded-3xl overflow-hidden hover:bg-[#202020] transition-all duration-500 flex flex-col h-full text-left cursor-pointer w-full"
+              className="group relative bg-[#1a1a1a]/40 border border-white/5 rounded-3xl overflow-hidden hover:bg-[#202020] transition-[background-color] duration-500 flex flex-col h-full text-left cursor-pointer w-full"
             >
               {/* Header image */}
               <div className="relative w-full aspect-[16/10] overflow-hidden shrink-0">
@@ -110,7 +110,7 @@ const ProjectsPage: React.FC = () => {
                     width={640}
                     height={400}
                     loading="lazy"
-                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
+                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-[filter,transform] duration-500"
                     style={{ objectPosition: project.imagePosition ?? 'center' }}
                   />
                 ) : (
@@ -144,7 +144,7 @@ const ProjectsPage: React.FC = () => {
                   ))}
                 </div>
 
-                <span className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#24A2A7] group-hover:gap-4 transition-all">
+                <span className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#24A2A7] group-hover:gap-4 transition-[gap]">
                   View Case Study
                   <ArrowLeft className="w-3 h-3 rotate-180" strokeWidth={3} />
                 </span>

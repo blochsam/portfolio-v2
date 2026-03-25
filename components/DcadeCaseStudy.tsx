@@ -53,7 +53,7 @@ const Img: React.FC<{
     onClick={() => onOpen({ src, alt })}
     className={`group block w-full text-left cursor-zoom-in ${className}`}
   >
-    <div className="overflow-hidden rounded-lg border border-[#24A2A7]/20 glow-border transition-all duration-500 group-hover:shadow-lg group-hover:shadow-[#24A2A7]/10">
+    <div className="overflow-hidden rounded-lg border border-[#24A2A7]/20 glow-border transition-[box-shadow] duration-500 group-hover:shadow-lg group-hover:shadow-[#24A2A7]/10">
       <img src={src} alt={alt} className="w-full h-auto transition-transform duration-700 group-hover:scale-[1.02]" loading="lazy" />
     </div>
     {caption && <p className="text-[12px] text-[#9a9a9f] mt-3 tracking-wide font-mono">{caption}</p>}
@@ -394,7 +394,7 @@ const DcadeCaseStudy: React.FC = () => {
         <div className="fixed inset-0 z-[200] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-6 md:p-12"
           onClick={() => setLightbox(null)} role="dialog" aria-label="Enlarged image">
           <button onClick={() => setLightbox(null)}
-            className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/20 transition-all z-[201]"
+            className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/20 transition-[color,background-color] z-[201]"
             aria-label="Close">
             <X className="w-5 h-5" />
           </button>
@@ -406,7 +406,7 @@ const DcadeCaseStudy: React.FC = () => {
 
       {/* ─── Back button ─── */}
       <button onClick={() => navigate('/projects')}
-        className="fixed top-8 left-8 md:left-12 z-[60] flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-[#24A2A7] transition-all bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95 no-print"
+        className="fixed top-8 left-8 md:left-12 z-[60] flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-[#24A2A7] transition-[color,border-color,transform] bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95 no-print"
         aria-label="Back to projects">
         <ArrowLeft className="w-4 h-4" />
         Back to Archive
@@ -415,7 +415,7 @@ const DcadeCaseStudy: React.FC = () => {
       {/* ─── PDF Download FAB ─── */}
       <div className="fixed bottom-32 md:bottom-24 right-6 z-[70] no-print">
         <button onClick={handleDownloadPDF}
-          className="w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all hover:scale-110 active:scale-90 group"
+          className="w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-transform hover:scale-110 active:scale-90 group"
           style={{ backgroundColor: '#24A2A7', color: '#0a0a0a' }}
           title="Download Case Study PDF">
           <Download className="w-8 h-8" />
@@ -713,7 +713,7 @@ const DcadeCaseStudy: React.FC = () => {
                   <p className="text-[10px] font-mono text-[#24A2A7] uppercase tracking-wider">{member.title}</p>
                 </div>
                 {/* Speech bubble on hover/tap */}
-                <div className={`absolute -top-4 left-1/2 -translate-x-1/2 -translate-y-full transition-all duration-300 pointer-events-none z-10 ${activeCrew === member.name ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                <div className={`absolute -top-4 left-1/2 -translate-x-1/2 -translate-y-full transition-opacity duration-300 pointer-events-none z-10 ${activeCrew === member.name ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
                   <div className="bg-white text-[#0a0a0a] text-[11px] font-medium px-3 py-2 rounded-lg shadow-lg w-max max-w-[180px] text-center">
                     &ldquo;{member.quote}&rdquo;
                     <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-full w-0 h-0 border-l-[6px] border-r-[6px] border-t-[6px] border-transparent border-t-white" />
@@ -817,7 +817,7 @@ const DcadeCaseStudy: React.FC = () => {
             const domain = 'sam-bloch.com';
             window.location.href = `mailto:${user}@${domain}`;
           }}
-          className="group px-10 py-5 bg-[#24A2A7] text-black font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:brightness-110 transition-all shadow-xl active:scale-95 inline-flex items-center gap-3"
+          className="group px-10 py-5 bg-[#24A2A7] text-black font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:brightness-110 transition-[filter,transform] shadow-xl active:scale-95 inline-flex items-center gap-3"
         >
           Let's Connect
           <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">

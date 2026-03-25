@@ -26,6 +26,12 @@ const AppShell: React.FC = () => {
 
   const isOverlayOpen = selectedContent !== null || isAboutOpen;
 
+  // Lock body scroll when any overlay is open (prevents iOS Safari background scroll)
+  useEffect(() => {
+    document.body.style.overflow = isOverlayOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [isOverlayOpen]);
+
   /* Footer is always fixed across all pages */
 
   const context: AppShellContext = {
@@ -42,9 +48,9 @@ const AppShell: React.FC = () => {
         Skip to content
       </a>
       <AudioPlayer />
-      <div id="main-content">
+      <main id="main-content">
         <Outlet context={context} />
-      </div>
+      </main>
       <Overlay
         content={selectedContent}
         onClose={() => setSelectedContent(null)}

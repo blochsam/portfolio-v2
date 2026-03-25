@@ -43,14 +43,18 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
     (id) => id !== '1dfa5782-8ffc-47dc-9562-db86cba5ee72'
   );
 
-  // Close mobile menu on Escape
+  // Close mobile menu on Escape + lock body scroll
   useEffect(() => {
     if (!isMobileMenuOpen) return;
+    document.body.style.overflow = 'hidden';
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setIsMobileMenuOpen(false);
     };
     document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = '';
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, [isMobileMenuOpen]);
 
   // Samulation hint: show on first visit, fade after ~4 seconds
@@ -202,7 +206,7 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
         <div className="hidden md:flex flex-col gap-2">
           <button
             onClick={() => navigate('/', { state: { force2D: true } })}
-            className="group flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-all bg-black/40 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95"
+            className="group flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-[color,border-color,transform] bg-black/40 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95"
           >
             <svg className="w-4 h-4 group-hover:rotate-180 transition-transform duration-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
@@ -211,7 +215,7 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
           </button>
           <button
             onClick={() => navigate('/projects')}
-            className="group flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-all bg-black/40 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95"
+            className="group flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-[color,border-color,transform] bg-black/40 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               {/* Folder body */}
@@ -250,30 +254,30 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
                 setSelectedContent(CONTENT_MAP[uuid]);
               }
             }}
-            className={`text-xs font-black uppercase tracking-[0.3em] transition-all duration-300 relative group py-2 whitespace-nowrap
+            className={`text-xs font-black uppercase tracking-[0.3em] transition-[color,transform] duration-300 relative group py-2 whitespace-nowrap
               ${hoveredMenuId === uuid ? 'text-[#24A2A7] scale-110' : 'text-gray-400 hover:text-white'}`}
             style={hoveredMenuId === uuid ? { textShadow: '0 0 12px rgba(36, 162, 167, 0.6)' } : undefined}
           >
             {CONTENT_MAP[uuid].title.split(' ')[0]}
-            <span className={`absolute -bottom-1 left-0 h-[2px] bg-[#24A2A7] transition-all duration-500
+            <span className={`absolute -bottom-1 left-0 h-[2px] bg-[#24A2A7] transition-[width,box-shadow] duration-500
               ${hoveredMenuId === uuid ? 'w-full shadow-[0_0_8px_rgba(36,162,167,0.5)]' : 'w-0'}`}>
             </span>
           </button>
         ))}
         {/* Responsive Resume item: remains in-line, hides if screen gets too small (below lg) */}
-        <button 
+        <button
           onMouseEnter={() => {
             hoverFrom3DRef.current = false;
             setHoveredMenuId('resume-btn');
           }}
           onMouseLeave={() => setHoveredMenuId(null)}
           onClick={() => navigate('/resume')}
-          className={`hidden lg:block text-xs font-black uppercase tracking-[0.3em] transition-all duration-300 relative group py-2 whitespace-nowrap
+          className={`hidden lg:block text-xs font-black uppercase tracking-[0.3em] transition-[color,transform] duration-300 relative group py-2 whitespace-nowrap
             ${hoveredMenuId === 'resume-btn' ? 'text-[#24A2A7] scale-110' : 'text-gray-400 hover:text-white'}`}
           style={hoveredMenuId === 'resume-btn' ? { textShadow: '0 0 12px rgba(36, 162, 167, 0.6)' } : undefined}
         >
           Resume
-          <span className={`absolute -bottom-1 left-0 h-[2px] bg-[#24A2A7] transition-all duration-500
+          <span className={`absolute -bottom-1 left-0 h-[2px] bg-[#24A2A7] transition-[width,box-shadow] duration-500
             ${hoveredMenuId === 'resume-btn' ? 'w-full shadow-[0_0_8px_rgba(36,162,167,0.5)]' : 'w-0'}`}>
           </span>
         </button>
@@ -283,7 +287,7 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
       <div className="md:hidden absolute top-8 right-8 z-[110]">
         <button 
           onClick={() => setIsMobileMenuOpen(true)}
-          className="p-3 bg-black/40 backdrop-blur-md border border-white/5 rounded-full text-gray-400 hover:text-white transition-all shadow-xl"
+          className="p-3 bg-black/40 backdrop-blur-md border border-white/5 rounded-full text-gray-400 hover:text-white transition-colors shadow-xl"
           aria-label="Open Menu"
         >
           <Menu className="w-6 h-6" />

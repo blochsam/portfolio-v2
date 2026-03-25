@@ -24,7 +24,7 @@ const NotFound: React.FC = () => {
       </p>
       <button
         onClick={() => navigate('/')}
-        className="px-8 py-4 rounded-full font-black uppercase text-[10px] tracking-[0.3em] transition-all hover:brightness-110 active:scale-95 shadow-xl"
+        className="px-8 py-4 rounded-full font-black uppercase text-[10px] tracking-[0.3em] transition-[filter,transform] hover:brightness-110 active:scale-95 shadow-xl"
         style={{ backgroundColor: COLORS.teal, color: COLORS.charcoal }}
       >
         Return Home

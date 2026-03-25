@@ -39,7 +39,7 @@ const StatRing: React.FC<{ percent: number; color?: string; size?: number }> = (
         cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth="4"
         strokeDasharray={circ} strokeDashoffset={offset}
         strokeLinecap="round" transform={`rotate(-90 ${size / 2} ${size / 2})`}
-        className="transition-all duration-1000"
+        className="transition-[stroke-dashoffset] duration-1000"
       />
     </svg>
   );
@@ -382,7 +382,7 @@ const CalNatCaseStudy: React.FC = () => {
       {/* Lightbox */}
       {lightbox && (
         <div className="fixed inset-0 z-[200] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-6 md:p-12 animate-in fade-in duration-300" onClick={() => setLightbox(null)} role="dialog" aria-label="Enlarged image">
-          <button onClick={() => setLightbox(null)} className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/20 transition-all z-[201]" aria-label="Close">
+          <button onClick={() => setLightbox(null)} className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/20 transition-[color,background-color] z-[201]" aria-label="Close">
             <X className="w-5 h-5" />
           </button>
           <img src={lightbox.src} alt={lightbox.alt} className="max-w-full max-h-[85vh] rounded-2xl object-contain" onClick={(e) => e.stopPropagation()} />
@@ -390,7 +390,7 @@ const CalNatCaseStudy: React.FC = () => {
       )}
 
       {/* Back */}
-      <button onClick={() => navigate('/projects')} className="fixed top-8 left-8 md:left-12 z-[60] flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-all bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95 no-print" aria-label="Back to projects">
+      <button onClick={() => navigate('/projects')} className="fixed top-8 left-8 md:left-12 z-[60] flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-[color,border-color,transform] bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95 no-print" aria-label="Back to projects">
         <ArrowLeft className="w-4 h-4" />
         Back to Archive
       </button>
@@ -399,7 +399,7 @@ const CalNatCaseStudy: React.FC = () => {
       <div className="fixed bottom-28 md:bottom-24 right-6 z-[70] no-print">
         <button
           onClick={handleDownloadPDF}
-          className="w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all hover:scale-110 active:scale-90 group"
+          className="w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-transform hover:scale-110 active:scale-90 group"
           style={{ backgroundColor: COLORS.teal, color: COLORS.charcoal }}
           title="Download Case Study PDF"
         >
@@ -606,7 +606,7 @@ const CalNatCaseStudy: React.FC = () => {
               { barrier: 'No engagement framework', impact: 'Ali\'s role was brand new. No precedent, no playbook, no budget.' },
             ].map((item, i) => (
               <TiltCard key={item.barrier}>
-                <div data-reveal className="apple-reveal rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 glow-border hover:border-white/[0.1] transition-all duration-500 h-full" style={{ transitionDelay: `${i * 80}ms` }}>
+                <div data-reveal className="apple-reveal rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 glow-border hover:border-white/[0.1] transition-[border-color] duration-500 h-full" style={{ transitionDelay: `${i * 80}ms` }}>
                   <p className="text-[15px] font-semibold text-white mb-2">{item.barrier}</p>
                   <p className="text-[14px] text-[#9a9a9f] leading-relaxed">{item.impact}</p>
                 </div>
@@ -852,7 +852,7 @@ const CalNatCaseStudy: React.FC = () => {
               { title: 'Social', desc: 'Connecting with other alumni regardless of where they are. Finding people to work on projects with.', color: '#A0E5E8' },
             ].map((need, i) => (
               <TiltCard key={need.title}>
-                <div data-reveal className="apple-reveal rounded-2xl border border-white/[0.06] bg-black p-8 glow-border hover:border-white/[0.1] transition-all duration-500 h-full" style={{ transitionDelay: `${i * 100}ms` }}>
+                <div data-reveal className="apple-reveal rounded-2xl border border-white/[0.06] bg-black p-8 glow-border hover:border-white/[0.1] transition-[border-color] duration-500 h-full" style={{ transitionDelay: `${i * 100}ms` }}>
                   <div className="w-3 h-3 rounded-full mb-4" style={{ backgroundColor: need.color }} />
                   <h4 className="text-lg font-bold text-white mb-3">{need.title}</h4>
                   <p className="text-[15px] text-[#9a9a9f] leading-relaxed">{need.desc}</p>
@@ -911,7 +911,7 @@ const CalNatCaseStudy: React.FC = () => {
               { name: 'Alumni Website Tab', hl: true }, { name: 'Virtual Classroom', hl: false },
               { name: 'Mentorship Connect', hl: true },
             ].map((c) => (
-              <span key={c.name} className={`px-4 py-2 rounded-full text-[13px] font-medium transition-all duration-300 ${c.hl ? 'bg-[#24A2A7]/15 text-[#24A2A7] border border-[#24A2A7]/30' : 'bg-white/[0.04] text-[#9a9a9f] border border-white/[0.06]'}`}>
+              <span key={c.name} className={`px-4 py-2 rounded-full text-[13px] font-medium transition-[color,background-color,border-color] duration-300 ${c.hl ? 'bg-[#24A2A7]/15 text-[#24A2A7] border border-[#24A2A7]/30' : 'bg-white/[0.04] text-[#9a9a9f] border border-white/[0.06]'}`}>
                 {c.name}
               </span>
             ))}
@@ -931,7 +931,7 @@ const CalNatCaseStudy: React.FC = () => {
               { pick: 'Mentorship Connect', why: 'Bridges generational gaps. Connects newer alumni with experienced stewards.' },
             ].map((item, i) => (
               <TiltCard key={item.pick}>
-                <div data-reveal className="apple-reveal rounded-2xl border border-white/[0.06] bg-[#0a0a0a] p-6 glow-border hover:border-[#24A2A7]/20 transition-all duration-500 h-full" style={{ transitionDelay: `${i * 100}ms` }}>
+                <div data-reveal className="apple-reveal rounded-2xl border border-white/[0.06] bg-[#0a0a0a] p-6 glow-border hover:border-[#24A2A7]/20 transition-[border-color] duration-500 h-full" style={{ transitionDelay: `${i * 100}ms` }}>
                   <p className="text-[12px] font-semibold uppercase tracking-[0.15em] text-[#24A2A7] mb-3">Client pick</p>
                   <p className="text-[17px] font-bold text-white mb-2">{item.pick}</p>
                   <p className="text-[14px] text-[#9a9a9f] leading-relaxed">{item.why}</p>
@@ -1227,7 +1227,7 @@ const CalNatCaseStudy: React.FC = () => {
             const domain = 'sam-bloch.com';
             window.location.href = `mailto:${user}@${domain}`;
           }}
-          className="group px-10 py-5 bg-[#24A2A7] text-black font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:brightness-110 transition-all shadow-xl active:scale-95 inline-flex items-center gap-3"
+          className="group px-10 py-5 bg-[#24A2A7] text-black font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:brightness-110 transition-[filter,transform] shadow-xl active:scale-95 inline-flex items-center gap-3"
         >
           Let's Connect
           <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
