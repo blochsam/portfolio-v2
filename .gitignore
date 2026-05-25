@@ -23,6 +23,9 @@ Brand_Refresh_Proposal.pdf
 brand-refresh-proposal.py
 favicon-1.ico
 
+# Spline scene file — downloaded at build time via `npm run prebuild`
+public/scene.splinecode
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -33,3 +36,4 @@ favicon-1.ico
 *.njsproj
 *.sln
 *.sw?
+.vercel

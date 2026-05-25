@@ -5,10 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/fetch-spline-scene.mjs",
     "build": "vite build && node scripts/prerender.mjs",
     "build:fast": "vite build",
     "preview": "vite preview",
     "generate:og-image": "node scripts/generate-og-image.mjs",
+    "fetch:spline": "node scripts/fetch-spline-scene.mjs",
     "test": "vitest run",
     "test:watch": "vitest"
   },
