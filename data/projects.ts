@@ -8,7 +8,7 @@ export const PROJECTS: Project[] = [
     date: '2026',
     description: 'A strategic consulting engagement that gave University of the Pacific the data it needed to launch a new medical school using existing campus capacity, without a single new building. Six semesters of utilization data, three buildings, three findings, one institutional decision.',
     tags: ['Leadership', 'Evaluation', 'Data Analysis', 'Stakeholder Facilitation', 'Capital Planning'],
-    image: '/case-study/space-utilization/floor-2.webp',
+    image: '/case-study/space-utilization/projects-card-tower.webp',
     imagePosition: 'center'
   },
   {
