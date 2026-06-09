@@ -344,15 +344,17 @@ const SpaceUtilizationCaseStudy: React.FC = () => {
         Back to Archive
       </button>
 
-      {/* Download FAB — matches the rest of the portfolio */}
-      <button
-        onClick={handleDownloadPDF}
-        className="fixed bottom-8 right-8 z-[60] w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-transform hover:scale-110 active:scale-90 group no-print"
-        style={{ backgroundColor: COLORS.teal, color: COLORS.charcoal }}
-        title="Download Case Study PDF"
-      >
-        <Download className="w-8 h-8" />
-      </button>
+      {/* Download FAB — sits above the global Footer at bottom-0 z-[100] */}
+      <div className="fixed bottom-28 md:bottom-24 right-6 z-[70] no-print">
+        <button
+          onClick={handleDownloadPDF}
+          className="w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-transform hover:scale-110 active:scale-90 group"
+          style={{ backgroundColor: COLORS.teal, color: COLORS.charcoal }}
+          title="Download Case Study PDF"
+        >
+          <Download className="w-8 h-8" />
+        </button>
+      </div>
 
       <main className="relative z-10">
 
