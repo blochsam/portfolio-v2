@@ -43,4 +43,8 @@
     <loc>https://sam-bloch.com/projects/smart-lockers</loc>
     <priority>0.6</priority>
   </url>
+  <url>
+    <loc>https://sam-bloch.com/projects/space-utilization</loc>
+    <priority>0.6</priority>
+  </url>
 </urlset>
