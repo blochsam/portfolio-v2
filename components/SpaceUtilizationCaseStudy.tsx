@@ -212,11 +212,16 @@ const FloorPlanViewer: React.FC<{ onOpen: (img: { src: string; alt: string }) =>
   );
 };
 
-/* ─── YouTube embed (lazy-loaded with poster) ─── */
-const YouTubeEmbed: React.FC<{ videoId: string; title: string }> = ({ videoId, title }) => {
+/* ─── YouTube embed (custom on-brand poster card, lazy iframe on click) ─── */
+const YouTubeEmbed: React.FC<{
+  videoId: string;
+  title: string;
+  posterTitle: string;
+  posterMeta: string;
+}> = ({ videoId, title, posterTitle, posterMeta }) => {
   const [loaded, setLoaded] = useState(false);
   return (
-    <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-[#24A2A7]/20 bg-black">
+    <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-[#24A2A7]/20 bg-[#0a0a0a]">
       {loaded ? (
         <iframe
           src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`}
@@ -229,26 +234,67 @@ const YouTubeEmbed: React.FC<{ videoId: string; title: string }> = ({ videoId, t
         <button
           type="button"
           onClick={() => setLoaded(true)}
-          className="group absolute inset-0 w-full h-full flex items-center justify-center"
+          className="group absolute inset-0 w-full h-full flex items-center justify-center overflow-hidden"
           aria-label={`Play: ${title}`}
         >
-          <img
-            src={`https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`}
-            alt={title}
-            className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
-            loading="lazy"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+          {/* Subtle blueprint grid backdrop */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 opacity-[0.12]"
+            style={{
+              backgroundImage:
+                'linear-gradient(rgba(36, 162, 167, 0.8) 1px, transparent 1px), ' +
+                'linear-gradient(90deg, rgba(36, 162, 167, 0.8) 1px, transparent 1px)',
+              backgroundSize: '50px 50px',
             }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-black/20" />
-          <div className="relative z-10 flex flex-col items-center gap-3">
-            <div className="w-20 h-20 rounded-full bg-[#24A2A7] flex items-center justify-center group-hover:scale-110 transition-transform shadow-2xl shadow-[#24A2A7]/30">
-              <svg className="w-8 h-8 fill-black translate-x-[2px]" viewBox="0 0 24 24">
+          {/* Radial gradient spotlight behind the play button */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0"
+            style={{
+              background:
+                'radial-gradient(circle at center, rgba(36, 162, 167, 0.15) 0%, transparent 60%)',
+            }}
+          />
+
+          {/* Corner ruler tics (blueprint feel) */}
+          <div aria-hidden="true" className="absolute top-4 left-4 right-4 bottom-4 border border-white/[0.06] pointer-events-none" />
+
+          {/* Top-left "sheet" label */}
+          <div className="absolute top-7 left-7 text-left">
+            <div className="text-[10px] font-mono uppercase tracking-[0.3em] text-[#24A2A7]/80 mb-1">Decision Reveal</div>
+            <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/40">Source · YouTube</div>
+          </div>
+
+          {/* Top-right YouTube hint */}
+          <div className="absolute top-7 right-7 flex items-center gap-2">
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="#FF0000" aria-hidden="true">
+              <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z" />
+              <path d="M9.545 15.568V8.432L15.818 12l-6.273 3.568z" fill="white" />
+            </svg>
+            <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/60">Watch</span>
+          </div>
+
+          {/* Main content centered */}
+          <div className="relative z-10 flex flex-col items-center gap-5 px-6 text-center max-w-2xl">
+            <div className="text-[10px] font-mono uppercase tracking-[0.4em] text-[#24A2A7]/80">{posterMeta}</div>
+            <h3 className="text-2xl md:text-4xl font-black tracking-tight text-white leading-tight">
+              {posterTitle}
+            </h3>
+            <div className="mt-4 w-20 h-20 rounded-full bg-[#24A2A7] flex items-center justify-center group-hover:scale-110 transition-transform shadow-2xl shadow-[#24A2A7]/40">
+              <svg className="w-9 h-9 fill-black translate-x-[2px]" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M8 5v14l11-7z" />
               </svg>
             </div>
-            <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/80">Play Decision Reveal</span>
+            <span className="text-[11px] font-mono uppercase tracking-[0.3em] text-white/70 group-hover:text-[#24A2A7] transition-colors">
+              Play the announcement
+            </span>
+          </div>
+
+          {/* Bottom-left "running time" tag for visual rhythm */}
+          <div className="absolute bottom-7 left-7 text-[10px] font-mono uppercase tracking-[0.2em] text-white/40">
+            University of the Pacific  ·  Official Announcement
           </div>
         </button>
       )}
@@ -708,6 +754,8 @@ const SpaceUtilizationCaseStudy: React.FC = () => {
               <YouTubeEmbed
                 videoId="eCsCif0z2mM"
                 title="University of the Pacific announces medical school"
+                posterTitle="University of the Pacific announces the new medical school."
+                posterMeta="The Outcome  ·  2026"
               />
             </div>
           </div>
