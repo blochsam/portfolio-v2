@@ -173,8 +173,8 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
             if (splineWrapperRef.current) splineWrapperRef.current.style.cursor = '';
           }}
         >
-          <Spline 
-            scene="https://prod.spline.design/PWw4ZCT9Of0-KIiv/scene.splinecode" 
+          <Spline
+            scene="/scene.splinecode"
             onLoad={onLoad}
           />
         </div>

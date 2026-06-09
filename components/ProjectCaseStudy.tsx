@@ -15,6 +15,7 @@ const PROJECT_TITLES: Record<string, string> = {
   'zoo-report': 'Augmented Reality Detroit Zoo App',
   'fudge': 'Fudge',
   'smart-lockers': 'Smart Lockers',
+  'space-utilization': 'Pacific Medical School Space Evaluation',
   'yt-quality-global': 'YouTube Global Quality Framework',
   'google-legal-ops': 'Legal Ops Workflow Automation',
   'yt-sql-dashboards': 'Predictive SQL Performance Dashboards',
@@ -30,6 +31,7 @@ const ZooReportCaseStudy = lazy(() => import('./ZooReportCaseStudy'));
 const SmartLockersCaseStudy = lazy(() => import('./SmartLockersCaseStudy'));
 const FudgeCaseStudy = lazy(() => import('./FudgeCaseStudy'));
 const LevelUpCaseStudy = lazy(() => import('./LevelUpCaseStudy'));
+const SpaceUtilizationCaseStudy = lazy(() => import('./SpaceUtilizationCaseStudy'));
 const ProjectCaseStudy: React.FC = () => {
   const navigate = useNavigate();
   const { projectId } = useParams<{ projectId: string }>();
@@ -83,10 +85,18 @@ const ProjectCaseStudy: React.FC = () => {
   const isPortfolio = projectId === 'portfolio';
   const isSmartLockers = projectId === 'smart-lockers';
   const isFudge = projectId === 'fudge';
+  const isSpaceUtilization = projectId === 'space-utilization';
 
   // Immersive case studies get their own components
-  if (isCalNat || isPortfolio || isDcade || isZooReport || isSmartLockers || isFudge || isLevelUp) {
-    const Component = isCalNat ? CalNatCaseStudy : isDcade ? DcadeCaseStudy : isZooReport ? ZooReportCaseStudy : isSmartLockers ? SmartLockersCaseStudy : isFudge ? FudgeCaseStudy : isLevelUp ? LevelUpCaseStudy : PortfolioCaseStudyB;
+  if (isCalNat || isPortfolio || isDcade || isZooReport || isSmartLockers || isFudge || isLevelUp || isSpaceUtilization) {
+    const Component = isCalNat ? CalNatCaseStudy
+      : isDcade ? DcadeCaseStudy
+      : isZooReport ? ZooReportCaseStudy
+      : isSmartLockers ? SmartLockersCaseStudy
+      : isFudge ? FudgeCaseStudy
+      : isLevelUp ? LevelUpCaseStudy
+      : isSpaceUtilization ? SpaceUtilizationCaseStudy
+      : PortfolioCaseStudyB;
     return (
       <Suspense fallback={
         <div className="min-h-screen bg-black flex items-center justify-center">

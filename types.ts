@@ -12,7 +12,7 @@ export interface PortfolioContent {
 export interface Project {
   id: string;
   title: string;
-  category: 'Operations' | 'Design' | 'AI' | 'Leadership';
+  category: 'Operations' | 'Design' | 'AI' | 'Leadership' | 'Consulting';
   description: string;
   tags: string[];
   date: string;

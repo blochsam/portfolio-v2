@@ -28,6 +28,7 @@ const ROUTES = [
   '/projects/zoo-report',
   '/projects/dcade',
   '/projects/smart-lockers',
+  '/projects/space-utilization',
 ];
 
 /**

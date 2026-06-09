@@ -11,7 +11,7 @@ const ProjectsPage: React.FC = () => {
   const [filter, setFilter] = useState<string>('All');
   const [search, setSearch] = useState('');
 
-  const categories = ['All', 'Operations', 'Design', 'AI', 'Leadership'];
+  const categories = ['All', 'Operations', 'Design', 'AI', 'Leadership', 'Consulting'];
 
   const filteredProjects = useMemo(() => {
     return PROJECTS.filter(p => {
@@ -89,7 +89,8 @@ const ProjectsPage: React.FC = () => {
               Design: 'from-[#24A2A7]/20 via-[#24A2A7]/5 to-transparent',
               Operations: 'from-blue-500/20 via-blue-500/5 to-transparent',
               AI: 'from-violet-500/20 via-violet-500/5 to-transparent',
-              Leadership: 'from-amber-500/20 via-amber-500/5 to-transparent'
+              Leadership: 'from-amber-500/20 via-amber-500/5 to-transparent',
+              Consulting: 'from-emerald-500/20 via-emerald-500/5 to-transparent'
             };
             const gradient = categoryGradient[project.category] || 'from-white/10 via-white/5 to-transparent';
 

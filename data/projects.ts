@@ -2,6 +2,16 @@ import { Project } from '../types';
 
 export const PROJECTS: Project[] = [
   {
+    id: 'space-utilization',
+    title: 'Pacific Medical School Space Evaluation',
+    category: 'Consulting',
+    date: '2026',
+    description: 'A strategic consulting engagement that gave University of the Pacific the data it needed to launch a new medical school using existing campus capacity, without a single new building. Six semesters of utilization data, three buildings, three findings, one institutional decision.',
+    tags: ['Leadership', 'Evaluation', 'Data Analysis', 'Julius.AI'],
+    image: '/case-study/space-utilization/projects-card-tower.webp',
+    imagePosition: 'center'
+  },
+  {
     id: 'portfolio',
     title: 'My Portfolio Website',
     category: 'Design',
