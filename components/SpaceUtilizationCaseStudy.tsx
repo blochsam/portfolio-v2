@@ -658,18 +658,18 @@ const SpaceUtilizationCaseStudy: React.FC = () => {
               {[
                 {
                   name: 'Sam Bloch',
-                  role: 'Program Lead',
+                  role: 'Consultant',
                   bio: 'Owned project framing, stakeholder management, and the synthesis of findings into the President\'s briefing.',
                   highlight: true,
                 },
                 {
                   name: 'Samuel Cogo',
-                  role: 'Quantitative Lead',
+                  role: 'Consultant',
                   bio: 'Owned the floor plan analysis, room-by-room data joins, and the recommendations modeling.',
                 },
                 {
                   name: 'Veronica Henderson',
-                  role: 'Qualitative Lead',
+                  role: 'Consultant',
                   bio: 'Led stakeholder interviews, ran the facilitated working sessions, and synthesized qualitative themes.',
                 },
               ].map((p) => (
