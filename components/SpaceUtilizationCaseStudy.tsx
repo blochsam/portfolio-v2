@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Download, X, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Download, X } from 'lucide-react';
+import { COLORS } from '../constants';
 import { useScrollReveal, CountUp, CaseStudyImage as Img } from './CaseStudyShared';
 
 /* ─── Blueprint paper texture background ───
@@ -212,13 +213,12 @@ const FloorPlanViewer: React.FC<{ onOpen: (img: { src: string; alt: string }) =>
   );
 };
 
-/* ─── YouTube embed (custom on-brand poster card, lazy iframe on click) ─── */
+/* ─── YouTube embed (uses the actual video thumbnail, lazy iframe on click) ─── */
 const YouTubeEmbed: React.FC<{
   videoId: string;
   title: string;
-  posterTitle: string;
-  posterMeta: string;
-}> = ({ videoId, title, posterTitle, posterMeta }) => {
+  posterImage: string;
+}> = ({ videoId, title, posterImage }) => {
   const [loaded, setLoaded] = useState(false);
   return (
     <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-[#24A2A7]/20 bg-[#0a0a0a]">
@@ -237,64 +237,26 @@ const YouTubeEmbed: React.FC<{
           className="group absolute inset-0 w-full h-full flex items-center justify-center overflow-hidden"
           aria-label={`Play: ${title}`}
         >
-          {/* Subtle blueprint grid backdrop */}
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 opacity-[0.12]"
-            style={{
-              backgroundImage:
-                'linear-gradient(rgba(36, 162, 167, 0.8) 1px, transparent 1px), ' +
-                'linear-gradient(90deg, rgba(36, 162, 167, 0.8) 1px, transparent 1px)',
-              backgroundSize: '50px 50px',
-            }}
+          {/* Actual video thumbnail */}
+          <img
+            src={posterImage}
+            alt={title}
+            className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700"
+            loading="lazy"
           />
-          {/* Radial gradient spotlight behind the play button */}
-          <div
-            aria-hidden="true"
-            className="absolute inset-0"
-            style={{
-              background:
-                'radial-gradient(circle at center, rgba(36, 162, 167, 0.15) 0%, transparent 60%)',
-            }}
-          />
+          {/* Subtle dark overlay for play-button legibility */}
+          <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/30 group-hover:from-black/30 transition-colors duration-500" />
 
-          {/* Corner ruler tics (blueprint feel) */}
-          <div aria-hidden="true" className="absolute top-4 left-4 right-4 bottom-4 border border-white/[0.06] pointer-events-none" />
-
-          {/* Top-left "sheet" label */}
-          <div className="absolute top-7 left-7 text-left">
-            <div className="text-[10px] font-mono uppercase tracking-[0.3em] text-[#24A2A7]/80 mb-1">Decision Reveal</div>
-            <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/40">Source · YouTube</div>
-          </div>
-
-          {/* Top-right YouTube hint */}
-          <div className="absolute top-7 right-7 flex items-center gap-2">
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="#FF0000" aria-hidden="true">
-              <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z" />
-              <path d="M9.545 15.568V8.432L15.818 12l-6.273 3.568z" fill="white" />
-            </svg>
-            <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/60">Watch</span>
-          </div>
-
-          {/* Main content centered */}
-          <div className="relative z-10 flex flex-col items-center gap-5 px-6 text-center max-w-2xl">
-            <div className="text-[10px] font-mono uppercase tracking-[0.4em] text-[#24A2A7]/80">{posterMeta}</div>
-            <h3 className="text-2xl md:text-4xl font-black tracking-tight text-white leading-tight">
-              {posterTitle}
-            </h3>
-            <div className="mt-4 w-20 h-20 rounded-full bg-[#24A2A7] flex items-center justify-center group-hover:scale-110 transition-transform shadow-2xl shadow-[#24A2A7]/40">
+          {/* Center play button */}
+          <div className="relative z-10 flex flex-col items-center gap-3">
+            <div className="w-20 h-20 rounded-full bg-[#24A2A7] flex items-center justify-center group-hover:scale-110 transition-transform shadow-2xl shadow-[#24A2A7]/40">
               <svg className="w-9 h-9 fill-black translate-x-[2px]" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M8 5v14l11-7z" />
               </svg>
             </div>
-            <span className="text-[11px] font-mono uppercase tracking-[0.3em] text-white/70 group-hover:text-[#24A2A7] transition-colors">
+            <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/90 drop-shadow-lg">
               Play the announcement
             </span>
-          </div>
-
-          {/* Bottom-left "running time" tag for visual rhythm */}
-          <div className="absolute bottom-7 left-7 text-[10px] font-mono uppercase tracking-[0.2em] text-white/40">
-            University of the Pacific  ·  Official Announcement
           </div>
         </button>
       )}
@@ -354,13 +316,17 @@ const SpaceUtilizationCaseStudy: React.FC = () => {
   const containerRef = useScrollReveal();
   const [enlargedImage, setEnlargedImage] = useState<{ src: string; alt: string } | null>(null);
 
-  const downloadReport = () => {
-    const link = document.createElement('a');
-    link.href = '/SpaceUtilization_Final_Report.pdf';
-    link.download = 'Space_Utilization_Evaluation_UoP.pdf';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleDownloadPDF = async () => {
+    const { generateCaseStudyPdfHtml } = await import('../utils/generateCaseStudyPdf');
+    const html = generateCaseStudyPdfHtml('space-utilization', window.location.origin);
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const win = window.open(url, '_blank', 'width=900,height=700');
+    if (win) {
+      win.onload = () => URL.revokeObjectURL(url);
+    } else {
+      URL.revokeObjectURL(url);
+    }
   };
 
   return (
@@ -378,15 +344,14 @@ const SpaceUtilizationCaseStudy: React.FC = () => {
         Back to Archive
       </button>
 
-      {/* Download FAB */}
+      {/* Download FAB — matches the rest of the portfolio */}
       <button
-        onClick={downloadReport}
-        className="fixed bottom-8 right-8 z-[60] flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-black bg-[#24A2A7] hover:brightness-110 transition-[filter,transform] px-6 py-4 rounded-full shadow-xl active:scale-95 no-print"
-        title="Download the Final Report PDF"
+        onClick={handleDownloadPDF}
+        className="fixed bottom-8 right-8 z-[60] w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-transform hover:scale-110 active:scale-90 group no-print"
+        style={{ backgroundColor: COLORS.teal, color: COLORS.charcoal }}
+        title="Download Case Study PDF"
       >
-        <Download size={14} />
-        <span className="hidden sm:inline">Full Report PDF</span>
-        <span className="sm:hidden">PDF</span>
+        <Download className="w-8 h-8" />
       </button>
 
       <main className="relative z-10">
@@ -754,8 +719,7 @@ const SpaceUtilizationCaseStudy: React.FC = () => {
               <YouTubeEmbed
                 videoId="eCsCif0z2mM"
                 title="University of the Pacific announces medical school"
-                posterTitle="University of the Pacific announces the new medical school."
-                posterMeta="The Outcome  ·  2026"
+                posterImage="/case-study/space-utilization/announcement-poster.webp"
               />
             </div>
           </div>
@@ -800,36 +764,40 @@ const SpaceUtilizationCaseStudy: React.FC = () => {
         </section>
 
         {/* ════════════════════════════════════════
-            CLOSING CTA
+            CONTACT CTA — Get in Touch (matches the rest of the portfolio)
            ════════════════════════════════════════ */}
-        <section className="px-6 md:px-12 py-24 text-center">
-          <div className="max-w-2xl mx-auto">
-            <h2 data-reveal className="apple-reveal text-3xl md:text-4xl font-black tracking-tighter mb-8">
-              Want the full report?
-            </h2>
-            <p data-reveal className="apple-reveal text-gray-400 mb-10">
-              The complete 60-page final report with methodology, findings, recommendations, and the
-              annotated floor plans for all three buildings.
-            </p>
-            <button
-              onClick={downloadReport}
-              className="group inline-flex items-center gap-3 px-10 py-5 bg-[#24A2A7] text-black font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:brightness-110 transition-[filter,transform] shadow-xl active:scale-95"
-            >
-              <Download size={14} />
-              Download Final Report
-              <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </button>
-            <div className="mt-12">
-              <button
-                onClick={() => navigate('/projects')}
-                className="inline-flex items-center gap-2 text-white font-medium text-sm hover:text-[#24A2A7] transition-colors duration-300"
-              >
-                <ArrowLeft size={14} /> Back to all projects
-              </button>
-            </div>
-          </div>
+        <section className="py-16 md:py-24 text-center border-t border-white/5 px-6">
+          <span className="text-[10px] font-black text-[#24A2A7] uppercase tracking-[0.5em] block mb-4">GET IN TOUCH</span>
+          <h2 className="text-3xl md:text-5xl font-black tracking-tighter mb-6">Like what you see?</h2>
+          <p className="text-[#9a9a9f] text-[17px] leading-[1.8] max-w-lg mx-auto mb-10">
+            I'm always open to discussing new opportunities, creative projects, or just nerding out about design and technology.
+          </p>
+          <button
+            onClick={() => {
+              const user = 'sam';
+              const domain = 'sam-bloch.com';
+              window.location.href = `mailto:${user}@${domain}`;
+            }}
+            className="group px-10 py-5 bg-[#24A2A7] text-black font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:brightness-110 transition-[filter,transform] shadow-xl active:scale-95 inline-flex items-center gap-3"
+          >
+            Let's Connect
+            <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </button>
+        </section>
+
+        {/* ════════════════════════════════════════
+            FOOTER LINE — Back to Projects
+           ════════════════════════════════════════ */}
+        <section data-reveal className="apple-reveal pt-12 md:pt-16 pb-32 md:pb-36 text-center px-6">
+          <p className="text-[14px] text-[#9a9a9f] mb-8">
+            Strategic Consulting Engagement &middot; LEAD 259 &middot; 2026
+          </p>
+          <button onClick={() => navigate('/projects')} className="inline-flex items-center gap-2 text-white font-medium text-sm hover:text-[#24A2A7] transition-colors duration-300">
+            <ArrowLeft className="w-4 h-4" />
+            Back to Projects
+          </button>
         </section>
       </main>
     </div>

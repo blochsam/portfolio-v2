@@ -31,7 +31,170 @@ export function generateCaseStudyPdfHtml(projectId: string, baseUrl: string): st
   if (projectId === 'fudge') {
     return generateFudgeCaseStudyPdf(baseUrl);
   }
+  if (projectId === 'space-utilization') {
+    return generateSpaceUtilizationCaseStudyPdf(baseUrl);
+  }
   return generateUnderConstructionPdf(baseUrl);
+}
+
+function generateSpaceUtilizationCaseStudyPdf(baseUrl: string): string {
+  const origin = baseUrl.replace(/\/$/, '');
+  const img = (path: string, alt: string, caption: string) =>
+    `<div class="img-block"><img src="${origin}${path}" alt="${alt}"><p class="img-caption">${caption}</p></div>`;
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pacific Medical School Space Evaluation — Sam Bloch</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #ffffff;
+      color: ${TEXT_DARK};
+      line-height: 1.6;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .doc { max-width: 700px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+    .header { border-bottom: 2px solid ${TEAL}; padding-bottom: 1rem; margin-bottom: 2rem; }
+    .logo span:first-child { color: ${TEXT_DARK}; font-weight: 800; font-size: 1.75rem; letter-spacing: -1px; }
+    .logo span:last-child { color: ${TEAL}; font-weight: 800; font-size: 1.75rem; letter-spacing: -1px; }
+    .meta { color: ${TEAL}; font-size: 0.75rem; margin-top: 0.5rem; }
+    h1 { font-size: 1.5rem; font-weight: 700; margin: 1rem 0 0.5rem; color: ${TEXT_DARK}; }
+    .subtitle { color: ${TEXT_MUTED}; font-size: 0.9rem; }
+    section { margin-bottom: 2rem; page-break-inside: avoid; }
+    .section-label { color: ${TEAL}; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+    p { color: ${TEXT_DARK}; font-size: 0.9rem; margin-bottom: 1rem; }
+    .stats { display: flex; gap: 1.5rem; margin: 1rem 0; flex-wrap: wrap; }
+    .stat { text-align: center; }
+    .stat-num { font-size: 1.5rem; font-weight: 700; color: ${TEAL}; }
+    .stat-label { font-size: 0.7rem; color: ${TEXT_MUTED}; }
+    .img-block img { width: 100%; height: auto; border: 1px solid #e5e7eb; border-radius: 0.5rem; }
+    .img-caption { font-size: 0.65rem; color: ${TEXT_MUTED}; margin-top: 0.25rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.85rem; }
+    th, td { border: 1px solid #e5e7eb; padding: 0.6rem 0.8rem; text-align: left; }
+    th { background: #f3f4f6; color: ${TEXT_DARK}; font-weight: 600; }
+    td { color: ${TEXT_DARK}; }
+    td strong { color: ${TEAL}; }
+    ul { margin: 0.5rem 0 1rem 1.5rem; color: ${TEXT_DARK}; font-size: 0.9rem; }
+    li { margin-bottom: 0.25rem; }
+    .quote-box { border-left: 3px solid ${TEAL}; padding-left: 1rem; margin: 1rem 0; }
+    .role-item { margin-bottom: 0.75rem; }
+    .role-title { font-size: 0.8rem; font-weight: 600; color: ${TEAL}; }
+    .role-desc { font-size: 0.8rem; color: ${TEXT_MEDIUM}; }
+    .footer {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      padding: 0.75rem 1.5rem;
+      border-top: 1px solid #e5e7eb;
+      display: flex; justify-content: space-between;
+      font-size: 0.7rem; color: ${TEXT_MUTED}; background: #ffffff;
+    }
+    .footer a { color: ${TEAL}; text-decoration: none; }
+    @media print { .doc { padding-bottom: 3rem; } }
+  </style>
+</head>
+<body>
+  <div class="doc">
+    <header class="header">
+      <div class="logo"><span>SAM</span> <span>BLOCH</span></div>
+      <p class="meta">Strategic Consulting · LEAD 259 · 2026</p>
+      <h1>Pacific Medical School Space Evaluation</h1>
+      <p class="subtitle">University of the Pacific · Office of the President · Physical Plant</p>
+    </header>
+
+    <section>
+      <p>A strategic consulting engagement that gave University of the Pacific the data it needed to launch a new medical school using existing campus capacity, without building a single new classroom. Six semesters of utilization data across three buildings, three findings, one institutional decision.</p>
+    </section>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-num">4.35%</div><div class="stat-label">Bldg Efficiency</div></div>
+      <div class="stat"><div class="stat-num">58/73</div><div class="stat-label">Rooms Unscheduled</div></div>
+      <div class="stat"><div class="stat-num">3</div><div class="stat-label">Buildings Audited</div></div>
+      <div class="stat"><div class="stat-num">6</div><div class="stat-label">Semesters Analyzed</div></div>
+    </div>
+
+    <section>
+      <div class="section-label">THE BRIEF</div>
+      <p>In early 2026, University of the Pacific was actively scoping the launch of a new medical school. The strategic question was not whether the program had demand. It was whether the existing campus footprint could absorb it.</p>
+      <p>President Callahan's office and the Physical Plant team asked our three-person consulting team to find out. The brief was specific: stop guessing from anecdote, start measuring from data, and answer a single question with rigor. Could the existing Classroom Building, Chemistry Building, and Olson Hall hold a medical school program without new construction?</p>
+      <p><strong>The cost difference between "yes" and "no" was eight figures.</strong></p>
+    </section>
+
+    <section>
+      <div class="section-label">METHODOLOGY</div>
+      <p>Cross-Reference Analysis: we layered scheduling data over physical asset data across six semesters, then built a composite Efficiency Score that combines seat-fill utilization (65% weight) and scheduled intensity (35% weight), normalized within space type.</p>
+      <table>
+        <tr><th>Data Stream</th><th>Source</th><th>Used For</th></tr>
+        <tr><td><strong>Instructional Utilization</strong></td><td>Registrar / EMS</td><td>Peak occupancy and seat-fill rates</td></tr>
+        <tr><td><strong>Space Classification</strong></td><td>Academic Affairs</td><td>Lab vs. lecture vs. office distinction</td></tr>
+        <tr><td><strong>Administrative Load</strong></td><td>Dean's Office</td><td>Office density and admin footprint</td></tr>
+      </table>
+      <p>Grounded in Patton's utilization-focused evaluation framework and Russ-Eft &amp; Preskill's Chapter 14 and 16 communication models. Working sessions replaced slide-deck handoffs.</p>
+    </section>
+
+    ${img('/case-study/space-utilization/floor-2.webp', 'Classroom Building floor plan', 'Classroom Building, Floor 1 — color-coded by use (lecture / lab / office / research) with efficiency annotations')}
+
+    <section>
+      <div class="section-label">FINDINGS</div>
+      <p><strong>Finding 1 — The capacity is already there.</strong> Of 73 classrooms in the Classroom Building, only 15 were scheduled in Spring 2026. Building-level efficiency clocked at 4.35%. Olson Hall ran at 3.55%, Chemistry at 6.67%. The space exists. It just isn't being used.</p>
+      <p><strong>Finding 2 — Peak load lives in a narrow window.</strong> Heatmaps revealed that instruction concentrates on Monday through Thursday, 10 AM to 2 PM. The med school could occupy off-peak hours without displacing a single existing class.</p>
+      <p><strong>Finding 3 — Power Rooms and Ghost Rooms in the same building.</strong> Olson Hall 120 ran at 48.7% efficiency. Olson Hall 100, the same building, same square footage, ran at 2.8%. The difference is scheduling decisions, not architecture.</p>
+    </section>
+
+    <section>
+      <div class="section-label">RECOMMENDATIONS</div>
+      <ul>
+        <li><strong>Tier 1 — No capital investment.</strong> Consolidate repeated low-fill rooms (Olson 103, 105; Classroom 126, 235) and redistribute peak-period loads across underused weekday afternoons.</li>
+        <li><strong>Tier 2 — Operational changes.</strong> Re-classify Ghost Rooms as flexible-use spaces available to the medical school program. Schedule the med school primarily in off-peak windows.</li>
+        <li><strong>Tier 3 — Long-term renovation.</strong> If capital was eventually needed, target the lowest-efficiency square footage rather than expanding the campus footprint.</li>
+      </ul>
+    </section>
+
+    <section>
+      <div class="section-label">THE TEAM</div>
+      <p>A three-person consulting team operating as equal partners:</p>
+      <div class="role-item"><span class="role-title">Sam Bloch</span><br><span class="role-desc">Project framing, stakeholder management, synthesis of findings into the President's briefing.</span></div>
+      <div class="role-item"><span class="role-title">Samuel Cogo</span><br><span class="role-desc">Floor plan analysis, room-by-room data joins, recommendations modeling.</span></div>
+      <div class="role-item"><span class="role-title">Veronica Henderson</span><br><span class="role-desc">Stakeholder interviews, facilitated working sessions, qualitative synthesis.</span></div>
+    </section>
+
+    <section>
+      <div class="section-label">THE OUTCOME</div>
+      <p>In the months following our final briefing, University of the Pacific moved forward with the medical school. The space evaluation didn't make the decision alone, but it gave the board the evidence base it needed to say yes without a capital expansion.</p>
+    </section>
+
+    <section>
+      <div class="section-label">REFLECTION</div>
+      <p>I came into this project thinking of evaluation as an analytical discipline. I left thinking of it as a leadership one. The hardest part of the engagement was not running the numbers. It was designing the conversations around them.</p>
+      <p>Patton's utilization principle kept us honest the whole way. Every methodological choice was tested against the same question: will this help the President decide, or is it just rigor for rigor's sake? Russ-Eft &amp; Preskill's chapters on facilitated reporting were the difference between findings that sat in a binder and findings that funded a medical school.</p>
+    </section>
+  </div>
+
+  <div class="footer">
+    <span>www.sam-bloch.com</span>
+    <a href="https://www.linkedin.com/in/blochsam/">linkedin.com/in/blochsam</a>
+    <a href="mailto:sam@sam-bloch.com">sam@sam-bloch.com</a>
+  </div>
+
+  <script>
+    (function(){
+      var imgs = document.querySelectorAll('img');
+      var loaded = 0;
+      function checkDone() {
+        loaded++;
+        if (loaded >= imgs.length) setTimeout(function(){ window.print(); }, 300);
+      }
+      imgs.forEach(function(img) {
+        if (img.complete) checkDone();
+        else img.onload = img.onerror = checkDone;
+      });
+      if (imgs.length === 0) setTimeout(function(){ window.print(); }, 500);
+    })();
+  </script>
+</body>
+</html>`;
 }
 
 function generateUnderConstructionPdf(baseUrl: string): string {
