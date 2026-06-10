@@ -86,29 +86,25 @@ const ExperienceDefault: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Check if navigated here with force2D signal (from "Switch to Static Site")
+    // Navigated here with force2D signal ("Switch to Static Site" / "Skip").
+    // This is the ONLY path that persists a 2D preference — crash fallbacks
+    // and device detection must never stick, or one bad WebGL moment locks
+    // the whole session out of 3D.
     if (location.state?.force2D) {
+      sessionStorage.setItem('experienceChoice', '2d');
       setIs3D(false);
       // Clear the state so refreshing doesn't stick on 2D
       window.history.replaceState({}, '');
       return;
     }
-    // Respect an earlier explicit choice of the static site this session,
-    // so returning to home doesn't bounce a 2D visitor back into 3D.
-    if (sessionStorage.getItem('experienceMode') === '2d') {
+    // Respect an earlier explicit choice of the static site this session.
+    if (sessionStorage.getItem('experienceChoice') === '2d') {
       setIs3D(false);
       return;
     }
     const isMobile = window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768;
     setIs3D(!isMobile);
   }, [location.state]);
-
-  // Store which experience mode is active for back-navigation from subpages
-  useEffect(() => {
-    if (is3D !== null) {
-      sessionStorage.setItem('experienceMode', is3D ? '3d' : '2d');
-    }
-  }, [is3D]);
 
   if (is3D === null) {
     return (

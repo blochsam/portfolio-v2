@@ -49,7 +49,8 @@ const Experience3DRoute: React.FC = () => {
   usePageMeta(ROUTE_META['/3d']);
 
   useEffect(() => {
-    sessionStorage.setItem('experienceMode', '3d');
+    // Entering 3D explicitly clears any stored preference for the static site
+    sessionStorage.setItem('experienceChoice', '3d');
   }, []);
 
   return (
