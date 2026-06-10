@@ -1,5 +1,5 @@
 {
-  "buildCommand": "vite build",
+  "buildCommand": "node scripts/fetch-spline-scene.mjs && vite build",
   "outputDirectory": "dist",
   "trailingSlash": false,
   "redirects": [

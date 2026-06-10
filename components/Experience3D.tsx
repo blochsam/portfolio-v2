@@ -186,8 +186,10 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
             if (splineWrapperRef.current) splineWrapperRef.current.style.cursor = '';
           }}
         >
+          {/* ?v=2 busts browser caches that stored the bad immutable payload
+              served while the scene file was missing from production builds */}
           <Spline
-            scene="/scene.splinecode"
+            scene="/scene.splinecode?v=2"
             onLoad={onLoad}
           />
         </div>
