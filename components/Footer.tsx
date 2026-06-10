@@ -1,5 +1,5 @@
-import React from 'react';
-import { Linkedin, Github, Mail } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Linkedin, Github, Mail, Check } from 'lucide-react';
 import { COLORS } from '../constants';
 
 interface FooterProps {
@@ -9,12 +9,29 @@ interface FooterProps {
 }
 
 const Footer: React.FC<FooterProps> = ({ className = "", isInline = false }) => {
+  const [copied, setCopied] = useState(false);
+  const copiedTimeoutRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (copiedTimeoutRef.current) window.clearTimeout(copiedTimeoutRef.current);
+    };
+  }, []);
+
   const handleSecureMail = (e: React.MouseEvent) => {
     e.preventDefault();
     const user = 'sam';
     const domain = 'sam-bloch.com';
     const at = '@';
-    window.location.href = `mailto:${user}${at}${domain}`;
+    const address = `${user}${at}${domain}`;
+    // mailto silently no-ops for visitors without a mail client configured,
+    // so also copy the address and confirm visibly.
+    navigator.clipboard?.writeText(address).then(() => {
+      setCopied(true);
+      if (copiedTimeoutRef.current) window.clearTimeout(copiedTimeoutRef.current);
+      copiedTimeoutRef.current = window.setTimeout(() => setCopied(false), 2500);
+    }).catch(() => { /* clipboard unavailable — mailto still fires */ });
+    window.location.href = `mailto:${address}`;
   };
 
   const positionClasses = isInline
@@ -52,11 +69,20 @@ const Footer: React.FC<FooterProps> = ({ className = "", isInline = false }) => 
 
         <button
           onClick={handleSecureMail}
-          className="hover:text-[#24A2A7] transition-colors flex items-center justify-center gap-2 group min-w-[44px] min-h-[44px]"
-          aria-label="Email"
+          className="relative hover:text-[#24A2A7] transition-colors flex items-center justify-center gap-2 group min-w-[44px] min-h-[44px]"
+          aria-label="Email Sam — copies sam@sam-bloch.com to clipboard"
         >
+          {copied && (
+            <span
+              role="status"
+              className="absolute bottom-full mb-2 right-0 whitespace-nowrap normal-case tracking-normal text-[11px] font-bold text-[#121212] bg-[#24A2A7] px-3 py-1.5 rounded-full shadow-xl flex items-center gap-1.5"
+            >
+              <Check className="w-3 h-3" strokeWidth={3} />
+              sam@sam-bloch.com copied
+            </span>
+          )}
           <Mail className="w-4 h-4" strokeWidth={1.5} />
-          <span className="hidden lg:inline opacity-80 group-hover:opacity-100 transition-opacity">CONTACT</span>
+          <span className="hidden lg:inline opacity-80 group-hover:opacity-100 transition-opacity">{copied ? 'COPIED' : 'CONTACT'}</span>
         </button>
       </div>
     </footer>

@@ -3,25 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { usePageMeta } from '../utils/usePageMeta';
 import { ROUTE_META } from '../data/routeMeta';
+import { goBack } from '../utils/goBack';
 
 const PrivacyPolicyPage: React.FC = () => {
   usePageMeta(ROUTE_META['/privacy-policy']);
   const navigate = useNavigate();
 
-  const handleBack = () => {
-    const mode = sessionStorage.getItem('experienceMode');
-    if (mode === '2d') {
-      navigate('/', { state: { force2D: true } });
-    } else {
-      navigate('/');
-    }
-  };
+  const handleBack = () => goBack(navigate, '/');
 
   return (
-    <div className="min-h-screen bg-[#121212] pt-24 pb-40 px-6 md:px-12 flex flex-col items-center">
+    <div className="min-h-screen bg-[#121212] pt-24 pb-24 px-6 md:px-12 flex flex-col items-center">
       <button
         onClick={handleBack}
-        className="fixed top-8 left-8 md:left-12 z-[60] flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-[color,border-color,transform] bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95"
+        className="fixed top-8 left-8 md:left-12 z-[60] flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-[color,border-color,transform] bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95"
       >
         <ArrowLeft className="w-4 h-4" />
         Back to Site

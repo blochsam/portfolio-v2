@@ -25,7 +25,7 @@ describe('Footer', () => {
 
   it('renders email button', () => {
     render(<Footer />);
-    expect(screen.getByLabelText('Email')).toBeInTheDocument();
+    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
   });
 
   it('renders as fixed by default', () => {

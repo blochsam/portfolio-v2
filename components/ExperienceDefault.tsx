@@ -24,11 +24,28 @@ if (typeof window !== 'undefined' &&
 
 const Experience3D = lazy(() => experience3DImport || import('./Experience3D'));
 
-const Experience3DLoadingFallback = () => (
-  <div className="fixed inset-0 bg-[#121212] flex flex-col items-center justify-center z-0">
-    <div className="text-center animate-pulse">
-      <span className="text-[10px] font-mono uppercase tracking-[0.8em] text-white/50 mb-4 block">Uplink established</span>
-      <h2 className="text-xl font-black uppercase tracking-[0.4em] text-white/40">Initializing Samulation...</h2>
+/**
+ * Shown while the 3D chunk loads. Leads with who Sam is and offers an
+ * immediate exit to the static site, so impatient visitors aren't stuck
+ * staring at jargon with no way out.
+ */
+const Experience3DLoadingFallback = ({ onSkip }: { onSkip: () => void }) => (
+  <div className="fixed inset-0 bg-[#121212] flex flex-col items-center justify-center z-0 px-6">
+    <div className="text-center">
+      <h1 className="text-3xl md:text-4xl font-black tracking-tighter mb-2">
+        <span className="text-white">SAM</span> <span className="text-[#24A2A7]">BLOCH</span>
+      </h1>
+      <p className="text-xs uppercase tracking-[0.3em] text-gray-400 mb-10">Program Manager · AI Builder · College Educator</p>
+      <div className="animate-pulse mb-10">
+        <span className="text-[10px] font-mono uppercase tracking-[0.8em] text-white/50 mb-3 block">Uplink established</span>
+        <h2 className="text-lg font-black uppercase tracking-[0.4em] text-white/40">Loading 3D experience...</h2>
+      </div>
+      <button
+        onClick={onSkip}
+        className="px-6 py-3 min-h-[44px] rounded-full border border-white/10 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white hover:border-[#24A2A7]/40 transition-[color,border-color,transform] active:scale-95"
+      >
+        Skip — view the static site
+      </button>
     </div>
   </div>
 );
@@ -76,6 +93,12 @@ const ExperienceDefault: React.FC = () => {
       window.history.replaceState({}, '');
       return;
     }
+    // Respect an earlier explicit choice of the static site this session,
+    // so returning to home doesn't bounce a 2D visitor back into 3D.
+    if (sessionStorage.getItem('experienceMode') === '2d') {
+      setIs3D(false);
+      return;
+    }
     const isMobile = window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768;
     setIs3D(!isMobile);
   }, [location.state]);
@@ -100,7 +123,7 @@ const ExperienceDefault: React.FC = () => {
   return is3D ? (
     <WebGLErrorBoundary onFallback={() => setIs3D(false)}>
       <div className="animate-in fade-in duration-1000 h-screen w-screen overflow-hidden">
-        <Suspense fallback={<Experience3DLoadingFallback />}>
+        <Suspense fallback={<Experience3DLoadingFallback onSkip={() => setIs3D(false)} />}>
           <Experience3D
             setSelectedContent={context.setSelectedContent}
             openAbout={context.openAbout}

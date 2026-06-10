@@ -275,10 +275,11 @@ const SmartLockersCaseStudy: React.FC = () => {
       <div className="fixed bottom-32 md:bottom-24 right-6 z-[70] no-print">
         <button
           onClick={handleDownloadPDF}
-          className="w-16 h-16 rounded-full bg-[#24A2A7] text-[#0a0f1c] flex items-center justify-center shadow-2xl shadow-[#24A2A7]/20 hover:scale-110 active:scale-90 transition-transform"
-          title="Download Case Study PDF"
+          className="h-14 px-5 rounded-full bg-[#24A2A7] text-[#0a0f1c] flex items-center justify-center gap-2 shadow-2xl shadow-[#24A2A7]/20 hover:scale-105 active:scale-95 transition-transform"
+          aria-label="Download case study PDF"
         >
-          <Download className="w-8 h-8" />
+          <Download className="w-6 h-6" />
+          <span className="text-xs font-black uppercase tracking-widest">PDF</span>
         </button>
       </div>
 

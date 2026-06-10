@@ -4,40 +4,35 @@ import { COLORS } from '../constants';
 import { Download, ArrowLeft } from 'lucide-react';
 import { usePageMeta } from '../utils/usePageMeta';
 import { ROUTE_META } from '../data/routeMeta';
+import { goBack } from '../utils/goBack';
 
 const ResumePage: React.FC = () => {
   usePageMeta(ROUTE_META['/resume']);
   const navigate = useNavigate();
 
-  const handleBack = () => {
-    const mode = sessionStorage.getItem('experienceMode');
-    if (mode === '2d') {
-      navigate('/', { state: { force2D: true } });
-    } else {
-      navigate('/');
-    }
-  };
+  const handleBack = () => goBack(navigate, '/');
 
   return (
-    <div className="min-h-screen bg-[#121212] pt-24 pb-40 px-4 md:px-12 flex flex-col items-center">
+    <div className="min-h-screen bg-[#121212] pt-24 pb-24 px-4 md:px-12 flex flex-col items-center">
       {/* Back Button */}
       <button
         onClick={handleBack}
-        className="fixed top-8 left-8 md:left-12 z-[60] flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-[color,border-color,transform] bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95"
+        className="fixed top-8 left-8 md:left-12 z-[60] flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-[color,border-color,transform] bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95"
       >
         <ArrowLeft className="w-4 h-4" />
-        Back to Site
+        Back
       </button>
 
       {/* Floating Download Button (Teal themed, linking to PDF) */}
-      <a 
+      <a
         href="/SBloch_Resume.pdf"
         download="SBloch_Resume.pdf"
-        className="fixed bottom-20 right-8 md:right-28 z-[60] w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-transform hover:scale-110 active:scale-90 group"
+        className="fixed bottom-20 right-8 md:right-28 z-[60] h-14 px-5 rounded-full flex items-center justify-center gap-2 shadow-2xl transition-transform hover:scale-105 active:scale-95 group"
         style={{ backgroundColor: COLORS.teal, color: COLORS.charcoal }}
-        title="Download Resume PDF"
+        aria-label="Download resume PDF"
       >
-        <Download className="w-8 h-8 group-hover:translate-y-0.5 transition-transform" />
+        <Download className="w-6 h-6 group-hover:translate-y-0.5 transition-transform" />
+        <span className="text-xs font-black uppercase tracking-widest">PDF</span>
       </a>
 
       {/* Resume Document */}

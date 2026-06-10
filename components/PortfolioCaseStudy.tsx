@@ -358,15 +358,16 @@ const PortfolioCaseStudy: React.FC = () => {
         )}
 
         {/* Back */}
-        <button onClick={() => navigate('/projects')} className="fixed top-8 left-8 md:left-12 z-[60] flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-[color,border-color,transform] bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95 no-print" aria-label="Back to projects">
+        <button onClick={() => navigate('/projects')} className="fixed top-8 left-8 md:left-12 z-[60] flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-[color,border-color,transform] bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95 no-print" aria-label="Back to projects">
           <ArrowLeft className="w-4 h-4" />
           Back to Archive
         </button>
 
         {/* PDF Download */}
         <div className="fixed bottom-32 md:bottom-24 right-6 z-[70] no-print">
-          <button onClick={handleDownloadPDF} className="w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-transform hover:scale-110 active:scale-90" style={{ backgroundColor: COLORS.teal, color: COLORS.charcoal }} title="Download Case Study PDF">
-            <Download className="w-8 h-8" />
+          <button onClick={handleDownloadPDF} className="h-14 px-5 rounded-full flex items-center justify-center gap-2 shadow-2xl transition-transform hover:scale-105 active:scale-95" style={{ backgroundColor: COLORS.teal, color: COLORS.charcoal }} aria-label="Download case study PDF">
+            <Download className="w-6 h-6" />
+            <span className="text-xs font-black uppercase tracking-widest">PDF</span>
           </button>
         </div>
 

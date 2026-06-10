@@ -30,6 +30,7 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
   const navigate = useNavigate();
   const [hoveredMenuId, setHoveredMenuId] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [sceneLoaded, setSceneLoaded] = useState(false);
   const [showDeskHint, setShowDeskHint] = useState(true);
   const [hintFading, setHintFading] = useState(false);
   const splineAppRef = useRef<SplineApp | null>(null);
@@ -98,6 +99,7 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
   }, []);
 
   const onLoad = (splineApp: SplineApp) => {
+    setSceneLoaded(true);
     splineAppRef.current = splineApp;
     splineApp.addEventListener('mouseHover', (e: SplineEvent) => {
       const key = findContentKeyInHierarchy(e.target);
@@ -140,13 +142,24 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
 
   return (
     <div className="fixed inset-0 w-full h-full bg-[#121212] overflow-hidden select-none">
-      {/* Background Loading State (Visible behind Spline) */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center z-0">
-        <div className="text-center animate-pulse">
-          <span className="text-[10px] font-mono uppercase tracking-[0.8em] text-white/50 mb-4 block">Uplink established</span>
-          <h2 className="text-xl font-black uppercase tracking-[0.4em] text-white/40">Initializing Samulation...</h2>
+      {/* Scene loading state — sits above the canvas until the scene is ready,
+          with an escape hatch for visitors on slow connections */}
+      {!sceneLoaded && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center z-20 px-6 pointer-events-none">
+          <div className="text-center">
+            <div className="animate-pulse mb-10">
+              <span className="text-[10px] font-mono uppercase tracking-[0.8em] text-white/50 mb-4 block">Uplink established</span>
+              <h2 className="text-xl font-black uppercase tracking-[0.4em] text-white/40">Initializing Samulation...</h2>
+            </div>
+            <button
+              onClick={() => navigate('/', { state: { force2D: true } })}
+              className="pointer-events-auto px-6 py-3 min-h-[44px] rounded-full border border-white/10 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white hover:border-[#24A2A7]/40 transition-[color,border-color,transform] active:scale-95"
+            >
+              Skip — view the static site
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       <Suspense fallback={null}>
         <div 
@@ -187,7 +200,7 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
             hintFading ? 'opacity-0' : 'opacity-100'
           }`}
         >
-          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 px-6 py-3 rounded-full bg-black/40 backdrop-blur-md border border-white/5 shadow-xl">
+          <p className="text-xs font-bold uppercase tracking-widest text-gray-400 px-6 py-3 rounded-full bg-black/40 backdrop-blur-md border border-white/5 shadow-xl">
             Click and drag to explore Sam&apos;s desk
           </p>
         </div>
@@ -206,7 +219,7 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
         <div className="hidden md:flex flex-col gap-2">
           <button
             onClick={() => navigate('/', { state: { force2D: true } })}
-            className="group flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-[color,border-color,transform] bg-black/40 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95"
+            className="group flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-[color,border-color,transform] bg-black/40 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95"
           >
             <svg className="w-4 h-4 group-hover:rotate-180 transition-transform duration-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
@@ -215,7 +228,7 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
           </button>
           <button
             onClick={() => navigate('/projects')}
-            className="group flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-[color,border-color,transform] bg-black/40 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95"
+            className="group flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-[color,border-color,transform] bg-black/40 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               {/* Folder body */}

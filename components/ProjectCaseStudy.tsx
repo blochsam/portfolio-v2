@@ -6,6 +6,7 @@ import InteractiveSitemap from './InteractiveSitemap';
 import { SITEMAP } from '../sitemap';
 import { usePageMeta } from '../utils/usePageMeta';
 import { getCaseStudyMeta } from '../data/routeMeta';
+import NextProject from './NextProject';
 
 const PROJECT_TITLES: Record<string, string> = {
   'portfolio': 'My Portfolio Website',
@@ -104,6 +105,7 @@ const ProjectCaseStudy: React.FC = () => {
         </div>
       }>
         <Component />
+        <NextProject currentId={projectId} />
       </Suspense>
     );
   }
@@ -198,20 +200,21 @@ const ProjectCaseStudy: React.FC = () => {
         >
           <Github className="w-8 h-8" />
         </a>
-        <button 
+        <button
           onClick={handleDownloadPDF}
-          className="w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-transform hover:scale-110 active:scale-90 group"
+          className="h-14 px-5 rounded-full flex items-center justify-center gap-2 shadow-2xl transition-transform hover:scale-105 active:scale-95 group"
           style={{ backgroundColor: COLORS.teal, color: COLORS.charcoal }}
-          title="Download Case Study PDF"
+          aria-label="Download case study PDF"
         >
-          <Download className="w-8 h-8" />
+          <Download className="w-6 h-6" />
+          <span className="text-xs font-black uppercase tracking-widest">PDF</span>
         </button>
       </div>
 
       {/* Global Navigation - Fixed Top */}
       <button
         onClick={() => navigate('/projects')}
-        className="fixed top-8 left-8 md:left-12 z-[60] flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-[color,border-color,transform] bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95 no-print"
+        className="fixed top-8 left-8 md:left-12 z-[60] flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-[color,border-color,transform] bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95 no-print"
       >
         <ArrowLeft className="w-4 h-4" />
         Back to Archive

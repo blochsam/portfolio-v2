@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import AudioPlayer from './components/AudioPlayer';
 import Footer from './components/Footer';
 import Overlay from './components/Overlay';
+import SiteNav from './components/SiteNav';
 import { PortfolioContent, AppShellContext } from './types';
 
 /* #6 Lazy-load AboutOverlay — defers ~6 images until user opens it */
@@ -32,7 +33,12 @@ const AppShell: React.FC = () => {
     return () => { document.body.style.overflow = ''; };
   }, [isOverlayOpen]);
 
-  /* Footer is always fixed across all pages */
+  /* Home experiences carry their own HUD nav; subpages get the slim SiteNav */
+  const showSiteNav = location.pathname !== '/' && location.pathname !== '/3d';
+
+  /* Long-scroll pages get an inline footer at the end of content instead of a
+     fixed bar that permanently eats viewport height and collides with FABs */
+  const inlineFooter = /^\/(projects|resume|privacy-policy)/.test(location.pathname);
 
   const context: AppShellContext = {
     setSelectedContent,
@@ -48,6 +54,7 @@ const AppShell: React.FC = () => {
         Skip to content
       </a>
       <AudioPlayer />
+      {showSiteNav && <SiteNav />}
       <main id="main-content">
         <Outlet context={context} />
       </main>
@@ -62,7 +69,7 @@ const AppShell: React.FC = () => {
         />
       </Suspense>
       {!isOverlayOpen && (
-        <Footer />
+        <Footer isInline={inlineFooter} />
       )}
     </div>
   );

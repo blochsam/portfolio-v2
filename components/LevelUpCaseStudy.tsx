@@ -570,7 +570,7 @@ const LevelUpCaseStudy: React.FC = () => {
       <ScrollProgress />
 
       {/* ═══════════════════ BACK BUTTON ═══════════════════ */}
-      <button onClick={() => navigate('/projects')} className="fixed top-8 left-8 md:left-12 z-[60] flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-[color,border-color,transform] bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95 no-print" aria-label="Back to projects">
+      <button onClick={() => navigate('/projects')} className="fixed top-8 left-8 md:left-12 z-[60] flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-[color,border-color,transform] bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95 no-print" aria-label="Back to projects">
         <ArrowLeft className="w-4 h-4" />
         Back to Archive
       </button>
@@ -578,7 +578,7 @@ const LevelUpCaseStudy: React.FC = () => {
       {/* ═══════════════════ PDF FAB ═══════════════════ */}
       <button
         onClick={handleDownloadPDF}
-        className="fixed bottom-28 right-8 md:right-12 z-[50] w-16 h-16 flex items-center justify-center border-[3px] transition-[box-shadow,transform] duration-100 no-print hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_#1B7A7E] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
+        className="fixed bottom-28 right-8 md:right-12 z-[50] h-14 px-5 flex items-center justify-center gap-2 border-[3px] transition-[box-shadow,transform] duration-100 no-print hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_#1B7A7E] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
         style={{
           borderRadius: WOBBLY.circle,
           borderColor: TEAL_DARK,
@@ -586,9 +586,10 @@ const LevelUpCaseStudy: React.FC = () => {
           boxShadow: `6px 6px 0px 0px ${TEAL_DARK}`,
           color: 'white',
         }}
-        title="Download Case Study PDF"
+        aria-label="Download case study PDF"
       >
-        <Download className="w-7 h-7" strokeWidth={2.5} />
+        <Download className="w-6 h-6" strokeWidth={2.5} />
+        <span className="text-xs font-black uppercase tracking-widest">PDF</span>
       </button>
 
       {/* ═══════════════════ HERO ═══════════════════ */}

@@ -1,9 +1,10 @@
 import React, { useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Search, Filter } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowLeft, Search } from 'lucide-react';
 import { usePageMeta } from '../utils/usePageMeta';
 import { ROUTE_META } from '../data/routeMeta';
 import { PROJECTS } from '../data/projects';
+import { goBack } from '../utils/goBack';
 
 const ProjectsPage: React.FC = () => {
   usePageMeta(ROUTE_META['/projects']);
@@ -23,19 +24,12 @@ const ProjectsPage: React.FC = () => {
   }, [filter, search]);
 
   return (
-    <div className="min-h-screen bg-[#121212] pt-24 pb-40 px-6 md:px-12 flex flex-col items-center">
+    <div className="min-h-screen bg-[#121212] pt-24 pb-24 px-6 md:px-12 flex flex-col items-center">
       {/* Back Button */}
       <button
-        onClick={() => {
-          const mode = sessionStorage.getItem('experienceMode');
-          if (mode === '2d') {
-            navigate('/', { state: { force2D: true } });
-          } else {
-            navigate('/');
-          }
-        }}
-        aria-label="Back to home"
-        className="fixed top-8 left-8 md:left-12 z-[60] flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-[color,border-color,transform] bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95"
+        onClick={() => goBack(navigate, '/')}
+        aria-label="Back"
+        className="fixed top-8 left-8 md:left-12 z-[60] flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-[color,border-color,transform] bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95"
       >
         <ArrowLeft className="w-4 h-4" aria-hidden="true" />
         Back
@@ -55,7 +49,7 @@ const ProjectsPage: React.FC = () => {
                   onClick={() => setFilter(cat)}
                   aria-pressed={filter === cat}
                   aria-label={`Filter by ${cat}`}
-                  className={`px-5 py-3 min-h-[44px] rounded-full text-[10px] font-bold uppercase tracking-widest transition-[color,background-color,border-color,box-shadow] border ${
+                  className={`px-5 py-3 min-h-[44px] rounded-full text-xs font-bold uppercase tracking-widest transition-[color,background-color,border-color,box-shadow] border ${
                     filter === cat
                     ? 'bg-[#24A2A7] border-[#24A2A7] text-black shadow-[0_0_20px_rgba(36,162,167,0.3)]'
                     : 'bg-white/5 border-white/10 text-gray-400 hover:border-[#24A2A7]/50'
@@ -69,7 +63,7 @@ const ProjectsPage: React.FC = () => {
             {/* Search */}
             <div className="relative w-full md:w-80 group">
               <label htmlFor="project-search" className="sr-only">Search projects</label>
-              <ArrowLeft className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-[#24A2A7] transition-colors rotate-180" aria-hidden="true" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-[#24A2A7] transition-colors" aria-hidden="true" />
               <input
                 id="project-search"
                 type="search"
@@ -95,10 +89,9 @@ const ProjectsPage: React.FC = () => {
             const gradient = categoryGradient[project.category] || 'from-white/10 via-white/5 to-transparent';
 
             return (
-            <button
+            <Link
               key={project.id}
-              type="button"
-              onClick={() => navigate(`/projects/${project.id}`)}
+              to={`/projects/${project.id}`}
               aria-label={`View case study: ${project.title}`}
               className="group relative bg-[#1a1a1a]/40 border border-white/5 rounded-3xl overflow-hidden hover:bg-[#202020] transition-[background-color] duration-500 flex flex-col h-full text-left cursor-pointer w-full"
             >
@@ -145,20 +138,27 @@ const ProjectsPage: React.FC = () => {
                   ))}
                 </div>
 
-                <span className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#24A2A7] group-hover:gap-4 transition-[gap]">
+                <span className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[#24A2A7] group-hover:gap-4 transition-[gap]">
                   View Case Study
                   <ArrowLeft className="w-3 h-3 rotate-180" strokeWidth={3} />
                 </span>
               </div>
 
               <div className="absolute bottom-0 right-0 w-32 h-32 bg-[#24A2A7]/5 blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-            </button>
+            </Link>
           );
           })}
 
           {filteredProjects.length === 0 && (
-            <div className="col-span-full py-32 text-center border border-dashed border-white/10 rounded-3xl">
-              <span className="text-gray-400 uppercase font-black tracking-widest text-xs">No artifacts found in this sector.</span>
+            <div className="col-span-full py-32 text-center border border-dashed border-white/10 rounded-3xl px-6">
+              <p className="text-gray-400 uppercase font-black tracking-widest text-xs mb-3">No artifacts found in this sector.</p>
+              <p className="text-gray-500 text-sm mb-8">Nothing matches {search ? `"${search}"` : 'that filter'}. Try a different keyword or browse everything.</p>
+              <button
+                onClick={() => { setSearch(''); setFilter('All'); }}
+                className="px-6 py-3 min-h-[44px] rounded-full text-xs font-bold uppercase tracking-widest bg-[#24A2A7] text-black hover:brightness-110 transition-[filter,transform] active:scale-95"
+              >
+                Show all projects
+              </button>
             </div>
           )}
         </div>

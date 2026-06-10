@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { CONTENT_MAP, COLORS, LOGO } from '../constants';
 import { SplineObjectId, PortfolioContent } from '../types';
 import { Menu, X, ChevronDown } from 'lucide-react';
@@ -42,7 +42,6 @@ interface Experience2DProps {
 
 const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbout }) => {
   usePageMeta(ROUTE_META['/']);
-  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [hoveredNav, setHoveredNav] = useState<string | null>(null);
   const [expandedFocus, setExpandedFocus] = useState<string | null>(null);
@@ -139,12 +138,12 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
         {/* Desktop Nav */}
         <nav className="hidden md:flex gap-8 lg:gap-10 items-center">
           {[
-            { id: 'resume', label: 'Resume', action: () => navigate('/resume') },
-            { id: 'projects', label: 'Projects', action: () => navigate('/projects') },
+            { id: 'resume', label: 'Resume', to: '/resume' },
+            { id: 'projects', label: 'Projects', to: '/projects' },
           ].map(item => (
-            <button
+            <Link
               key={item.id}
-              onClick={item.action}
+              to={item.to}
               onMouseEnter={() => setHoveredNav(item.id)}
               onMouseLeave={() => setHoveredNav(null)}
               className={`text-xs font-black uppercase tracking-[0.3em] transition-[color,transform] duration-300 relative py-2 whitespace-nowrap
@@ -155,10 +154,10 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
               <span className={`absolute -bottom-1 left-0 h-[2px] bg-[#24A2A7] transition-[width,box-shadow] duration-500
                 ${hoveredNav === item.id ? 'w-full shadow-[0_0_8px_rgba(36,162,167,0.5)]' : 'w-0'}`}>
               </span>
-            </button>
+            </Link>
           ))}
-          <button
-            onClick={() => navigate('/3d')}
+          <Link
+            to="/3d"
             onMouseEnter={() => setHoveredNav('3d')}
             onMouseLeave={() => setHoveredNav(null)}
             className={`px-5 py-2.5 rounded-full border text-xs font-black uppercase tracking-[0.3em] transition-[color,border-color,background-color,transform] duration-300 active:scale-95 whitespace-nowrap
@@ -166,7 +165,7 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
             style={hoveredNav === '3d' ? { boxShadow: '0 0 16px rgba(36, 162, 167, 0.3)' } : undefined}
           >
             Enter Immersive 3D
-          </button>
+          </Link>
         </nav>
 
         {/* Mobile Hamburger Button */}
@@ -197,8 +196,8 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
               onClick={() => { setIsMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
               className="text-3xl font-black uppercase tracking-tighter hover:text-[#24A2A7] transition-colors"
             >Home</button>
-            <button onClick={() => { setIsMenuOpen(false); navigate('/3d'); }} className="text-3xl font-black uppercase tracking-tighter hover:text-[#24A2A7] transition-colors">3D Experience</button>
-            <button onClick={() => { setIsMenuOpen(false); navigate('/projects'); }} className="text-3xl font-black uppercase tracking-tighter hover:text-[#24A2A7] transition-colors">Projects & Artifacts</button>
+            <Link to="/3d" onClick={() => setIsMenuOpen(false)} className="text-3xl font-black uppercase tracking-tighter hover:text-[#24A2A7] transition-colors">3D Experience</Link>
+            <Link to="/projects" onClick={() => setIsMenuOpen(false)} className="text-3xl font-black uppercase tracking-tighter hover:text-[#24A2A7] transition-colors">Projects & Artifacts</Link>
             <a href="/SBloch_Resume.pdf" download="SBloch_Resume.pdf" onClick={() => setIsMenuOpen(false)} className="text-3xl font-black uppercase tracking-tighter hover:text-[#24A2A7] transition-colors">Resume</a>
           </div>
 
@@ -237,12 +236,12 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
               </button>
-              <button
-                onClick={() => navigate('/projects')}
-                className="px-8 py-4 2xl:px-10 2xl:py-5 border border-white/10 text-gray-400 hover:text-white hover:border-white/30 font-black uppercase text-[10px] 2xl:text-xs tracking-[0.2em] rounded-full transition-[color,border-color,transform] active:scale-95"
+              <Link
+                to="/projects"
+                className="px-8 py-4 2xl:px-10 2xl:py-5 border border-white/10 text-gray-400 hover:text-white hover:border-white/30 font-black uppercase text-xs tracking-[0.2em] rounded-full transition-[color,border-color,transform] active:scale-95"
               >
                 View Work
-              </button>
+              </Link>
             </div>
 
             {/* Logo strip */}
@@ -284,21 +283,21 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
         <section className="scroll-reveal content-auto px-6 md:px-12 max-w-7xl mx-auto mb-24 relative z-20">
           <div className="flex items-end justify-between mb-8 md:mb-10 border-b border-white/5 pb-6">
             <h2 className="text-lg md:text-xl font-black tracking-tighter uppercase">Selected Work</h2>
-            <button
-              onClick={() => navigate('/projects')}
-              className="text-[11px] font-bold uppercase tracking-widest text-[#24A2A7] hover:text-white transition-colors flex items-center gap-2"
+            <Link
+              to="/projects"
+              className="text-xs font-bold uppercase tracking-widest text-[#24A2A7] hover:text-white transition-colors flex items-center gap-2"
             >
               See All
               <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-            </button>
+            </Link>
           </div>
 
           <div className="scroll-reveal-stagger grid grid-cols-1 md:grid-cols-3 gap-4">
             {featured.map((project, i) => (
-              <button
+              <Link
                 key={project.id}
-                onClick={() => navigate(`/projects/${project.id}`)}
-                className="group relative bg-[#1a1a1a]/40 border border-white/5 rounded-2xl overflow-hidden hover:bg-[#202020] transition-[background-color] duration-500 text-left"
+                to={`/projects/${project.id}`}
+                className="group relative block bg-[#1a1a1a]/40 border border-white/5 rounded-2xl overflow-hidden hover:bg-[#202020] transition-[background-color] duration-500 text-left"
                 style={{ transitionDelay: `${i * 100}ms` }}
                 aria-label={`View case study: ${project.title}`}
               >
@@ -322,12 +321,12 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
                 <div className="p-5 md:p-6">
                   <h3 className="text-lg font-black tracking-tight mb-2 group-hover:text-[#24A2A7] transition-colors leading-tight">{project.title}</h3>
                   <p className="text-gray-400 text-sm leading-relaxed line-clamp-2 mb-4">{project.description}</p>
-                  <span className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#24A2A7] group-hover:gap-4 transition-[gap]">
+                  <span className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[#24A2A7] group-hover:gap-4 transition-[gap]">
                     View Case Study
                     <svg className="w-3 h-3 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
                   </span>
                 </div>
-              </button>
+              </Link>
             ))}
           </div>
         </section>
