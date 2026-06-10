@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { PortfolioContent } from '../types';
 import { COLORS } from '../constants';
 
@@ -163,7 +164,74 @@ const Overlay: React.FC<OverlayProps> = ({ content, onClose }) => {
 
         <div className={`relative z-10 mb-16 ${content.image ? 'grid lg:grid-cols-[1.2fr_0.8fr] gap-12 items-start' : ''}`}>
           <div className="order-2 lg:order-1">
-             {renderFormattedDescription(content.description)}
+            {content.approach ? (
+              <>
+                {/* Hook */}
+                <p className="text-gray-300 text-lg md:text-xl leading-relaxed mb-10">
+                  {content.hook ?? content.description}
+                </p>
+
+                {/* Proof points */}
+                {content.receipts && content.receipts.length > 0 && (
+                  <div className="mb-10">
+                    <h3 className="text-[10px] uppercase tracking-[0.4em] font-bold text-[#24A2A7] mb-4">Proof Points</h3>
+                    <ul className="space-y-3">
+                      {content.receipts.map((r) => (
+                        <li key={r} className="flex items-start gap-3">
+                          <span className="mt-[9px] w-1.5 h-1.5 rounded-full bg-[#24A2A7] shrink-0" aria-hidden="true" />
+                          <span className="text-gray-300 text-base md:text-lg leading-relaxed">{r}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Approach */}
+                <h3 className="text-[10px] uppercase tracking-[0.4em] font-bold text-[#24A2A7] mb-4">How I Work</h3>
+                <div className="grid md:grid-cols-3 gap-3 mb-10">
+                  {content.approach.map((a, i) => (
+                    <div key={a.title} className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-5 space-y-3">
+                      <div className="flex items-center gap-3">
+                        <span className="w-7 h-7 rounded-lg bg-[#24A2A7]/10 flex items-center justify-center shrink-0 text-[#24A2A7] text-[11px] font-black">{i + 1}</span>
+                        <h4 className="text-white font-bold text-sm leading-tight">{a.title}</h4>
+                      </div>
+                      <p className="text-gray-400 text-[13px] leading-[1.7]">{a.desc}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Quote */}
+                {content.quote && (
+                  <figure className="my-8 p-6 bg-white/5 border-l-4 border-[#24A2A7] rounded-r-2xl">
+                    <blockquote className="italic text-gray-300 text-lg leading-relaxed">&ldquo;{content.quote.text}&rdquo;</blockquote>
+                    <figcaption className="mt-3 text-[12px] uppercase tracking-widest font-bold text-gray-500">— {content.quote.attribution}</figcaption>
+                  </figure>
+                )}
+
+                {/* Related work */}
+                {content.related && content.related.length > 0 && (
+                  <div className="mt-10">
+                    <h3 className="text-[10px] uppercase tracking-[0.4em] font-bold text-[#24A2A7] mb-4">See It In Practice</h3>
+                    <div className="flex flex-col gap-2">
+                      {content.related.map((link) => (
+                        <Link
+                          key={link.href}
+                          to={link.href}
+                          className="group flex items-center justify-between gap-4 bg-white/[0.03] border border-white/[0.06] hover:border-[#24A2A7]/40 rounded-xl px-5 py-4 transition-colors"
+                        >
+                          <span className="text-white font-bold text-sm group-hover:text-[#24A2A7] transition-colors">{link.label}</span>
+                          <svg className="w-4 h-4 text-gray-500 group-hover:text-[#24A2A7] group-hover:translate-x-1 transition-[color,transform] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                          </svg>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : (
+              renderFormattedDescription(content.description)
+            )}
           </div>
 
           {content.image && (

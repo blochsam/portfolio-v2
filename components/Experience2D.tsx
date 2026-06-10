@@ -64,51 +64,6 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
 
   const featured = PROJECTS.filter(p => FEATURED_PROJECT_IDS.includes(p.id));
 
-  // Normalize smart quotes/apostrophes to ASCII for reliable matching
-  const norm = (s: string) => s.replace(/[\u2018\u2019\u2032]/g, "'").replace(/[\u201c\u201d]/g, '"');
-
-  // Parse overlay description into structured sections for rich display
-  const parseContent = (desc: string) => {
-    const lines = desc.split('\n');
-    const introLines: string[] = [];
-    const bullets: { title: string; desc: string }[] = [];
-    let quote = '';
-    let section: 'pre' | 'intro' | 'approach' | 'philosophy' = 'pre';
-
-    const introHeaders = ["Why I'm Obsessed", "Why I'm Energized", "Why I Love", "Decoding"];
-    const approachHeaders = ["How I Approach"];
-    const quoteHeaders = ["The Big Picture", "My Philosophy"];
-
-    for (const line of lines) {
-      const t = line.trim();
-      if (!t) continue;
-      const tn = norm(t);
-
-      if (introHeaders.some(h => tn.startsWith(h))) { section = 'intro'; continue; }
-      if (approachHeaders.some(h => tn.startsWith(h))) { section = 'approach'; continue; }
-      if (quoteHeaders.some(h => tn.startsWith(h))) { section = 'philosophy'; continue; }
-
-      if (section === 'intro' && !t.startsWith('•')) {
-        introLines.push(t);
-      }
-      if (section === 'approach' && t.startsWith('•')) {
-        const text = t.replace(/^•\s*/, '');
-        const colonIdx = text.indexOf(':');
-        if (colonIdx > 0) {
-          bullets.push({ title: text.substring(0, colonIdx).trim(), desc: text.substring(colonIdx + 1).trim() });
-        } else {
-          bullets.push({ title: text, desc: '' });
-        }
-      }
-      if (section === 'philosophy') {
-        const stripped = t.replace(/^["\u201c]/, '').replace(/["\u201d]$/, '');
-        if (stripped !== t || t.startsWith('"')) quote = stripped;
-      }
-    }
-
-    return { intro: introLines.join(' '), bullets, quote };
-  };
-
   // Google colorized helper
   const GoogleColorized = () => (
     <span className="inline-flex font-bold">
@@ -343,7 +298,6 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
             {sections.map((id, index) => {
               const content = CONTENT_MAP[id];
               const isOpen = expandedFocus === id;
-              const parsed = parseContent(content.description);
 
               return (
                 <div
@@ -376,45 +330,87 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
                     </div>
                   </button>
 
-                  {/* Expandable content — always in DOM for SEO (#8) */}
+                  {/* Expandable content — always in DOM for SEO (#8).
+                      grid-rows animation sizes to content, so nothing clips on mobile */}
                   <div
-                    className="transition-[max-height,opacity] duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] overflow-hidden"
-                    style={{ maxHeight: isOpen ? '1200px' : '0px', opacity: isOpen ? 1 : 0 }}
+                    className={`grid transition-[grid-template-rows,opacity] duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] ${isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
                   >
+                    <div className="overflow-hidden">
                     <div className="px-5 md:px-7 pb-7 md:pb-9">
                       {/* Divider */}
                       <div className="h-px w-full bg-white/5 mb-6" />
 
-                      {/* Intro paragraph */}
-                      <p className="text-gray-400 text-[15px] md:text-base leading-[1.8] mb-8 max-w-4xl">
-                        {parsed.intro}
+                      {/* Hook */}
+                      <p className="text-gray-300 text-[15px] md:text-base leading-[1.8] mb-7 max-w-4xl">
+                        {content.hook ?? content.description}
                       </p>
 
+                      {/* Proof points */}
+                      {content.receipts && content.receipts.length > 0 && (
+                        <div className="mb-8">
+                          <h4 className="text-[10px] uppercase tracking-[0.4em] font-bold text-[#24A2A7] mb-3">Proof Points</h4>
+                          <ul className="space-y-2">
+                            {content.receipts.map((r) => (
+                              <li key={r} className="flex items-start gap-3">
+                                <span className="mt-[8px] w-1.5 h-1.5 rounded-full bg-[#24A2A7] shrink-0" aria-hidden="true" />
+                                <span className="text-gray-400 text-[14px] md:text-[15px] leading-relaxed">{r}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
                       {/* Approach cards */}
-                      {parsed.bullets.length > 0 && (
+                      {content.approach && content.approach.length > 0 && (
                         <div className="grid md:grid-cols-3 gap-3 mb-8">
-                          {parsed.bullets.map((b, i) => (
-                            <div key={i} className="bg-white/[0.025] border border-white/[0.06] rounded-xl p-5 md:p-6 space-y-3 hover:border-[#24A2A7]/15 transition-colors duration-300">
+                          {content.approach.map((b, i) => (
+                            <div key={b.title} className="bg-white/[0.025] border border-white/[0.06] rounded-xl p-5 md:p-6 space-y-3 hover:border-[#24A2A7]/15 transition-colors duration-300">
                               <div className="flex items-center gap-3">
                                 <div className="w-7 h-7 rounded-lg bg-[#24A2A7]/10 flex items-center justify-center shrink-0">
                                   <span className="text-[#24A2A7] text-[11px] font-black">{i + 1}</span>
                                 </div>
                                 <h4 className="text-white font-bold text-sm leading-tight">{b.title}</h4>
                               </div>
-                              {b.desc && (
-                                <p className="text-gray-500 text-[13px] leading-[1.7]">{b.desc}</p>
-                              )}
+                              <p className="text-gray-500 text-[13px] leading-[1.7]">{b.desc}</p>
                             </div>
                           ))}
                         </div>
                       )}
 
-                      {/* Philosophy quote */}
-                      {parsed.quote && (
-                        <div className="border-l-2 border-[#24A2A7]/30 pl-5 py-1">
-                          <p className="text-gray-300/70 text-[14px] italic leading-relaxed">&ldquo;{parsed.quote}&rdquo;</p>
+                      {/* Quote with attribution */}
+                      {content.quote && (
+                        <figure className="border-l-2 border-[#24A2A7]/30 pl-5 py-1 mb-8">
+                          <blockquote className="text-gray-300/70 text-[14px] italic leading-relaxed">&ldquo;{content.quote.text}&rdquo;</blockquote>
+                          <figcaption className="mt-2 text-[11px] uppercase tracking-widest font-bold text-gray-500">— {content.quote.attribution}</figcaption>
+                        </figure>
+                      )}
+
+                      {/* Related work */}
+                      {content.related && content.related.length > 0 && (
+                        <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+                          <span className="text-[10px] uppercase tracking-[0.4em] font-bold text-[#24A2A7]">See It In Practice</span>
+                          {content.related.map((link) => (
+                            <Link
+                              key={link.href}
+                              to={link.href}
+                              className="group flex items-center gap-2 text-[13px] font-bold text-white hover:text-[#24A2A7] transition-colors"
+                            >
+                              {link.label}
+                              <svg className="w-3.5 h-3.5 text-gray-500 group-hover:text-[#24A2A7] group-hover:translate-x-1 transition-[color,transform]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                              </svg>
+                            </Link>
+                          ))}
                         </div>
                       )}
+
+                      {/* Tags — visible on mobile here since the row chips are lg-only */}
+                      <div className="lg:hidden flex flex-wrap gap-2 mt-7">
+                        {content.tags.map(tag => (
+                          <span key={tag} className="text-[10px] font-bold uppercase tracking-wider text-gray-500 border border-white/5 px-2.5 py-1 rounded-md">{tag}</span>
+                        ))}
+                      </div>
+                    </div>
                     </div>
                   </div>
                 </div>

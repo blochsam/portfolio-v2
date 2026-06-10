@@ -1,5 +1,10 @@
 export type AppView = 'splash' | 'loading' | '2d' | '3d' | 'resume' | 'projects' | 'case-study';
 
+export interface FocusLink {
+  label: string;
+  href: string;
+}
+
 export interface PortfolioContent {
   id: string;
   title: string;
@@ -7,6 +12,13 @@ export interface PortfolioContent {
   description: string;
   tags: string[];
   image?: string;
+  /** Structured focus-area fields. When `approach` is present, the 2D
+      accordion and 3D overlay render these instead of parsing `description`. */
+  hook?: string;
+  receipts?: string[];
+  approach?: { title: string; desc: string }[];
+  quote?: { text: string; attribution: string };
+  related?: FocusLink[];
 }
 
 export interface Project {
