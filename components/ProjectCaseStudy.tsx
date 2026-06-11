@@ -1,6 +1,6 @@
 import React, { useEffect, Suspense, lazy } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
-import { track } from '@vercel/analytics';
+import { track } from '../utils/track';
 import { CASE_STUDY_IDS } from '../data/projects';
 import { usePageMeta } from '../utils/usePageMeta';
 import { getCaseStudyMeta } from '../data/routeMeta';

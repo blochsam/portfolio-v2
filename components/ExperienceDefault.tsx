@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Suspense, lazy, Component } from 'react';
 import { useOutletContext, useLocation } from 'react-router-dom';
-import { track } from '@vercel/analytics';
+import { track } from '../utils/track';
 import Experience2D from './Experience2D';
 import { AppShellContext } from '../types';
 

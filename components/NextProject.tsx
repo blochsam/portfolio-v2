@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import { track } from '@vercel/analytics';
+import { track } from '../utils/track';
 import { PROJECTS, CASE_STUDY_IDS } from '../data/projects';
 
 interface NextProjectProps {

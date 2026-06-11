@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { track } from '@vercel/analytics';
+import { track } from '../utils/track';
 import { COLORS } from '../constants';
 import { Download, ArrowLeft } from 'lucide-react';
 import { usePageMeta } from '../utils/usePageMeta';

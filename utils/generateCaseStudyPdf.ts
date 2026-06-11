@@ -4,7 +4,7 @@
  * (dark theme, teal accents) as its own document, not a print of the page.
  */
 
-import { track } from '@vercel/analytics';
+import { track } from './track';
 
 const TEAL = '#24A2A7';
 const TEXT_DARK = '#111827';

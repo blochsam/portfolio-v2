@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Search, Mail } from 'lucide-react';
-import { track } from '@vercel/analytics';
+import { track } from '../utils/track';
 import { usePageMeta } from '../utils/usePageMeta';
 import { ROUTE_META } from '../data/routeMeta';
 import { PROJECTS, CASE_STUDY_IDS, SPOTLIGHT_PROJECT_IDS } from '../data/projects';

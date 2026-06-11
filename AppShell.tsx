@@ -4,6 +4,7 @@ import AudioPlayer from './components/AudioPlayer';
 import Footer from './components/Footer';
 import Overlay from './components/Overlay';
 import SiteNav from './components/SiteNav';
+import { track } from './utils/track';
 import { PortfolioContent, AppShellContext } from './types';
 
 /* #6 Lazy-load AboutOverlay — defers ~6 images until user opens it */
@@ -14,9 +15,10 @@ const AppShell: React.FC = () => {
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const location = useLocation();
 
-  // Scroll to top on route change
+  // Scroll to top on route change + record pageview for the monthly report
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    track('pageview');
   }, [location.pathname]);
 
   // Close overlays on route change

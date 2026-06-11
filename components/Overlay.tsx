@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { track } from '@vercel/analytics';
+import { track } from '../utils/track';
 import { PortfolioContent } from '../types';
 import { COLORS } from '../constants';
 

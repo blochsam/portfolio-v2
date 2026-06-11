@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
-import { track } from '@vercel/analytics';
+import { track } from '../utils/track';
 import { CONTENT_MAP, COLORS, LOGO } from '../constants';
 import { SplineObjectId, PortfolioContent } from '../types';
 import { Menu, X, ChevronDown } from 'lucide-react';

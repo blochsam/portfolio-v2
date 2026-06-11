@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { track } from '@vercel/analytics';
+import { track } from '../utils/track';
 import { Linkedin, Github, Mail, Check } from 'lucide-react';
 import { COLORS } from '../constants';
 
