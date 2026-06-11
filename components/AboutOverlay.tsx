@@ -140,7 +140,7 @@ const AboutOverlay: React.FC<AboutOverlayProps> = ({ isOpen, onClose }) => {
                     I graduated from Michigan State in 2020 with a degree in Experience Architecture and walked straight into a world that had just been forced to go fully digital overnight.
                   </p>
                   <p className="text-gray-300 text-base md:text-lg leading-relaxed">
-                    Today &mdash; after stops at Rocket Mortgage and MSCI &mdash; I&rsquo;m a Program Manager at YouTube working on Trust &amp; Safety. Evenings, I teach my course Level Up at Quinnipiac, and I&rsquo;m finishing my M.A. in Leadership at University of the Pacific (Class of 2026).
+                    Today &mdash; after a stop at Rocket Mortgage, and still an active member at MSCI &mdash; I&rsquo;m a Program Manager at YouTube working on Trust &amp; Safety. Evenings, I teach my course Level Up at Quinnipiac, and I&rsquo;m finishing my M.A. in Leadership at University of the Pacific (Class of 2026).
                   </p>
                 </div>
                 <div className="aspect-[4/5] bg-[#1a1a1a] rounded-[2rem] overflow-hidden border border-white/5 relative">
