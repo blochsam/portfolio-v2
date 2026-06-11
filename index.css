@@ -124,6 +124,15 @@ body {
 .about-reveal:nth-child(5) { transition-delay: 320ms; }
 .about-reveal:nth-child(6) { transition-delay: 400ms; }
 
+/* Content first for visitors who opt out of motion */
+@media (prefers-reduced-motion: reduce) {
+  .about-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 /* Thin horizontal scrollbar for showcase sections */
 .scrollbar-thin {
   scrollbar-width: thin;
