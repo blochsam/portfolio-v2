@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { track } from '@vercel/analytics';
 import { PortfolioContent } from '../types';
 import { COLORS } from '../constants';
 
@@ -16,6 +17,7 @@ const Overlay: React.FC<OverlayProps> = ({ content, onClose }) => {
   useEffect(() => {
     if (!content) return;
 
+    track('focus_area_open', { area: content.id, surface: '3d' });
     previousFocusRef.current = document.activeElement as HTMLElement;
 
     const handleKeyDown = (e: KeyboardEvent) => {

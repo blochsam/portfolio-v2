@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
+import { track } from '@vercel/analytics';
 import { CONTENT_MAP, COLORS, LOGO } from '../constants';
 import { SplineObjectId, PortfolioContent } from '../types';
 import { Menu, X, ChevronDown } from 'lucide-react';
@@ -77,6 +78,7 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
   );
 
   const handleSecureMail = () => {
+    track('contact_click', { source: 'home_hero' });
     const user = 'sam';
     const domain = 'sam-bloch.com';
     window.location.href = `mailto:${user}@${domain}`;
@@ -305,7 +307,10 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
                   className={`rounded-2xl overflow-hidden transition-colors duration-500 border ${isOpen ? 'border-[#24A2A7]/20 bg-[#161616]' : 'border-white/5 hover:border-white/10 bg-transparent'}`}
                 >
                   <button
-                    onClick={() => setExpandedFocus(isOpen ? null : id)}
+                    onClick={() => {
+                      if (!isOpen) track('focus_area_open', { area: content.id, surface: '2d' });
+                      setExpandedFocus(isOpen ? null : id);
+                    }}
                     className="w-full flex items-center justify-between p-5 md:p-7 text-left group cursor-pointer"
                     aria-expanded={isOpen}
                   >

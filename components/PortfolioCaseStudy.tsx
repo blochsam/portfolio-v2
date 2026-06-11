@@ -832,7 +832,7 @@ const PortfolioCaseStudy: React.FC = () => {
             Built with React 19 &middot; TypeScript &middot; Tailwind v4 &middot; Spline &middot; Claude AI
           </p>
           <a
-            href="https://github.com/sam-bloch"
+            href="https://github.com/blochsam"
             target="_blank"
             rel="noopener noreferrer"
             data-reveal

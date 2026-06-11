@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Suspense, lazy, Component } from 'react';
 import { useOutletContext, useLocation } from 'react-router-dom';
+import { track } from '@vercel/analytics';
 import Experience2D from './Experience2D';
 import { AppShellContext } from '../types';
 
@@ -105,6 +106,16 @@ const ExperienceDefault: React.FC = () => {
     const isMobile = window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768;
     setIs3D(!isMobile);
   }, [location.state]);
+
+  // Which experience visitors actually land in (3d / 2d, and why)
+  useEffect(() => {
+    if (is3D !== null) {
+      track('experience_mode', {
+        mode: is3D ? '3d' : '2d',
+        chose2D: sessionStorage.getItem('experienceChoice') === '2d',
+      });
+    }
+  }, [is3D]);
 
   if (is3D === null) {
     return (

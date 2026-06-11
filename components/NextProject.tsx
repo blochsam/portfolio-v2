@@ -1,19 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import { PROJECTS } from '../data/projects';
-
-/** Projects with a full immersive case study, in PROJECTS display order. */
-const CASE_STUDY_IDS = [
-  'space-utilization',
-  'portfolio',
-  'dcade',
-  'level-up',
-  'uc-calnat',
-  'zoo-report',
-  'fudge',
-  'smart-lockers',
-];
+import { track } from '@vercel/analytics';
+import { PROJECTS, CASE_STUDY_IDS } from '../data/projects';
 
 interface NextProjectProps {
   currentId: string;
@@ -34,6 +23,7 @@ const NextProject: React.FC<NextProjectProps> = ({ currentId }) => {
     <section className="bg-[#0e0e0e] border-t border-white/5 no-print">
       <Link
         to={`/projects/${next.id}`}
+        onClick={() => track('next_project_click', { from: currentId, to: next.id })}
         className="group block max-w-5xl mx-auto px-6 md:px-12 py-16 md:py-20"
       >
         <span className="block text-xs font-black uppercase tracking-[0.4em] text-[#24A2A7] mb-4">

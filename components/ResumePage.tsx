@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { track } from '@vercel/analytics';
 import { COLORS } from '../constants';
 import { Download, ArrowLeft } from 'lucide-react';
 import { usePageMeta } from '../utils/usePageMeta';
@@ -27,6 +28,7 @@ const ResumePage: React.FC = () => {
       <a
         href="/SBloch_Resume.pdf"
         download="SBloch_Resume.pdf"
+        onClick={() => track('resume_pdf_download', { source: 'fab' })}
         className="fixed bottom-20 right-8 md:right-28 z-[60] h-14 px-5 rounded-full flex items-center justify-center gap-2 shadow-2xl transition-transform hover:scale-105 active:scale-95 group"
         style={{ backgroundColor: COLORS.teal, color: COLORS.charcoal }}
         aria-label="Download resume PDF"

@@ -18,7 +18,7 @@ export const PROJECTS: Project[] = [
     date: '2025',
     description: 'An immersive, full-bleed reimagining of the portfolio case study. Scroll-driven reveals, parallax imagery, and animated metrics tell the story of building The Samulation.',
     tags: ['React', 'Spline', 'Immersive Design', 'AI'],
-    github: 'https://github.com/sam-bloch',
+    github: 'https://github.com/blochsam',
     image: '/case-study/3d-scene.webp'
   },
   {
@@ -130,3 +130,20 @@ export const PROJECTS: Project[] = [
 
 /** IDs of projects featured on the homepage */
 export const FEATURED_PROJECT_IDS = ['portfolio', 'fudge', 'level-up'];
+
+/** Projects with a full immersive case study, in display order.
+    Everything else renders as a non-clickable archive card. */
+export const CASE_STUDY_IDS = [
+  'space-utilization',
+  'portfolio',
+  'dcade',
+  'level-up',
+  'uc-calnat',
+  'zoo-report',
+  'fudge',
+  'smart-lockers',
+];
+
+/** The three works spotlighted at full size and color at the top of the
+    projects grid — most recent, most senior, most relevant. */
+export const SPOTLIGHT_PROJECT_IDS = ['space-utilization', 'level-up', 'fudge'];

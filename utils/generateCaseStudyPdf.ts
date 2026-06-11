@@ -4,12 +4,16 @@
  * (dark theme, teal accents) as its own document, not a print of the page.
  */
 
+import { track } from '@vercel/analytics';
+
 const TEAL = '#24A2A7';
 const TEXT_DARK = '#111827';
 const TEXT_MEDIUM = '#374151';
 const TEXT_MUTED = '#6b7280';
 
 export function generateCaseStudyPdfHtml(projectId: string, baseUrl: string): string {
+  // Single choke point for every case-study PDF download
+  track('pdf_download', { project: projectId });
   if (projectId === 'portfolio') {
     return generatePortfolioCaseStudyPdf(baseUrl);
   }

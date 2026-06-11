@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { track } from '@vercel/analytics';
 import { Linkedin, Github, Mail, Check } from 'lucide-react';
 import { COLORS } from '../constants';
 
@@ -20,6 +21,7 @@ const Footer: React.FC<FooterProps> = ({ className = "", isInline = false }) => 
 
   const handleSecureMail = (e: React.MouseEvent) => {
     e.preventDefault();
+    track('contact_click', { source: 'footer' });
     const user = 'sam';
     const domain = 'sam-bloch.com';
     const at = '@';
