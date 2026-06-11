@@ -94,7 +94,7 @@ const ExperienceDefault: React.FC = () => {
     // skip must never lock the session out of 3D.
     if (location.state?.force2D) {
       if (!location.state?.transient) {
-        sessionStorage.setItem('experienceChoice', '2d');
+        sessionStorage.setItem('experienceChoice.v2', '2d');
       }
       setIs3D(false);
       // Clear the state so refreshing doesn't stick on 2D
@@ -102,7 +102,7 @@ const ExperienceDefault: React.FC = () => {
       return;
     }
     // Respect an earlier explicit choice of the static site this session.
-    if (sessionStorage.getItem('experienceChoice') === '2d') {
+    if (sessionStorage.getItem('experienceChoice.v2') === '2d') {
       setIs3D(false);
       return;
     }
@@ -115,7 +115,7 @@ const ExperienceDefault: React.FC = () => {
     if (is3D !== null) {
       track('experience_mode', {
         mode: is3D ? '3d' : '2d',
-        chose2D: sessionStorage.getItem('experienceChoice') === '2d',
+        chose2D: sessionStorage.getItem('experienceChoice.v2') === '2d',
       });
     }
   }, [is3D]);

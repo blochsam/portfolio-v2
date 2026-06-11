@@ -51,7 +51,7 @@ const Experience3DRoute: React.FC = () => {
 
   useEffect(() => {
     // Entering 3D explicitly clears any stored preference for the static site
-    sessionStorage.setItem('experienceChoice', '3d');
+    sessionStorage.setItem('experienceChoice.v2', '3d');
   }, []);
 
   return (
