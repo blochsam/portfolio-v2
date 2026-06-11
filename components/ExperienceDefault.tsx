@@ -87,12 +87,15 @@ const ExperienceDefault: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Navigated here with force2D signal ("Switch to Static Site" / "Skip").
-    // This is the ONLY path that persists a 2D preference — crash fallbacks
-    // and device detection must never stick, or one bad WebGL moment locks
-    // the whole session out of 3D.
+    // Navigated here with force2D signal. Only a deliberate preference
+    // ("Switch to Static Site") persists for the session — skips, crash
+    // fallbacks, and plain "Home" navigation pass transient:true and
+    // affect this page view only. One bad WebGL moment or one impatient
+    // skip must never lock the session out of 3D.
     if (location.state?.force2D) {
-      sessionStorage.setItem('experienceChoice', '2d');
+      if (!location.state?.transient) {
+        sessionStorage.setItem('experienceChoice', '2d');
+      }
       setIs3D(false);
       // Clear the state so refreshing doesn't stick on 2D
       window.history.replaceState({}, '');

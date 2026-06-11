@@ -152,7 +152,7 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
               <h2 className="text-xl font-black uppercase tracking-[0.4em] text-white/40">Initializing Samulation...</h2>
             </div>
             <button
-              onClick={() => navigate('/', { state: { force2D: true } })}
+              onClick={() => navigate('/', { state: { force2D: true, transient: true } })}
               className="pointer-events-auto px-6 py-3 min-h-[44px] rounded-full border border-white/10 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white hover:border-[#24A2A7]/40 transition-[color,border-color,transform] active:scale-95"
             >
               Skip — view the static site
@@ -324,7 +324,8 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
             <button
               onClick={() => {
                 setIsMobileMenuOpen(false);
-                navigate('/', { state: { force2D: true } });
+                // transient: "Home" is navigation, not a 2D preference
+                navigate('/', { state: { force2D: true, transient: true } });
               }}
               className="text-3xl font-black uppercase tracking-tighter hover:text-[#24A2A7] transition-colors"
             >

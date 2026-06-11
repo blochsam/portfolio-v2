@@ -31,7 +31,8 @@ const WebGLFallback: React.FC = () => {
   const navigate = useNavigate();
   useEffect(() => {
     // Redirect to 2D home after a brief moment
-    const t = setTimeout(() => navigate('/', { state: { force2D: true }, replace: true }), 100);
+    // transient: a crash fallback is not a user preference
+    const t = setTimeout(() => navigate('/', { state: { force2D: true, transient: true }, replace: true }), 100);
     return () => clearTimeout(t);
   }, [navigate]);
   return (
@@ -68,7 +69,7 @@ const Experience3DRoute: React.FC = () => {
                 <h2 className="text-lg font-black uppercase tracking-[0.4em] text-white/40">Loading 3D experience...</h2>
               </div>
               <button
-                onClick={() => navigate('/', { state: { force2D: true } })}
+                onClick={() => navigate('/', { state: { force2D: true, transient: true } })}
                 className="px-6 py-3 min-h-[44px] rounded-full border border-white/10 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white hover:border-[#24A2A7]/40 transition-[color,border-color,transform] active:scale-95"
               >
                 Skip — view the static site
