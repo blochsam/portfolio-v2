@@ -145,5 +145,5 @@ export const CASE_STUDY_IDS = [
 ];
 
 /** The three works spotlighted at full size and color at the top of the
-    projects grid — most recent, most senior, most relevant. */
-export const SPOTLIGHT_PROJECT_IDS = ['space-utilization', 'level-up', 'fudge'];
+    projects grid (matches the homepage featured trio). */
+export const SPOTLIGHT_PROJECT_IDS = ['portfolio', 'level-up', 'fudge'];
