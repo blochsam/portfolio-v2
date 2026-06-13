@@ -6,10 +6,12 @@ import { Download, ArrowLeft } from 'lucide-react';
 import { usePageMeta } from '../utils/usePageMeta';
 import { ROUTE_META } from '../data/routeMeta';
 import { goBack } from '../utils/goBack';
+import { useFooterAwareBottom } from '../utils/useFooterAwareBottom';
 
 const ResumePage: React.FC = () => {
   usePageMeta(ROUTE_META['/resume']);
   const navigate = useNavigate();
+  const fabBottom = useFooterAwareBottom();
 
   const handleBack = () => goBack(navigate, '/');
 
@@ -29,8 +31,8 @@ const ResumePage: React.FC = () => {
         href="/SBloch_Resume.pdf"
         download="SBloch_Resume.pdf"
         onClick={() => track('resume_pdf_download', { source: 'fab' })}
-        className="fixed bottom-20 right-8 md:right-28 z-[60] h-14 px-5 rounded-full flex items-center justify-center gap-2 shadow-2xl transition-transform hover:scale-105 active:scale-95 group"
-        style={{ backgroundColor: COLORS.teal, color: COLORS.charcoal }}
+        className="fixed right-8 md:right-28 z-[60] h-14 px-5 rounded-full flex items-center justify-center gap-2 shadow-2xl transition-transform hover:scale-105 active:scale-95 group"
+        style={{ bottom: fabBottom, backgroundColor: COLORS.teal, color: COLORS.charcoal }}
         aria-label="Download resume PDF"
       >
         <Download className="w-6 h-6 group-hover:translate-y-0.5 transition-transform" />

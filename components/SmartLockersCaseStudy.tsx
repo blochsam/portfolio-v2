@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useFooterAwareBottom } from '../utils/useFooterAwareBottom';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, X } from 'lucide-react';
 import { useScrollReveal, CountUp } from './CaseStudyShared';
@@ -151,6 +152,7 @@ const BlueprintGrid: React.FC = () => (
    ═══════════════════════════════════════════════════════════ */
 const SmartLockersCaseStudy: React.FC = () => {
   const navigate = useNavigate();
+  const fabBottom = useFooterAwareBottom();
   const wrapRef = useScrollReveal();
   const heroRef = useRef<HTMLDivElement>(null);
   const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null);
@@ -272,7 +274,7 @@ const SmartLockersCaseStudy: React.FC = () => {
       </button>
 
       {/* ─── PDF Download FAB ─── */}
-      <div className="fixed bottom-32 md:bottom-24 right-6 z-[70] no-print">
+      <div className="fixed right-6 z-[70] no-print" style={{ bottom: fabBottom }}>
         <button
           onClick={handleDownloadPDF}
           className="h-14 px-5 rounded-full bg-[#24A2A7] text-[#0a0f1c] flex items-center justify-center gap-2 shadow-2xl shadow-[#24A2A7]/20 hover:scale-105 active:scale-95 transition-transform"

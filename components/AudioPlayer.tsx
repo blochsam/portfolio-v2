@@ -1,16 +1,16 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Volume2, VolumeX, AlertCircle } from 'lucide-react';
 import { BRAND_COLORS } from '../constants';
 import { Howl } from 'howler';
+import { useFooterAwareBottom } from '../utils/useFooterAwareBottom';
 
 export const AudioPlayer: React.FC = () => {
   const [playing, setPlaying] = useState(false);
   const [loadError, setLoadError] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const [bottomOffset, setBottomOffset] = useState(24);
+  const bottomOffset = useFooterAwareBottom();
   const soundRef = useRef<Howl | null>(null);
   const popupTimeoutRef = useRef<number | null>(null);
-  const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
     const sound = new Howl({
@@ -41,45 +41,6 @@ export const AudioPlayer: React.FC = () => {
       if (popupTimeoutRef.current) window.clearTimeout(popupTimeoutRef.current);
     };
   }, []);
-
-  /* Dynamic positioning: sit near bottom, slide up when footer scrolls in */
-  const updatePosition = useCallback(() => {
-    const footer = document.getElementById('site-footer');
-    if (!footer) {
-      setBottomOffset(24);
-      return;
-    }
-
-    const footerRect = footer.getBoundingClientRect();
-    const viewportHeight = window.innerHeight;
-    const defaultBottom = 24;
-    const gap = 16;
-
-    if (footerRect.top < viewportHeight) {
-      // Footer is visible — push toggle above it
-      const overlap = viewportHeight - footerRect.top;
-      setBottomOffset(Math.max(defaultBottom, overlap + gap));
-    } else {
-      setBottomOffset(defaultBottom);
-    }
-  }, []);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      rafRef.current = requestAnimationFrame(updatePosition);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('resize', handleScroll, { passive: true });
-    updatePosition(); // initial check
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', handleScroll);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-  }, [updatePosition]);
 
   const toggle = () => {
     if (!soundRef.current) return;

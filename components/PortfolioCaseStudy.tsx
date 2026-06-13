@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useFooterAwareBottom } from '../utils/useFooterAwareBottom';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, X } from 'lucide-react';
 import { COLORS } from '../constants';
@@ -256,6 +257,7 @@ const Expandable: React.FC<{ title: string; children: React.ReactNode; defaultOp
    ═══════════════════════════════════════════════════ */
 const PortfolioCaseStudy: React.FC = () => {
   const navigate = useNavigate();
+  const fabBottom = useFooterAwareBottom();
   const containerRef = useAnimateOnScroll();
   const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null);
   const scrollBarRef = useRef<HTMLDivElement>(null);
@@ -364,7 +366,7 @@ const PortfolioCaseStudy: React.FC = () => {
         </button>
 
         {/* PDF Download */}
-        <div className="fixed bottom-32 md:bottom-24 right-6 z-[70] no-print">
+        <div className="fixed right-6 z-[70] no-print" style={{ bottom: fabBottom }}>
           <button onClick={handleDownloadPDF} className="h-14 px-5 rounded-full flex items-center justify-center gap-2 shadow-2xl transition-transform hover:scale-105 active:scale-95" style={{ backgroundColor: COLORS.teal, color: COLORS.charcoal }} aria-label="Download case study PDF">
             <Download className="w-6 h-6" />
             <span className="text-xs font-black uppercase tracking-widest">PDF</span>

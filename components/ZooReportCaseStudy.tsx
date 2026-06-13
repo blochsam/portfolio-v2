@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useFooterAwareBottom } from '../utils/useFooterAwareBottom';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, X } from 'lucide-react';
 import { COLORS } from '../constants';
@@ -145,6 +146,7 @@ const HorizontalShowcase: React.FC<{ children: React.ReactNode }> = ({ children 
 
 const ZooReportCaseStudy: React.FC = () => {
   const navigate = useNavigate();
+  const fabBottom = useFooterAwareBottom();
   const containerRef = useScrollReveal();
   const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null);
   const heroImgRef = useRef<HTMLImageElement>(null);
@@ -220,7 +222,7 @@ const ZooReportCaseStudy: React.FC = () => {
       </button>
 
       {/* Floating PDF Download */}
-      <div className="fixed bottom-28 md:bottom-24 right-6 z-[70] no-print">
+      <div className="fixed right-6 z-[70] no-print" style={{ bottom: fabBottom }}>
         <button
           onClick={handleDownloadPDF}
           className="h-14 px-5 rounded-full flex items-center justify-center gap-2 shadow-2xl transition-transform hover:scale-105 active:scale-95 group"

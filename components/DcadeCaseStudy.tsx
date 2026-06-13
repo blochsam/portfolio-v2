@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useFooterAwareBottom } from '../utils/useFooterAwareBottom';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, X } from 'lucide-react';
 import { COLORS } from '../constants';
@@ -273,6 +274,7 @@ const SpecCard: React.FC<{
 
 const DcadeCaseStudy: React.FC = () => {
   const navigate = useNavigate();
+  const fabBottom = useFooterAwareBottom();
   const containerRef = useScrollReveal();
   const pixelGridRef = useRef<HTMLDivElement>(null);
   const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null);
@@ -413,7 +415,7 @@ const DcadeCaseStudy: React.FC = () => {
       </button>
 
       {/* ─── PDF Download FAB ─── */}
-      <div className="fixed bottom-32 md:bottom-24 right-6 z-[70] no-print">
+      <div className="fixed right-6 z-[70] no-print" style={{ bottom: fabBottom }}>
         <button onClick={handleDownloadPDF}
           className="h-14 px-5 rounded-full flex items-center justify-center gap-2 shadow-2xl transition-transform hover:scale-105 active:scale-95 group"
           style={{ backgroundColor: '#24A2A7', color: '#0a0a0a' }}

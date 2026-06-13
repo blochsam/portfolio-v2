@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, X, ExternalLink, FileText, Mic, Bot, Shield, Clock, Database, Cloud, Palette, GraduationCap, Lightbulb, Users, Zap, BookOpen, Code, Coffee, MapPin, MessageSquare, Calendar } from 'lucide-react';
 import { useScrollReveal } from './CaseStudyShared';
+import { useFooterAwareBottom } from '../utils/useFooterAwareBottom';
 
 /* ═══════════════════════════════════════════════════════════════════
    HAND-DRAWN DESIGN SYSTEM
@@ -325,6 +326,7 @@ const DoodleApple: React.FC<{ size?: number }> = ({ size = 32 }) => (
 
 const LevelUpCaseStudy: React.FC = () => {
   const navigate = useNavigate();
+  const fabBottom = useFooterAwareBottom();
   const containerRef = useScrollReveal();
   const [lightbox, setLightbox] = useState<string | null>(null);
 
@@ -578,8 +580,9 @@ const LevelUpCaseStudy: React.FC = () => {
       {/* ═══════════════════ PDF FAB ═══════════════════ */}
       <button
         onClick={handleDownloadPDF}
-        className="fixed bottom-28 right-8 md:right-12 z-[50] h-14 px-5 flex items-center justify-center gap-2 border-[3px] transition-[box-shadow,transform] duration-100 no-print hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_#1B7A7E] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
+        className="fixed right-8 md:right-12 z-[50] h-14 px-5 flex items-center justify-center gap-2 border-[3px] transition-[box-shadow,transform] duration-100 no-print hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_#1B7A7E] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
         style={{
+          bottom: fabBottom,
           borderRadius: WOBBLY.circle,
           borderColor: TEAL_DARK,
           background: TEAL,
