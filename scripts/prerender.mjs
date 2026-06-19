@@ -19,6 +19,7 @@ const DIST = join(__dirname, '..', 'dist');
 // Routes to pre-render. Skip /3d (requires WebGL).
 const ROUTES = [
   '/',
+  '/about',
   '/resume',
   '/projects',
   '/projects/portfolio',

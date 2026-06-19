@@ -6,7 +6,6 @@
     { "path": "/api/monthly-report", "schedule": "0 16 1 * *" }
   ],
   "redirects": [
-    { "source": "/about", "destination": "/", "statusCode": 301 },
     { "source": "/smart-lockers", "destination": "/projects/smart-lockers", "statusCode": 301 },
     { "source": "/the-d-cade", "destination": "/projects/dcade", "statusCode": 301 },
     { "source": "/augmented-zoo-reality", "destination": "/projects/zoo-report", "statusCode": 301 },

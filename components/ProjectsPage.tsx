@@ -178,7 +178,6 @@ const ProjectsPage: React.FC = () => {
 
       <div className="max-w-6xl w-full">
         <header className="mb-16">
-          <span className="text-[10px] font-black text-[#24A2A7] uppercase tracking-[0.5em] block mb-4">THE ARCHIVE</span>
           <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-8">Projects & Artifacts</h1>
 
           <div className="flex flex-col md:flex-row gap-6 justify-between items-start md:items-center py-8 border-y border-white/5">

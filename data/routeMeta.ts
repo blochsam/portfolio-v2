@@ -39,6 +39,14 @@ export const ROUTE_META: Record<string, PageMeta> = {
       'From production web apps to IoT prototypes to global quality frameworks.',
     ogImage: `${BASE_URL}/og-image.webp`,
   },
+  '/about': {
+    title: 'About | Sam Bloch',
+    description:
+      'Sam Bloch is a Program Manager at YouTube (Google) working in Trust & Safety, ' +
+      'an AI builder, and a college educator finishing an M.A. in Leadership. ' +
+      'Michigan-born, California-based, three degrees, one obsession: making systems work for people.',
+    ogImage: `${BASE_URL}/og-image.webp`,
+  },
   '/privacy-policy': {
     title: 'Privacy Policy | Sam Bloch',
     description: 'Privacy policy for sam-bloch.com. No cookies, no personal data collection, cookieless analytics only.',

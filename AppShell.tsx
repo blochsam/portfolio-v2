@@ -40,7 +40,7 @@ const AppShell: React.FC = () => {
 
   /* Long-scroll pages get an inline footer at the end of content instead of a
      fixed bar that permanently eats viewport height and collides with FABs */
-  const inlineFooter = /^\/(projects|resume|privacy-policy)/.test(location.pathname);
+  const inlineFooter = /^\/(projects|resume|privacy-policy|about)/.test(location.pathname);
 
   const context: AppShellContext = {
     setSelectedContent,

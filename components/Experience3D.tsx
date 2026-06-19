@@ -142,18 +142,34 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
 
   return (
     <div className="fixed inset-0 w-full h-full bg-[#121212] overflow-hidden select-none">
-      {/* Scene loading state — sits above the canvas until the scene is ready,
-          with an escape hatch for visitors on slow connections */}
+      {/* Poster frame — a real render of the desk paints instantly so the first
+          impression is the scene, not a black loading screen. Cross-fades out
+          once the live scene is ready (the framing matches, so the swap is
+          near-seamless). */}
+      <div
+        className="absolute inset-0 z-[15] transition-opacity duration-700 ease-out pointer-events-none"
+        style={{ opacity: sceneLoaded ? 0 : 1 }}
+        aria-hidden="true"
+      >
+        <img src="/scene-poster.webp" alt="" className="w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#121212]/70 via-[#121212]/25 to-[#121212]/85" />
+      </div>
+
+      {/* Scene loading state — name + value anchor the unfamiliar scene, plus an
+          escape hatch for visitors on slow connections */}
       {!sceneLoaded && (
         <div className="absolute inset-0 flex flex-col items-center justify-center z-20 px-6 pointer-events-none">
           <div className="text-center">
-            <div className="animate-pulse mb-10">
-              <span className="text-[10px] font-mono uppercase tracking-[0.8em] text-white/50 mb-4 block">Uplink established</span>
-              <h2 className="text-xl font-black uppercase tracking-[0.4em] text-white/40">Initializing Samulation...</h2>
+            <h1 className="text-3xl md:text-5xl font-black tracking-tighter mb-2">
+              <span className="text-white">SAM</span> <span style={{ color: COLORS.teal }}>BLOCH</span>
+            </h1>
+            <p className="text-xs md:text-sm uppercase tracking-[0.3em] text-gray-300 mb-10">Program Manager · AI Builder · Educator</p>
+            <div className="animate-pulse mb-8">
+              <span className="text-[10px] font-mono uppercase tracking-[0.6em] text-white/45">Building the workspace…</span>
             </div>
             <button
               onClick={() => navigate('/', { state: { force2D: true, transient: true } })}
-              className="pointer-events-auto px-6 py-3 min-h-[44px] rounded-full border border-white/10 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white hover:border-[#24A2A7]/40 transition-[color,border-color,transform] active:scale-95"
+              className="pointer-events-auto px-6 py-3 min-h-[44px] rounded-full border border-white/10 text-xs font-bold uppercase tracking-widest text-gray-300 hover:text-white hover:border-[#24A2A7]/40 transition-[color,border-color,transform] active:scale-95"
             >
               Skip — view the static site
             </button>
@@ -208,13 +224,15 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
         </div>
       )}
 
-      {/* HUD: Top Left */}
+      {/* HUD: Top Left — name + value line anchor the scene with familiar
+          signposting (research: novel layouts read better when anchored) */}
       <div className="absolute top-8 left-8 z-20 flex flex-col gap-4">
         <div>
           <h1 className="text-2xl font-black flex items-center gap-2 leading-none">
             <span className="text-white">SAM</span>
             <span style={{ color: COLORS.teal }}>BLOCH</span>
           </h1>
+          <p className="text-[11px] md:text-xs text-gray-400 mt-1.5 tracking-wide">Program Manager · AI Builder · Educator</p>
         </div>
         
         {/* Only visible on non-mobile in the traditional HUD layout */}

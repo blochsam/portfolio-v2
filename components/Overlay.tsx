@@ -175,29 +175,23 @@ const Overlay: React.FC<OverlayProps> = ({ content, onClose }) => {
 
                 {/* Proof points */}
                 {content.receipts && content.receipts.length > 0 && (
-                  <div className="mb-10">
-                    <h3 className="text-[10px] uppercase tracking-[0.4em] font-bold text-[#24A2A7] mb-4">Proof Points</h3>
-                    <ul className="space-y-3">
-                      {content.receipts.map((r) => (
-                        <li key={r} className="flex items-start gap-3">
-                          <span className="mt-[9px] w-1.5 h-1.5 rounded-full bg-[#24A2A7] shrink-0" aria-hidden="true" />
-                          <span className="text-gray-300 text-base md:text-lg leading-relaxed">{r}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                  <ul className="space-y-3 mb-10">
+                    {content.receipts.map((r) => (
+                      <li key={r} className="flex items-start gap-3">
+                        <span className="mt-[9px] w-1.5 h-1.5 rounded-full bg-[#24A2A7] shrink-0" aria-hidden="true" />
+                        <span className="text-gray-300 text-base md:text-lg leading-relaxed">{r}</span>
+                      </li>
+                    ))}
+                  </ul>
                 )}
 
-                {/* Approach */}
+                {/* Approach — editorial list, no nested cards */}
                 <h3 className="text-[10px] uppercase tracking-[0.4em] font-bold text-[#24A2A7] mb-4">How I Work</h3>
-                <div className="grid md:grid-cols-3 gap-3 mb-10">
-                  {content.approach.map((a, i) => (
-                    <div key={a.title} className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-5 space-y-3">
-                      <div className="flex items-center gap-3">
-                        <span className="w-7 h-7 rounded-lg bg-[#24A2A7]/10 flex items-center justify-center shrink-0 text-[#24A2A7] text-[11px] font-black">{i + 1}</span>
-                        <h4 className="text-white font-bold text-sm leading-tight">{a.title}</h4>
-                      </div>
-                      <p className="text-gray-400 text-[13px] leading-[1.7]">{a.desc}</p>
+                <div className="mb-10 border-t border-white/5 divide-y divide-white/5">
+                  {content.approach.map((a) => (
+                    <div key={a.title} className="py-4">
+                      <h4 className="text-white font-bold text-base mb-1">{a.title}</h4>
+                      <p className="text-gray-400 text-sm leading-[1.7] max-w-2xl">{a.desc}</p>
                     </div>
                   ))}
                 </div>

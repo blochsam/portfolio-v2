@@ -32,18 +32,20 @@ const Experience3D = lazy(() => experience3DImport || import('./Experience3D'));
  */
 const Experience3DLoadingFallback = ({ onSkip }: { onSkip: () => void }) => (
   <div className="fixed inset-0 bg-[#121212] flex flex-col items-center justify-center z-0 px-6">
-    <div className="text-center">
+    {/* Poster frame paints the desk instantly behind the loading copy */}
+    <img src="/scene-poster.webp" alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover" />
+    <div className="absolute inset-0 bg-gradient-to-b from-[#121212]/70 via-[#121212]/25 to-[#121212]/85" />
+    <div className="text-center relative z-10">
       <h1 className="text-3xl md:text-4xl font-black tracking-tighter mb-2">
         <span className="text-white">SAM</span> <span className="text-[#24A2A7]">BLOCH</span>
       </h1>
-      <p className="text-xs uppercase tracking-[0.3em] text-gray-400 mb-10">Program Manager · AI Builder · College Educator</p>
-      <div className="animate-pulse mb-10">
-        <span className="text-[10px] font-mono uppercase tracking-[0.8em] text-white/50 mb-3 block">Uplink established</span>
-        <h2 className="text-lg font-black uppercase tracking-[0.4em] text-white/40">Loading 3D experience...</h2>
+      <p className="text-xs uppercase tracking-[0.3em] text-gray-300 mb-10">Program Manager · AI Builder · Educator</p>
+      <div className="animate-pulse mb-8">
+        <span className="text-[10px] font-mono uppercase tracking-[0.6em] text-white/45">Building the workspace…</span>
       </div>
       <button
         onClick={onSkip}
-        className="px-6 py-3 min-h-[44px] rounded-full border border-white/10 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white hover:border-[#24A2A7]/40 transition-[color,border-color,transform] active:scale-95"
+        className="px-6 py-3 min-h-[44px] rounded-full border border-white/10 text-xs font-bold uppercase tracking-widest text-gray-300 hover:text-white hover:border-[#24A2A7]/40 transition-[color,border-color,transform] active:scale-95"
       >
         Skip — view the static site
       </button>
@@ -106,8 +108,12 @@ const ExperienceDefault: React.FC = () => {
       setIs3D(false);
       return;
     }
+    // Default to the static site for touch/small screens AND for visitors who
+    // ask the OS to reduce motion (vestibular, migraine, focus needs). The 3D
+    // scene stays one click away; we just don't auto-play heavy motion at them.
     const isMobile = window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768;
-    setIs3D(!isMobile);
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    setIs3D(!isMobile && !reduceMotion);
   }, [location.state]);
 
   // Which experience visitors actually land in (3d / 2d, and why)

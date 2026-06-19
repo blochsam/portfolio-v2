@@ -59,18 +59,19 @@ const Experience3DRoute: React.FC = () => {
       <div className="animate-in fade-in duration-1000 h-screen w-screen overflow-hidden">
         <Suspense fallback={
           <div className="fixed inset-0 bg-[#121212] flex flex-col items-center justify-center px-6">
-            <div className="text-center">
+            <img src="/scene-poster.webp" alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#121212]/70 via-[#121212]/25 to-[#121212]/85" />
+            <div className="text-center relative z-10">
               <h1 className="text-3xl md:text-4xl font-black tracking-tighter mb-2">
                 <span className="text-white">SAM</span> <span className="text-[#24A2A7]">BLOCH</span>
               </h1>
-              <p className="text-xs uppercase tracking-[0.3em] text-gray-400 mb-10">Program Manager · AI Builder · College Educator</p>
-              <div className="animate-pulse mb-10">
-                <span className="text-[10px] font-mono uppercase tracking-[0.8em] text-white/50 mb-3 block">Uplink established</span>
-                <h2 className="text-lg font-black uppercase tracking-[0.4em] text-white/40">Loading 3D experience...</h2>
+              <p className="text-xs uppercase tracking-[0.3em] text-gray-300 mb-10">Program Manager · AI Builder · Educator</p>
+              <div className="animate-pulse mb-8">
+                <span className="text-[10px] font-mono uppercase tracking-[0.6em] text-white/45">Building the workspace…</span>
               </div>
               <button
                 onClick={() => navigate('/', { state: { force2D: true, transient: true } })}
-                className="px-6 py-3 min-h-[44px] rounded-full border border-white/10 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white hover:border-[#24A2A7]/40 transition-[color,border-color,transform] active:scale-95"
+                className="px-6 py-3 min-h-[44px] rounded-full border border-white/10 text-xs font-bold uppercase tracking-widest text-gray-300 hover:text-white hover:border-[#24A2A7]/40 transition-[color,border-color,transform] active:scale-95"
               >
                 Skip — view the static site
               </button>

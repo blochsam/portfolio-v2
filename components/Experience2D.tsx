@@ -38,10 +38,11 @@ function useScrollReveal() {
 
 interface Experience2DProps {
   setSelectedContent: (content: PortfolioContent | null) => void;
-  openAbout: () => void;
+  /** Kept for API parity with the 3D experience; the 2D site links to /about instead. */
+  openAbout?: () => void;
 }
 
-const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbout }) => {
+const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent }) => {
   usePageMeta(ROUTE_META['/']);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [hoveredNav, setHoveredNav] = useState<string | null>(null);
@@ -170,10 +171,12 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
            ════════════════════════════════════════ */}
         <section className="relative md:min-h-screen grid grid-cols-1 md:grid-cols-[1fr_auto] md:items-center gap-4 md:gap-12 px-6 md:px-12 lg:px-[6%] xl:px-[8%] mx-auto pt-28 md:pt-32 pb-12 overflow-visible">
           <div className="relative z-20">
-            <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl 2xl:text-[9rem] font-black tracking-tighter leading-[0.95] md:leading-[0.9] mb-8 md:mb-12 motion-safe:animate-in motion-safe:fade-in duration-1000">
-              Architecting <br />
-              <span className="text-[#24A2A7]">Human-Centric</span><br />
-              Systems.
+            {/* Line-by-line kinetic reveal — the signature moment for visitors
+                who never see the 3D scene (mobile + reduced-motion stays static) */}
+            <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl 2xl:text-[9rem] font-black tracking-tighter leading-[0.95] md:leading-[0.9] mb-8 md:mb-12">
+              <span className="block motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700">Architecting</span>
+              <span className="block text-[#24A2A7] motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700 motion-safe:delay-150">Human-Centric</span>
+              <span className="block motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700 motion-safe:delay-300">Systems.</span>
             </h1>
 
             <p className="whitespace-nowrap text-gray-400 text-[clamp(0.7rem,2.8vw,1.25rem)] 2xl:text-xl leading-relaxed motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 duration-1000 delay-300">
@@ -289,6 +292,21 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
         </section>
 
         {/* ════════════════════════════════════════
+            SECTION 2.5 — TESTIMONIAL
+            TODO(sam): replace with a REAL attributed quote before launch — a
+            Level Up student, a Google colleague, or the UoP engagement sponsor.
+            Placeholder copy below is illustrative only.
+           ════════════════════════════════════════ */}
+        <section className="scroll-reveal content-auto px-6 md:px-12 max-w-4xl mx-auto mb-24 relative z-20 text-center">
+          <blockquote className="text-2xl md:text-4xl font-bold tracking-tight leading-snug text-gray-200">
+            &ldquo;Sam builds the system before the problem shows up. By the time everyone else sees the fire, he&rsquo;s already standing there with the extinguisher.&rdquo;
+          </blockquote>
+          <figcaption className="mt-6 text-xs font-bold uppercase tracking-widest text-gray-500">
+            Colleague · YouTube Trust &amp; Safety
+          </figcaption>
+        </section>
+
+        {/* ════════════════════════════════════════
             SECTION 3 — FOCUS AREAS (inline expandable, #1 + #8)
            ════════════════════════════════════════ */}
         <section className="scroll-reveal content-auto px-6 md:px-12 max-w-7xl mx-auto mb-24 relative z-20">
@@ -352,31 +370,23 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
 
                       {/* Proof points */}
                       {content.receipts && content.receipts.length > 0 && (
-                        <div className="mb-8">
-                          <h4 className="text-[10px] uppercase tracking-[0.4em] font-bold text-[#24A2A7] mb-3">Proof Points</h4>
-                          <ul className="space-y-2">
-                            {content.receipts.map((r) => (
-                              <li key={r} className="flex items-start gap-3">
-                                <span className="mt-[8px] w-1.5 h-1.5 rounded-full bg-[#24A2A7] shrink-0" aria-hidden="true" />
-                                <span className="text-gray-400 text-[14px] md:text-[15px] leading-relaxed">{r}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
+                        <ul className="space-y-2 mb-8">
+                          {content.receipts.map((r) => (
+                            <li key={r} className="flex items-start gap-3">
+                              <span className="mt-[8px] w-1.5 h-1.5 rounded-full bg-[#24A2A7] shrink-0" aria-hidden="true" />
+                              <span className="text-gray-400 text-[14px] md:text-[15px] leading-relaxed">{r}</span>
+                            </li>
+                          ))}
+                        </ul>
                       )}
 
-                      {/* Approach cards */}
+                      {/* Approach — editorial list, no nested cards */}
                       {content.approach && content.approach.length > 0 && (
-                        <div className="grid md:grid-cols-3 gap-3 mb-8">
-                          {content.approach.map((b, i) => (
-                            <div key={b.title} className="bg-white/[0.025] border border-white/[0.06] rounded-xl p-5 md:p-6 space-y-3 hover:border-[#24A2A7]/15 transition-colors duration-300">
-                              <div className="flex items-center gap-3">
-                                <div className="w-7 h-7 rounded-lg bg-[#24A2A7]/10 flex items-center justify-center shrink-0">
-                                  <span className="text-[#24A2A7] text-[11px] font-black">{i + 1}</span>
-                                </div>
-                                <h4 className="text-white font-bold text-sm leading-tight">{b.title}</h4>
-                              </div>
-                              <p className="text-gray-500 text-[13px] leading-[1.7]">{b.desc}</p>
+                        <div className="mb-8 border-t border-white/5 divide-y divide-white/5">
+                          {content.approach.map((b) => (
+                            <div key={b.title} className="py-4">
+                              <h4 className="text-white font-bold text-sm mb-1">{b.title}</h4>
+                              <p className="text-gray-500 text-[13px] leading-[1.7] max-w-2xl">{b.desc}</p>
                             </div>
                           ))}
                         </div>
@@ -440,15 +450,15 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent, openAbo
                 <p className="text-gray-400 text-base leading-relaxed mb-8">
                   Three degrees. Two grad programs (HCI + Leadership). One obsession: making systems work better for people.
                 </p>
-                <button
-                  onClick={openAbout}
-                  className="group flex items-center gap-4 px-8 py-4 bg-transparent text-[#24A2A7] border-2 border-[#24A2A7] font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:bg-[#24A2A7] hover:text-[#121212] transition-[color,background-color,transform] shadow-xl active:scale-95"
+                <Link
+                  to="/about"
+                  className="group inline-flex items-center gap-4 px-8 py-4 bg-transparent text-[#24A2A7] border-2 border-[#24A2A7] font-black uppercase text-xs tracking-[0.2em] rounded-full hover:bg-[#24A2A7] hover:text-[#121212] transition-[color,background-color,transform] shadow-xl active:scale-95"
                 >
                   Full Bio
                   <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </svg>
-                </button>
+                </Link>
               </div>
 
               {/* Portrait */}

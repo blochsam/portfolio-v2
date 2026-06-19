@@ -23,6 +23,12 @@ const SiteNav: React.FC = () => {
       </Link>
       <span className="hidden sm:block w-px h-4 bg-white/10" aria-hidden="true" />
       <Link
+        to="/about"
+        className="hidden sm:block px-3 py-2 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-[#24A2A7] transition-colors"
+      >
+        About
+      </Link>
+      <Link
         to="/projects"
         className="hidden sm:block px-3 py-2 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-[#24A2A7] transition-colors"
       >
