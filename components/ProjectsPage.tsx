@@ -55,7 +55,7 @@ const CaseStudyCard: React.FC<{ project: Project; spotlight?: boolean }> = ({ pr
           {project.title}
         </h3>
 
-        <p className={`text-gray-400 text-sm leading-relaxed mb-4 ${spotlight ? '' : 'line-clamp-3'}`}>
+        <p className="text-gray-400 text-sm leading-relaxed mb-4">
           {project.description}
         </p>
 
@@ -115,7 +115,7 @@ const ArchiveCard: React.FC<{ project: Project }> = ({ project }) => {
           {project.title}
         </h3>
 
-        <p className="text-gray-400 text-sm leading-relaxed mb-4 line-clamp-3">
+        <p className="text-gray-400 text-sm leading-relaxed mb-4">
           {project.description}
         </p>
 

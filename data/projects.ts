@@ -6,7 +6,7 @@ export const PROJECTS: Project[] = [
     title: 'Pacific Medical School Space Evaluation',
     category: 'Consulting',
     date: '2026',
-    description: 'A strategic consulting engagement that gave University of the Pacific the data it needed to launch a new medical school using existing campus capacity, without a single new building. Six semesters of utilization data, three buildings, three findings, one institutional decision.',
+    description: 'Gave University of the Pacific the data to launch a new medical school within its existing campus capacity, without a single new building.',
     tags: ['Leadership', 'Evaluation', 'Data Analysis', 'Julius.AI'],
     image: '/case-study/space-utilization/projects-card-tower.webp',
     imagePosition: 'center'
@@ -16,7 +16,7 @@ export const PROJECTS: Project[] = [
     title: 'My Portfolio Website',
     category: 'Design',
     date: '2025',
-    description: 'An immersive, full-bleed reimagining of the portfolio case study. Scroll-driven reveals, parallax imagery, and animated metrics tell the story of building The Samulation.',
+    description: 'An immersive, full-bleed portfolio: scroll-driven reveals, parallax, and animated metrics telling the story of building The Samulation.',
     tags: ['React', 'Spline', 'Immersive Design', 'AI'],
     github: 'https://github.com/blochsam',
     image: '/case-study/3d-scene.webp'
@@ -26,7 +26,7 @@ export const PROJECTS: Project[] = [
     title: 'The D-Cade',
     category: 'Design',
     date: '2020',
-    description: 'Resurrecting a custom Sega Dreamcast arcade cabinet through Raspberry Pi, 3D printing, and A/V signal conversion. Now serving patients at a private medical practice.',
+    description: 'Resurrecting a custom Sega Dreamcast arcade cabinet with Raspberry Pi, 3D printing, and A/V conversion. Now serving a medical waiting room.',
     tags: ['Raspberry Pi', 'RetroPie', '3D Printing', 'Hardware'],
     image: '/case-study/d-cade-card.webp',
     imagePosition: '50% 80%'
@@ -36,7 +36,7 @@ export const PROJECTS: Project[] = [
     title: 'Level Up',
     category: 'Design',
     date: '2025',
-    description: 'A custom production-ready LMS for AI-driven career development. Built for Quinnipiac in LA—powers the course, manages the student lifecycle, and uses Gemini for real-time feedback.',
+    description: 'A production LMS for AI-driven career development, built for Quinnipiac in LA. Powers the course and uses Gemini for real-time feedback.',
     tags: ['Next.js', 'Prisma', 'Gemini API', 'Cloud Run'],
     image: '/case-study/level-up-card.webp',
     link: 'https://levelupqu.com'
@@ -46,7 +46,7 @@ export const PROJECTS: Project[] = [
     title: 'UC California Climate Stewards',
     category: 'Leadership',
     date: '2024',
-    description: 'Led a Design Thinking consulting engagement for UC Agriculture & Natural Resources, designing a Community of Practice platform for 9,000+ environmental stewardship alumni across California.',
+    description: 'A Design Thinking engagement for UC Agriculture & Natural Resources: a Community of Practice platform for 9,000+ stewardship alumni.',
     tags: ['Design Thinking', 'UX Research', 'Community Design', 'Stakeholder Interviews'],
     image: '/case-study/calnat-card.webp'
   },
@@ -55,7 +55,7 @@ export const PROJECTS: Project[] = [
     title: 'Augmented Reality Detroit Zoo App',
     category: 'Design',
     date: '2020',
-    description: 'A mobile app concept for zoo and wildlife parks—explore exhibits, learn about animals, and donate. Paper and digital wireframe prototypes from research to final UI.',
+    description: 'A mobile app concept for zoos: explore exhibits, learn about animals, donate. Wireframe prototypes from research to final UI.',
     tags: ['UX Research', 'Prototyping', 'Mobile', 'Adobe XD'],
     image: '/case-study/zoo-report-card.webp'
   },
@@ -64,7 +64,7 @@ export const PROJECTS: Project[] = [
     title: 'Fudge',
     category: 'Design',
     date: '2026',
-    description: 'A progressive web app coordinating a 16-person group trip to Mackinac Island. Magic link auth, dynamic itinerary, room assignments, and more — built solo with Claude as an AI engineering partner.',
+    description: 'A progressive web app coordinating a 16-person trip to Mackinac Island: magic-link auth, itinerary, room assignments. Built solo with Claude.',
     tags: ['Next.js 15', 'React 19', 'Supabase', 'PWA', 'AI'],
     image: '/case-study/fudge/fudge-card.webp',
     link: 'https://fudge.sam-bloch.com'
@@ -74,7 +74,7 @@ export const PROJECTS: Project[] = [
     title: 'Smart Lockers',
     category: 'Design',
     date: '2019',
-    description: 'Built a self-service smart locker system at Quicken Loans—a web portal, Raspberry Pi prototype with 3D-printed case, and a working API that earned a presentation to the SVP of Infrastructure.',
+    description: 'A self-service smart-locker system at Quicken Loans: web portal, Raspberry Pi prototype, and an API that reached the SVP of Infrastructure.',
     tags: ['PHP', 'SQL', 'Python', 'Raspberry Pi', '3D Printing'],
     image: '/case-study/smart-lockers/lockerblock.webp'
   },
