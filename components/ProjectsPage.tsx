@@ -55,22 +55,24 @@ const CaseStudyCard: React.FC<{ project: Project; spotlight?: boolean }> = ({ pr
           {project.title}
         </h3>
 
-        <p className={`text-gray-400 text-sm leading-relaxed mb-5 flex-1 ${spotlight ? '' : 'line-clamp-3'}`}>
+        <p className={`text-gray-400 text-sm leading-relaxed mb-4 ${spotlight ? '' : 'line-clamp-3'}`}>
           {project.description}
         </p>
 
-        <div className="flex flex-wrap gap-2 mb-5">
-          {(spotlight ? project.tags : project.tags.slice(0, 3)).map(tag => (
-            <span key={tag} className="text-[11px] font-bold uppercase tracking-[0.15em] text-gray-400 border border-white/5 px-2.5 py-1 rounded">
-              {tag}
-            </span>
-          ))}
-        </div>
+        <div className="mt-auto">
+          <div className="flex flex-wrap gap-1.5 mb-4">
+            {(spotlight ? project.tags.slice(0, 4) : project.tags.slice(0, 3)).map(tag => (
+              <span key={tag} className="text-[10px] font-semibold uppercase tracking-[0.08em] text-gray-500 border border-white/[0.06] px-2 py-0.5 rounded">
+                {tag}
+              </span>
+            ))}
+          </div>
 
-        <span className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[#24A2A7] group-hover:gap-4 transition-[gap]">
-          View Case Study
-          <ArrowLeft className="w-3 h-3 rotate-180" strokeWidth={3} />
-        </span>
+          <span className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[#24A2A7] group-hover:gap-4 transition-[gap]">
+            View Case Study
+            <ArrowLeft className="w-3 h-3 rotate-180" strokeWidth={3} />
+          </span>
+        </div>
       </div>
 
       <div className="absolute bottom-0 right-0 w-32 h-32 bg-[#24A2A7]/5 blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
@@ -113,26 +115,28 @@ const ArchiveCard: React.FC<{ project: Project }> = ({ project }) => {
           {project.title}
         </h3>
 
-        <p className="text-gray-400 text-sm leading-relaxed mb-5 flex-1 line-clamp-3">
+        <p className="text-gray-400 text-sm leading-relaxed mb-4 line-clamp-3">
           {project.description}
         </p>
 
-        <div className="flex flex-wrap gap-2 mb-5">
-          {project.tags.slice(0, 3).map(tag => (
-            <span key={tag} className="text-[11px] font-bold uppercase tracking-[0.15em] text-gray-400 border border-white/5 px-2.5 py-1 rounded">
-              {tag}
-            </span>
-          ))}
-        </div>
+        <div className="mt-auto">
+          <div className="flex flex-wrap gap-1.5 mb-4">
+            {project.tags.slice(0, 3).map(tag => (
+              <span key={tag} className="text-[10px] font-semibold uppercase tracking-[0.08em] text-gray-500 border border-white/[0.06] px-2 py-0.5 rounded">
+                {tag}
+              </span>
+            ))}
+          </div>
 
-        <a
-          href={`mailto:sam@sam-bloch.com?subject=${encodeURIComponent(`Write-up request: ${project.title}`)}`}
-          onClick={() => track('writeup_request', { project: project.id })}
-          className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-[#24A2A7] transition-colors"
-        >
-          <Mail className="w-3.5 h-3.5" />
-          Write-up on request
-        </a>
+          <a
+            href={`mailto:sam@sam-bloch.com?subject=${encodeURIComponent(`Write-up request: ${project.title}`)}`}
+            onClick={() => track('writeup_request', { project: project.id })}
+            className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-[#24A2A7] transition-colors"
+          >
+            <Mail className="w-3.5 h-3.5" />
+            Write-up on request
+          </a>
+        </div>
       </div>
     </div>
   );
