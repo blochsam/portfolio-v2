@@ -375,16 +375,16 @@ const SpaceUtilizationCaseStudy: React.FC = () => {
               Evaluation.
             </h1>
             <p data-reveal className="apple-reveal text-xl md:text-2xl text-gray-400 leading-relaxed max-w-3xl mb-10">
-              A strategic consulting engagement that gave University of the Pacific the data it needed to launch
-              a new medical school using existing campus capacity, without building a single new classroom.
+              A graduate program-evaluation project examining whether University of the Pacific could launch
+              a new medical school using its existing campus capacity, without building a single new classroom.
             </p>
 
             {/* Project meta strip */}
             <div data-reveal className="apple-reveal grid grid-cols-2 md:grid-cols-4 gap-6 pt-8 border-t border-white/[0.06]">
               <div>
-                <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Sponsor</div>
-                <div className="text-sm text-white">President Callahan</div>
-                <div className="text-xs text-white/50">Physical Plant</div>
+                <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Stakeholders</div>
+                <div className="text-sm text-white">Office of the President</div>
+                <div className="text-xs text-white/50">University Facilities (contact)</div>
               </div>
               <div>
                 <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Scope</div>
@@ -399,8 +399,8 @@ const SpaceUtilizationCaseStudy: React.FC = () => {
               </div>
               <div>
                 <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/40 mb-2">Course</div>
-                <div className="text-sm text-white">LEAD 259</div>
-                <div className="text-xs text-white/50">Evaluation in Organizations</div>
+                <div className="text-sm text-white">LEAD 215</div>
+                <div className="text-xs text-white/50">Graduate program evaluation</div>
               </div>
             </div>
           </div>
@@ -422,10 +422,11 @@ const SpaceUtilizationCaseStudy: React.FC = () => {
                 campus footprint could absorb it.
               </p>
               <p>
-                President Callahan's office and the Physical Plant team asked our three-person consulting team
-                to find out. The brief was specific: stop guessing from anecdote, start measuring from data,
-                and answer a single question with rigor. Could the existing Classroom Building, Chemistry
-                Building, and Olson Hall hold a medical school program without new construction?
+                Our three-person graduate team took the question on as a course evaluation project. University
+                Facilities was our point of contact; the Office of the President was the ultimate stakeholder for
+                the decision. The brief was specific: stop guessing from anecdote, start measuring from data, and
+                answer a single question with rigor. Could the existing Classroom Building, Chemistry Building,
+                and Olson Hall hold a medical school program without new construction?
               </p>
               <p className="text-[#24A2A7] font-medium">
                 The cost difference between "yes" and "no" was eight figures.
@@ -467,9 +468,10 @@ const SpaceUtilizationCaseStudy: React.FC = () => {
               <div className="text-[10px] font-mono uppercase tracking-[0.3em] text-[#24A2A7] mb-3">Framework Grounding</div>
               <p className="text-base text-gray-300 leading-relaxed">
                 The evaluation followed Patton's <em>utilization-focused</em> model (Patton, 1997). Every methodological
-                choice was anchored to the specific decision President Callahan needed to make: build, retrofit, or
-                reschedule. Engagement structure drew from Russ-Eft &amp; Preskill's Chapter 14 and 16 communication
-                frameworks, replacing slide-deck handoffs with two facilitated working sessions.
+                choice was anchored to the specific decision the University faced: build, retrofit, or
+                reschedule. Our reporting structure drew from Russ-Eft &amp; Preskill's Chapter 14 and 16 communication
+                frameworks, replacing slide-deck handoffs with two facilitated working sessions. Data compilation and
+                analysis were assisted by AI tooling (Julius.AI), and the report was drafted with AI support and reviewed by the team.
               </p>
             </div>
           </div>
@@ -665,42 +667,18 @@ const SpaceUtilizationCaseStudy: React.FC = () => {
            ════════════════════════════════════════ */}
         <section className="px-6 md:px-12 py-24 bg-white/[0.015] border-y border-white/[0.04] relative">
           <div className="max-w-5xl mx-auto">
-            <DraftingOverline sheet="Sheet 06 / 06">The Team</DraftingOverline>
-            <h2 data-reveal className="apple-reveal text-3xl md:text-5xl font-black tracking-tighter mb-12">
-              Three consultants.
+            <DraftingOverline sheet="Sheet 06 / 06">My Role</DraftingOverline>
+            <h2 data-reveal className="apple-reveal text-3xl md:text-5xl font-black tracking-tighter mb-10">
+              What I owned.
             </h2>
 
-            <div className="grid md:grid-cols-3 gap-6">
-              {[
-                {
-                  name: 'Sam Bloch',
-                  role: 'Consultant',
-                  bio: 'Owned project framing, stakeholder management, and the synthesis of findings into the President\'s briefing.',
-                  highlight: true,
-                },
-                {
-                  name: 'Samuel Cogo',
-                  role: 'Consultant',
-                  bio: 'Owned the floor plan analysis, room-by-room data joins, and the recommendations modeling.',
-                },
-                {
-                  name: 'Veronica Henderson',
-                  role: 'Consultant',
-                  bio: 'Led stakeholder interviews, ran the facilitated working sessions, and synthesized qualitative themes.',
-                },
-              ].map((p) => (
-                <div data-reveal key={p.name}
-                  className={`apple-reveal rounded-xl p-6 border ${
-                    p.highlight
-                      ? 'bg-[#24A2A7]/[0.05] border-[#24A2A7]/30'
-                      : 'bg-white/[0.02] border-white/[0.06]'
-                  }`}
-                >
-                  <div className="text-[10px] font-mono uppercase tracking-[0.3em] text-[#24A2A7] mb-3">{p.role}</div>
-                  <div className="text-2xl font-black text-white mb-3">{p.name}</div>
-                  <p className="text-sm text-gray-400 leading-relaxed">{p.bio}</p>
-                </div>
-              ))}
+            <div data-reveal className="apple-reveal rounded-xl p-6 md:p-8 border bg-[#24A2A7]/[0.05] border-[#24A2A7]/30 max-w-2xl">
+              <div className="text-[10px] font-mono uppercase tracking-[0.3em] text-[#24A2A7] mb-3">Data &amp; Analysis</div>
+              <p className="text-base md:text-lg text-gray-300 leading-relaxed">
+                This was a three-person graduate project. My piece was the analytical engine: the floor plan
+                analysis, the room-by-room data joins, and the recommendations modeling that the findings and the
+                final briefing were built on.
+              </p>
             </div>
           </div>
         </section>
@@ -712,12 +690,13 @@ const SpaceUtilizationCaseStudy: React.FC = () => {
           <div className="max-w-5xl mx-auto">
             <DraftingOverline sheet="Outcome">The Decision</DraftingOverline>
             <h2 data-reveal className="apple-reveal text-3xl md:text-5xl font-black tracking-tighter mb-6">
-              And then,<br /><span className="text-[#24A2A7]">they did it.</span>
+              And then,<br /><span className="text-[#24A2A7]">they moved forward.</span>
             </h2>
             <p data-reveal className="apple-reveal text-lg text-gray-400 mb-10 max-w-3xl leading-relaxed">
-              In the months after our final briefing, University of the Pacific moved forward with the medical school.
-              The space evaluation didn't make the decision alone, but it gave the board the evidence base it needed
-              to say yes without a capital expansion.
+              Months later, University of the Pacific announced it would move forward with the medical school. This was
+              a graduate course evaluation, not the board's own analysis, so I won't claim it drove the decision. What I
+              can say is that it modeled the exact question the decision turned on: whether existing campus space could
+              absorb the program without new construction.
             </p>
 
             <div data-reveal className="apple-reveal">
@@ -760,9 +739,10 @@ const SpaceUtilizationCaseStudy: React.FC = () => {
 
             <div data-reveal className="apple-reveal mt-12 pt-8 border-t border-white/[0.06]">
               <p className="text-sm text-white/40 italic">
-                Pacific Medical School Space Utilization Evaluation · LEAD 259 · University of the Pacific · 2026.
-                Conducted under the supervision of the LEAD 259 instructional team and in collaboration with the
-                Office of the President and University Physical Plant.
+                Pacific Medical School Space Utilization Evaluation · LEAD 215 · University of the Pacific · 2026.
+                A graduate course project conducted under the supervision of the LEAD 215 instructional team, using
+                scheduling and space data provided by University Facilities and Academic Affairs. Data compilation
+                and report formatting were assisted by AI tools, including Julius.AI.
               </p>
             </div>
           </div>
@@ -797,7 +777,7 @@ const SpaceUtilizationCaseStudy: React.FC = () => {
            ════════════════════════════════════════ */}
         <section data-reveal className="apple-reveal pt-12 md:pt-16 pb-32 md:pb-36 text-center px-6">
           <p className="text-[14px] text-[#9a9a9f] mb-8">
-            Strategic Consulting Engagement &middot; LEAD 259 &middot; 2026
+            Graduate Evaluation Project &middot; LEAD 215 &middot; 2026
           </p>
           <button onClick={() => navigate('/projects')} className="inline-flex items-center gap-2 text-white font-medium text-sm hover:text-[#24A2A7] transition-colors duration-300">
             <ArrowLeft className="w-4 h-4" />

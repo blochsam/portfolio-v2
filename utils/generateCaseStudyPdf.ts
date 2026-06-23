@@ -103,13 +103,13 @@ function generateSpaceUtilizationCaseStudyPdf(baseUrl: string): string {
   <div class="doc">
     <header class="header">
       <div class="logo"><span>SAM</span> <span>BLOCH</span></div>
-      <p class="meta">Strategic Consulting · LEAD 259 · 2026</p>
+      <p class="meta">Graduate Evaluation Project · LEAD 215 · 2026</p>
       <h1>Pacific Medical School Space Evaluation</h1>
-      <p class="subtitle">University of the Pacific · Office of the President · Physical Plant</p>
+      <p class="subtitle">University of the Pacific · Graduate Program Evaluation</p>
     </header>
 
     <section>
-      <p>A strategic consulting engagement that gave University of the Pacific the data it needed to launch a new medical school using existing campus capacity, without building a single new classroom. Six semesters of utilization data across three buildings, three findings, one institutional decision.</p>
+      <p>A graduate program-evaluation project examining whether University of the Pacific could launch a new medical school using its existing campus capacity, without building a single new classroom. Six semesters of utilization data across three buildings, three findings, one institutional decision.</p>
     </section>
 
     <div class="stats">
@@ -122,7 +122,7 @@ function generateSpaceUtilizationCaseStudyPdf(baseUrl: string): string {
     <section>
       <div class="section-label">THE BRIEF</div>
       <p>In early 2026, University of the Pacific was actively scoping the launch of a new medical school. The strategic question was not whether the program had demand. It was whether the existing campus footprint could absorb it.</p>
-      <p>President Callahan's office and the Physical Plant team asked our three-person consulting team to find out. The brief was specific: stop guessing from anecdote, start measuring from data, and answer a single question with rigor. Could the existing Classroom Building, Chemistry Building, and Olson Hall hold a medical school program without new construction?</p>
+      <p>Our three-person graduate team took the question on as a course evaluation project. University Facilities was our point of contact; the Office of the President was the ultimate stakeholder for the decision. The brief was specific: stop guessing from anecdote, start measuring from data, and answer a single question with rigor. Could the existing Classroom Building, Chemistry Building, and Olson Hall hold a medical school program without new construction?</p>
       <p><strong>The cost difference between "yes" and "no" was eight figures.</strong></p>
     </section>
 
@@ -135,7 +135,7 @@ function generateSpaceUtilizationCaseStudyPdf(baseUrl: string): string {
         <tr><td><strong>Space Classification</strong></td><td>Academic Affairs</td><td>Lab vs. lecture vs. office distinction</td></tr>
         <tr><td><strong>Administrative Load</strong></td><td>Dean's Office</td><td>Office density and admin footprint</td></tr>
       </table>
-      <p>Grounded in Patton's utilization-focused evaluation framework and Russ-Eft &amp; Preskill's Chapter 14 and 16 communication models. Working sessions replaced slide-deck handoffs.</p>
+      <p>Grounded in Patton's utilization-focused evaluation framework and Russ-Eft &amp; Preskill's Chapter 14 and 16 communication models. Working sessions replaced slide-deck handoffs. Data compilation and analysis were assisted by AI tooling (Julius.AI); the report was drafted with AI support and reviewed by the team.</p>
     </section>
 
     ${img('/case-study/space-utilization/floor-2.webp', 'Classroom Building floor plan', 'Classroom Building, Floor 1 — color-coded by use (lecture / lab / office / research) with efficiency annotations')}
@@ -157,16 +157,13 @@ function generateSpaceUtilizationCaseStudyPdf(baseUrl: string): string {
     </section>
 
     <section>
-      <div class="section-label">THE TEAM</div>
-      <p>A three-person consulting team operating as equal partners:</p>
-      <div class="role-item"><span class="role-title">Sam Bloch</span><br><span class="role-desc">Project framing, stakeholder management, synthesis of findings into the President's briefing.</span></div>
-      <div class="role-item"><span class="role-title">Samuel Cogo</span><br><span class="role-desc">Floor plan analysis, room-by-room data joins, recommendations modeling.</span></div>
-      <div class="role-item"><span class="role-title">Veronica Henderson</span><br><span class="role-desc">Stakeholder interviews, facilitated working sessions, qualitative synthesis.</span></div>
+      <div class="section-label">MY ROLE</div>
+      <p>This was a three-person graduate project. I owned the analytical work: floor plan analysis, room-by-room data joins, and the recommendations modeling behind the findings and the final briefing.</p>
     </section>
 
     <section>
       <div class="section-label">THE OUTCOME</div>
-      <p>In the months following our final briefing, University of the Pacific moved forward with the medical school. The space evaluation didn't make the decision alone, but it gave the board the evidence base it needed to say yes without a capital expansion.</p>
+      <p>Months later, University of the Pacific announced it would move forward with the medical school. This was a graduate course evaluation, not the board's own analysis, so I won't claim it drove the decision. What I can say is that it modeled the exact question the decision turned on: whether existing campus space could absorb the program without new construction.</p>
     </section>
 
     <section>

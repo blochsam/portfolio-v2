@@ -148,7 +148,7 @@ const ProjectsPage: React.FC = () => {
   const [filter, setFilter] = useState<string>('All');
   const [search, setSearch] = useState('');
 
-  const categories = ['All', 'Operations', 'Design', 'AI', 'Leadership', 'Consulting'];
+  const categories = ['All', 'Operations', 'Design', 'AI', 'Leadership'];
   const isDefaultView = filter === 'All' && search.trim() === '';
 
   const filteredProjects = useMemo(() => {

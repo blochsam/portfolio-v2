@@ -4,9 +4,9 @@ export const PROJECTS: Project[] = [
   {
     id: 'space-utilization',
     title: 'Pacific Medical School Space Evaluation',
-    category: 'Consulting',
+    category: 'Leadership',
     date: '2026',
-    description: 'Gave University of the Pacific the data to launch a new medical school within its existing campus capacity, without a single new building.',
+    description: 'A graduate program-evaluation modeling whether University of the Pacific could launch a new medical school within its existing campus capacity, without a single new building.',
     tags: ['Leadership', 'Evaluation', 'Data Analysis', 'Julius.AI'],
     image: '/case-study/space-utilization/projects-card-tower.webp',
     imagePosition: 'center'
