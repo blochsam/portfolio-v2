@@ -35,7 +35,7 @@ describe('ProjectsPage', () => {
     render(<ProjectsPage />);
     // Use aria-label since button text may appear in project cards too
     expect(screen.getByRole('button', { name: /Filter by All/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Filter by Design/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Filter by Software/i })).toBeInTheDocument();
   });
 
   it('filters projects by category', async () => {

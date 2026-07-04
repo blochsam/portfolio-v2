@@ -292,21 +292,6 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent }) => {
         </section>
 
         {/* ════════════════════════════════════════
-            SECTION 2.5 — TESTIMONIAL
-            TODO(sam): replace with a REAL attributed quote before launch — a
-            Level Up student, a Google colleague, or the UoP engagement sponsor.
-            Placeholder copy below is illustrative only.
-           ════════════════════════════════════════ */}
-        <section className="scroll-reveal content-auto px-6 md:px-12 max-w-4xl mx-auto mb-24 relative z-20 text-center">
-          <blockquote className="text-2xl md:text-4xl font-bold tracking-tight leading-snug text-gray-200">
-            &ldquo;Sam builds the system before the problem shows up. By the time everyone else sees the fire, he&rsquo;s already standing there with the extinguisher.&rdquo;
-          </blockquote>
-          <figcaption className="mt-6 text-xs font-bold uppercase tracking-widest text-gray-500">
-            Colleague · YouTube Trust &amp; Safety
-          </figcaption>
-        </section>
-
-        {/* ════════════════════════════════════════
             SECTION 3 — FOCUS AREAS (inline expandable, #1 + #8)
            ════════════════════════════════════════ */}
         <section className="scroll-reveal content-auto px-6 md:px-12 max-w-7xl mx-auto mb-24 relative z-20">

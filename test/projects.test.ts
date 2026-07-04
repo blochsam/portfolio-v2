@@ -20,7 +20,7 @@ describe('PROJECTS data', () => {
   });
 
   it('categories are valid enum values', () => {
-    const validCategories = ['Operations', 'Design', 'AI', 'Leadership', 'Consulting'];
+    const validCategories = ['Hardware', 'Software', 'Research', 'Leadership'];
     for (const p of PROJECTS) {
       expect(validCategories).toContain(p.category);
     }
