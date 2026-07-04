@@ -31,38 +31,18 @@ describe('ProjectsPage', () => {
     expect(screen.getByText('The D-Cade')).toBeInTheDocument();
   });
 
-  it('renders category filter buttons', () => {
+  it('renders spotlight and archive sections', () => {
     render(<ProjectsPage />);
-    // Use aria-label since button text may appear in project cards too
-    expect(screen.getByRole('button', { name: /Filter by All/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Filter by Design/i })).toBeInTheDocument();
+    expect(screen.getByText('SPOTLIGHT')).toBeInTheDocument();
+    expect(screen.getByText('THE FULL ARCHIVE')).toBeInTheDocument();
   });
 
-  it('filters projects by category', async () => {
+  it('back button returns to the static homepage without persisting 2D', async () => {
     const user = userEvent.setup();
     render(<ProjectsPage />);
 
-    // Click on "AI" filter (less ambiguous than "Operations")
-    await user.click(screen.getByRole('button', { name: /Filter by AI/i }));
-
-    // AI category project should be visible
-    expect(screen.getByText('Legal Ops Workflow Automation')).toBeInTheDocument();
-    // But pure Design projects should not
-    expect(screen.queryByText('Augmented Reality Detroit Zoo App')).not.toBeInTheDocument();
-  });
-
-  it('search filters by title', async () => {
-    const user = userEvent.setup();
-    render(<ProjectsPage />);
-
-    // Type in the search input (it should be visible by default or after toggling)
-    const searchInput = screen.getByPlaceholderText(/search/i);
-    await user.type(searchInput, 'fudge');
-
-    // Should show Fudge
-    expect(screen.getByText('Fudge')).toBeInTheDocument();
-    // Should not show unrelated projects
-    expect(screen.queryByText('The D-Cade')).not.toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /Back to home/i }));
+    expect(mockNavigate).toHaveBeenCalledWith('/', { state: { force2D: true, transient: true } });
   });
 
   it('renders back button with text', () => {

@@ -56,4 +56,12 @@
     <loc>https://sam-bloch.com/projects/matinee</loc>
     <priority>0.6</priority>
   </url>
+  <url>
+    <loc>https://sam-bloch.com/projects/operations</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://sam-bloch.com/projects/michigan-speech</loc>
+    <priority>0.6</priority>
+  </url>
 </urlset>

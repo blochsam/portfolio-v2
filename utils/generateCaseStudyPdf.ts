@@ -41,6 +41,12 @@ export function generateCaseStudyPdfHtml(projectId: string, baseUrl: string): st
   if (projectId === 'matinee') {
     return generateMatineeCaseStudyPdf(baseUrl);
   }
+  if (projectId === 'operations') {
+    return generateOperationsCaseStudyPdf(baseUrl);
+  }
+  if (projectId === 'michigan-speech') {
+    return generateMichiganSpeechCaseStudyPdf(baseUrl);
+  }
   return generateUnderConstructionPdf(baseUrl);
 }
 
@@ -1609,6 +1615,212 @@ function generateMatineeCaseStudyPdf(baseUrl: string): string {
   </div>
   <div class="footer">
     <span>Matinee · Sam Bloch</span>
+    <a href="${origin}">sam-bloch.com</a>
+  </div>
+  <script>
+    (function() {
+      var imgs = Array.from(document.querySelectorAll('img'));
+      var loaded = 0;
+      function checkDone() { loaded++; if (loaded >= imgs.length) setTimeout(function(){ window.print(); }, 600); }
+      imgs.forEach(function(img) { if (img.complete) checkDone(); else img.onload = img.onerror = checkDone; });
+      if (imgs.length === 0) setTimeout(function(){ window.print(); }, 500);
+    })();
+  </script>
+</body>
+</html>`;
+}
+
+function generateOperationsCaseStudyPdf(baseUrl: string): string {
+  const origin = baseUrl.replace(/\/$/, '');
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Operations at Scale — Sam Bloch</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: #ffffff; color: ${TEXT_DARK}; line-height: 1.6; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .doc { max-width: 700px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+    .header { border-bottom: 2px solid ${TEAL}; padding-bottom: 1rem; margin-bottom: 2rem; }
+    .logo span:first-child { color: ${TEXT_DARK}; font-weight: 800; font-size: 1.75rem; letter-spacing: -1px; }
+    .logo span:last-child { color: ${TEAL}; font-weight: 800; font-size: 1.75rem; letter-spacing: -1px; }
+    .meta { color: ${TEAL}; font-size: 0.75rem; margin-top: 0.5rem; }
+    h1 { font-size: 1.5rem; font-weight: 700; margin: 1rem 0 0.5rem; color: ${TEXT_DARK}; }
+    .subtitle { color: ${TEXT_MUTED}; font-size: 0.9rem; }
+    section { margin-bottom: 2rem; page-break-inside: avoid; }
+    .section-label { color: ${TEAL}; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; margin-bottom: 0.5rem; text-transform: uppercase; }
+    h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: ${TEXT_DARK}; }
+    p { color: ${TEXT_DARK}; font-size: 0.9rem; margin-bottom: 1rem; }
+    .statement { font-size: 1.05rem; font-weight: 700; color: ${TEXT_DARK}; border-left: 3px solid ${TEAL}; padding-left: 1rem; margin: 1rem 0 1.5rem; }
+    .stats { display: flex; gap: 1.5rem; margin: 1rem 0; flex-wrap: wrap; }
+    .stat { text-align: center; }
+    .stat-num { font-size: 1.5rem; font-weight: 700; color: ${TEAL}; }
+    .stat-label { font-size: 0.7rem; color: ${TEXT_MUTED}; }
+    .note { font-size: 0.75rem; color: ${TEXT_MUTED}; font-style: italic; }
+    .footer { position: fixed; bottom: 0; left: 0; right: 0; padding: 0.75rem 1.5rem; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-between; font-size: 0.7rem; color: ${TEXT_MUTED}; background: #ffffff; }
+    .footer a { color: ${TEAL}; text-decoration: none; }
+    @media print { .doc { padding-bottom: 3rem; } }
+  </style>
+</head>
+<body>
+  <div class="doc">
+    <header class="header">
+      <div class="logo"><span>SAM</span> <span>BLOCH</span></div>
+      <p class="meta">Operations at Scale · Trust &amp; Safety · YouTube (Google)</p>
+      <h1>Operations at Scale</h1>
+      <p class="subtitle">An essay on the craft of running very large operations, told at the altitude discretion allows.</p>
+    </header>
+
+    <section>
+      <p class="statement">The specifics of this work are confidential, and keeping them that way is part of the job.</p>
+      <p>This is an essay about operations craft: quality frameworks, calibration, metric design, and changing systems that can't stop running. The specifics stay inside. The thinking is mine to share.</p>
+    </section>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-num">10</div><div class="stat-label">Global sites, one standard</div></div>
+      <div class="stat"><div class="stat-num">800+</div><div class="stat-label">Moderators in scope</div></div>
+      <div class="stat"><div class="stat-num">45%</div><div class="stat-label">Fewer processing errors (Legal Ops)</div></div>
+      <div class="stat"><div class="stat-num">20%</div><div class="stat-label">Reporting efficiency gained</div></div>
+    </div>
+
+    <section>
+      <p class="section-label">Why Operations</p>
+      <p>I landed in operations sideways, then discovered it's where my favorite kind of problem lives: systems design with people inside it. An operation is hundreds of humans across ten sites, a policy that keeps evolving, and a queue that never sleeps — and it still has to produce one consistent, defensible answer, every time. When it's done well, nobody notices, which is exactly the point.</p>
+    </section>
+
+    <section>
+      <p class="section-label">The Craft · 01 — Human Tools</p>
+      <p>Most operational tooling is designed around the process and inflicted on the humans. I work the other way: watch where people actually stumble, then design the tool around the stumble. The clearest proof I can share: I rebuilt an error-management workflow for legal operations, and internal processing errors fell 45%. The insight wasn't a clever algorithm — it was refusing to blame people for a process that made errors easy.</p>
+    </section>
+
+    <section>
+      <p class="section-label">The Craft · 02 — Calibration</p>
+      <p>A standard is not what's written in the document. It's what hundreds of different people, in different countries, actually do with the document at 3 a.m. their time. Every policy is written with clarity as the intent — and still turns out to be interpretable in the hands of everyone applying it. That gap opens the moment the ink dries. Calibration is the discipline of pulling it closed, continuously, without ever being in the room. (The web version of this page includes an interactive exercise that lets you feel that drift in thirty seconds.)</p>
+    </section>
+
+    <section>
+      <p class="section-label">The Craft · 03 — Metrics</p>
+      <p>Metrics are steering wheels, not report cards. Designing a quality metric is designing behavior. I build the instruments too: custom SQL dashboards that surface where performance actually bottlenecks — one rebuild improved reporting efficiency by 20%, which in an operation means decisions land a day earlier, every day.</p>
+    </section>
+
+    <section>
+      <p class="section-label">The Craft · 04 — Change</p>
+      <p>The queue doesn't pause for your rollout. Every improvement ships into a system already running at full speed, so change becomes a craft of sequencing: pilot small, calibrate the pilots, scale what survives contact with reality. Across ten sites, a change isn't one change; it's ten local changes wearing one name. The newest chapter is moving safety upstream — integrating generative AI into moderation pipelines so problems get caught earlier instead of cleaned up after the fact.</p>
+    </section>
+
+    <section>
+      <p class="section-label">Reflection</p>
+      <p>Builders get to show the thing. Operators get to show the absence of disasters — which looks, from the outside, like nothing. I've made peace with that trade. Quiet is what a healthy operation sounds like, and building toward quiet — fewer surprises, fewer heroics, fewer 3 a.m. escalations — turns out to be some of the most demanding design work there is. Discretion isn't a limitation on this portfolio. It's a qualification in it.</p>
+    </section>
+  </div>
+  <div class="footer">
+    <span>Operations at Scale · Sam Bloch</span>
+    <a href="${origin}">sam-bloch.com</a>
+  </div>
+  <script>
+    setTimeout(function(){ window.print(); }, 500);
+  </script>
+</body>
+</html>`;
+}
+
+function generateMichiganSpeechCaseStudyPdf(baseUrl: string): string {
+  const origin = baseUrl.replace(/\/$/, '');
+  const img = (path: string, alt: string, caption: string) =>
+    `<div class="img-block"><img src="${origin}${path}" alt="${alt}"><p class="img-caption">${caption}</p></div>`;
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Michigan Speech — Sam Bloch</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: #ffffff; color: ${TEXT_DARK}; line-height: 1.6; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .doc { max-width: 700px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+    .header { border-bottom: 2px solid ${TEAL}; padding-bottom: 1rem; margin-bottom: 2rem; }
+    .logo span:first-child { color: ${TEXT_DARK}; font-weight: 800; font-size: 1.75rem; letter-spacing: -1px; }
+    .logo span:last-child { color: ${TEAL}; font-weight: 800; font-size: 1.75rem; letter-spacing: -1px; }
+    .meta { color: ${TEAL}; font-size: 0.75rem; margin-top: 0.5rem; }
+    h1 { font-size: 1.5rem; font-weight: 700; margin: 1rem 0 0.5rem; color: ${TEXT_DARK}; }
+    .subtitle { color: ${TEXT_MUTED}; font-size: 0.9rem; }
+    section { margin-bottom: 2rem; page-break-inside: avoid; }
+    .section-label { color: ${TEAL}; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; margin-bottom: 0.5rem; text-transform: uppercase; }
+    p { color: ${TEXT_DARK}; font-size: 0.9rem; margin-bottom: 1rem; }
+    .stats { display: flex; gap: 1.5rem; margin: 1rem 0; flex-wrap: wrap; }
+    .stat { text-align: center; }
+    .stat-num { font-size: 1.5rem; font-weight: 700; color: ${TEAL}; }
+    .stat-label { font-size: 0.7rem; color: ${TEXT_MUTED}; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.85rem; }
+    th, td { border: 1px solid #e5e7eb; padding: 0.6rem 0.8rem; text-align: left; }
+    th { background: #f3f4f6; color: ${TEXT_DARK}; font-weight: 600; }
+    td { color: ${TEXT_DARK}; }
+    td strong { color: ${TEAL}; }
+    .img-block { margin: 1rem 0; }
+    .img-block img { width: 100%; height: auto; border: 1px solid #e5e7eb; border-radius: 0.5rem; }
+    .img-block img.portrait { width: auto; max-height: 420px; display: block; margin: 0 auto; }
+    .img-caption { font-size: 0.65rem; color: ${TEXT_MUTED}; margin-top: 0.25rem; }
+    .footer { position: fixed; bottom: 0; left: 0; right: 0; padding: 0.75rem 1.5rem; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-between; font-size: 0.7rem; color: ${TEXT_MUTED}; background: #ffffff; }
+    .footer a { color: ${TEAL}; text-decoration: none; }
+    @media print { .doc { padding-bottom: 3rem; } }
+  </style>
+</head>
+<body>
+  <div class="doc">
+    <header class="header">
+      <div class="logo"><span>SAM</span> <span>BLOCH</span></div>
+      <p class="meta">Michigan Speech · MIFA · MSCI · 14 years and counting</p>
+      <h1>Michigan Speech</h1>
+      <p class="subtitle">Fourteen years in Michigan's speech and debate community — competitor, coach, founder, steward.</p>
+    </header>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-num">2x</div><div class="stat-label">MIFA state champion, Storytelling</div></div>
+      <div class="stat"><div class="stat-num">10+</div><div class="stat-label">State finalists coached</div></div>
+      <div class="stat"><div class="stat-num">600+</div><div class="stat-label">Competitors hosted in one day</div></div>
+      <div class="stat"><div class="stat-num">14</div><div class="stat-label">Years in the community</div></div>
+    </div>
+
+    <section>
+      <p class="section-label">Chapter I — The Competitor</p>
+      <p>Storytelling was my event. Through the Michigan Interscholastic Forensic Association I became a two-time state champion, a four-time state finalist, and, for a while, a record-holder — plus three MSCI championships on Mackinac Island in four years. None of it happens without my coach, Doug "Bev" Bevier, the first person who made me believe a story could win a room.</p>
+      ${img('/case-study/michigan-speech/sam-and-bev.webp', 'Sam Bloch and coach Doug Bevier with trophies on Mackinac Island', 'Mackinac Island, 2013 — me and Bev, with the hardware to show for it.')}
+    </section>
+
+    <section>
+      <p class="section-label">Chapter II — The Coach</p>
+      <p>Through college and my early career I coached forensics at Okemos and my alma mater, Walled Lake Western — four and a half years of practices, tournaments, and helping teenagers find voices they didn't know they had. My students went further than I did: ten-plus state finalists, two state champions, and a national champion.</p>
+      ${img('/case-study/michigan-speech/wlw-team.webp', 'The Walled Lake Western Forensics team', 'Walled Lake Western Forensics — where I competed, then coached.')}
+    </section>
+
+    <section>
+      <p class="section-label">Chapter III — The Founder</p>
+      <p>After aging out, I missed the activity enough to do something unreasonable: I chartered Spartan Speech at Michigan State and founded the Spartanvitational, securing a university grant, a performance hall, and fifty classrooms for a Saturday.</p>
+      <table>
+        <tr><th>Date</th><th>Students</th><th>Schools</th><th>Note</th></tr>
+        <tr><td>March 23, 2018</td><td><strong>~250</strong></td><td>20+</td><td>The first Spartanvitational</td></tr>
+        <tr><td>February 23, 2019</td><td><strong>500+</strong></td><td>25+</td><td>~800 people — largest tournament in Michigan</td></tr>
+        <tr><td>February 22, 2020</td><td><strong>600+</strong></td><td>35+</td><td>Largest competitive public speaking competition in the state</td></tr>
+      </table>
+      <p>When COVID took the building, we ran a national tournament online. When I graduated, I handed the tournament to the next generation of Spartans. It turns ten in 2027. It doesn't need me anymore — that's the whole point.</p>
+      ${img('/case-study/michigan-speech/tournament-day.webp', 'A packed auditorium at the Spartanvitational', 'Tournament day — a full house of blazers, binders, and nerves.')}
+      ${img('/case-study/michigan-speech/spartan-speech-team.webp', 'The Spartan Speech club', 'Spartan Speech — the Spartans who made it happen.')}
+    </section>
+
+    <section>
+      <p class="section-label">Chapter IV — The Steward</p>
+      <p>Every May I'm back on Mackinac Island with Michigan Speech Coaches Inc. — eleven conferences and counting — tabulating tournaments, volunteer-coaching my alma mater, and most recently giving a professional development talk at the Grand Hotel on what AI can quietly take off a coach's plate. The kid this community built grew up and came back with tools.</p>
+      <div class="img-block"><img class="portrait" src="${origin}/case-study/michigan-speech/grand-hotel-talk.webp" alt="Sam Bloch and Brando Socarras presenting at the Grand Hotel"><p class="img-caption">The Grand Hotel, 2026 — teaching coaches to build with AI, alongside Brando Socarras.</p></div>
+    </section>
+
+    <section>
+      <p class="section-label">The Last Round</p>
+      <p>Holding a room. Coaching someone to a result you'll never get credit for. Founding an organization from a lunch conversation. Running an 800-person operation out of a tab room. I've been rehearsing my entire career since I was fourteen — this community was the stage.</p>
+    </section>
+  </div>
+  <div class="footer">
+    <span>Michigan Speech · Sam Bloch</span>
     <a href="${origin}">sam-bloch.com</a>
   </div>
   <script>

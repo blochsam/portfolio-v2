@@ -273,9 +273,6 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent }) => {
                       style={{ objectPosition: project.imagePosition ?? 'center' }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] via-transparent to-transparent opacity-60" />
-                    <span className="absolute top-3 left-3 text-[10px] font-mono text-[#24A2A7] font-bold uppercase tracking-widest px-3 py-1 bg-black/80 rounded-full">
-                      {project.category}
-                    </span>
                   </div>
                 )}
                 <div className="p-5 md:p-6">
@@ -289,21 +286,6 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent }) => {
               </Link>
             ))}
           </div>
-        </section>
-
-        {/* ════════════════════════════════════════
-            SECTION 2.5 — TESTIMONIAL
-            TODO(sam): replace with a REAL attributed quote before launch — a
-            Level Up student, a Google colleague, or the UoP engagement sponsor.
-            Placeholder copy below is illustrative only.
-           ════════════════════════════════════════ */}
-        <section className="scroll-reveal content-auto px-6 md:px-12 max-w-4xl mx-auto mb-24 relative z-20 text-center">
-          <blockquote className="text-2xl md:text-4xl font-bold tracking-tight leading-snug text-gray-200">
-            &ldquo;Sam builds the system before the problem shows up. By the time everyone else sees the fire, he&rsquo;s already standing there with the extinguisher.&rdquo;
-          </blockquote>
-          <figcaption className="mt-6 text-xs font-bold uppercase tracking-widest text-gray-500">
-            Colleague · YouTube Trust &amp; Safety
-          </figcaption>
         </section>
 
         {/* ════════════════════════════════════════

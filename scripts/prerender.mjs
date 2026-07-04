@@ -31,6 +31,8 @@ const ROUTES = [
   '/projects/smart-lockers',
   '/projects/space-utilization',
   '/projects/matinee',
+  '/projects/operations',
+  '/projects/michigan-speech',
 ];
 
 /**

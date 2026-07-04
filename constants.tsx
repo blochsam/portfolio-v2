@@ -33,12 +33,8 @@ export const CONTENT_MAP: Record<SplineObjectId, PortfolioContent> = {
       { title: 'The Human Element', desc: 'My HCI background keeps one question on the table: how does this feel for the user? Safety should be a foundation, not a barrier.' },
       { title: 'Proactive, Not Reactive', desc: 'I’d rather move safety upstream than clean up downstream. Integrity gets designed in from day one.' },
     ],
-    quote: {
-      text: 'Sam builds the process before the problem shows up. By the time everyone else sees the fire, he’s already standing there with the extinguisher.',
-      attribution: 'Colleague · YouTube Trust & Safety',
-    },
     related: [
-      { label: 'YouTube & Google on my resume', href: '/resume' },
+      { label: 'Operations at Scale — the craft essay', href: '/projects/operations' },
     ],
     tags: ['Policy Enforcement', 'Program Management', 'SQL & Data Analysis']
   },
@@ -58,10 +54,6 @@ export const CONTENT_MAP: Record<SplineObjectId, PortfolioContent> = {
       { title: 'Human-Centric Automation', desc: 'AI handles the manual bottlenecks; humans keep the strategy and the creativity. No black boxes.' },
       { title: 'Build Faster, Smarter', desc: 'I use AI to shorten the distance between “what if?” and a working solution — rapid prototypes, internal tools, finished products.' },
     ],
-    quote: {
-      text: 'He’s the person who turns “wouldn’t it be cool if…” into a working tool by Friday.',
-      attribution: 'Teammate · Google',
-    },
     related: [
       { label: 'Level Up — AI-powered LMS', href: '/projects/level-up' },
       { label: 'Fudge — built with Claude', href: '/projects/fudge' },
@@ -85,10 +77,6 @@ export const CONTENT_MAP: Record<SplineObjectId, PortfolioContent> = {
       { title: 'Get on the Balcony', desc: 'Step off the dance floor of daily tasks, read the patterns from above, and keep the team’s energy aligned with the bigger picture.' },
       { title: 'Mentorship as Curriculum', desc: 'Advice doesn’t scale; toolkits do. Career readiness, organizational navigation, and systems thinking students can reuse without me in the room.' },
     ],
-    quote: {
-      text: 'This was the first class that felt like training for my actual career instead of another assignment.',
-      attribution: 'Student · Level Up, Quinnipiac in LA',
-    },
     related: [
       { label: 'Level Up — the course & platform', href: '/projects/level-up' },
       { label: 'UC California Climate Stewards', href: '/projects/uc-calnat' },
@@ -110,10 +98,6 @@ export const CONTENT_MAP: Record<SplineObjectId, PortfolioContent> = {
       { title: 'Systems-Level Facilitation', desc: 'I lead groups through derailed processes to creative consensus, from creative-production conflicts to non-profit financial barriers.' },
       { title: 'Adaptive Intentionality', desc: 'Every organization is a living system. I read its needs — legal, ethical, operational — and pivot strategy in real time. Cynefin is a favorite lens.' },
     ],
-    quote: {
-      text: 'Sam didn’t hand us a deliverable and disappear. He left us owning a strategy we could actually run.',
-      attribution: 'Engagement sponsor · University of the Pacific',
-    },
     related: [
       { label: 'Pacific Medical School Space Evaluation', href: '/projects/space-utilization' },
       { label: 'UC California Climate Stewards', href: '/projects/uc-calnat' },
