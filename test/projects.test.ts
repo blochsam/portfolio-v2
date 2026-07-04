@@ -12,17 +12,9 @@ describe('PROJECTS data', () => {
     for (const p of PROJECTS) {
       expect(p.id).toBeTruthy();
       expect(p.title).toBeTruthy();
-      expect(p.category).toBeTruthy();
       expect(p.description).toBeTruthy();
       expect(p.tags.length).toBeGreaterThan(0);
       expect(p.date).toMatch(/^\d{4}$/);
-    }
-  });
-
-  it('categories are valid enum values', () => {
-    const validCategories = ['Hardware', 'Software', 'Research', 'Leadership'];
-    for (const p of PROJECTS) {
-      expect(validCategories).toContain(p.category);
     }
   });
 

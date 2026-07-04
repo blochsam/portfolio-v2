@@ -24,7 +24,6 @@ export interface PortfolioContent {
 export interface Project {
   id: string;
   title: string;
-  category: 'Hardware' | 'Software' | 'Research' | 'Leadership';
   description: string;
   tags: string[];
   date: string;

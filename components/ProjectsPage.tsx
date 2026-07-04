@@ -1,24 +1,14 @@
-import React, { useState, useMemo } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Search, Mail } from 'lucide-react';
+import { ArrowLeft, Mail } from 'lucide-react';
 import { track } from '../utils/track';
 import { usePageMeta } from '../utils/usePageMeta';
 import { ROUTE_META } from '../data/routeMeta';
 import { PROJECTS, CASE_STUDY_IDS, SPOTLIGHT_PROJECT_IDS } from '../data/projects';
 import { Project } from '../types';
-import { goBack } from '../utils/goBack';
-
-const CATEGORY_GRADIENT: Record<string, string> = {
-  Design: 'from-[#24A2A7]/20 via-[#24A2A7]/5 to-transparent',
-  Operations: 'from-blue-500/20 via-blue-500/5 to-transparent',
-  AI: 'from-violet-500/20 via-violet-500/5 to-transparent',
-  Leadership: 'from-amber-500/20 via-amber-500/5 to-transparent',
-  Consulting: 'from-emerald-500/20 via-emerald-500/5 to-transparent'
-};
 
 /** Card for a project with a full case study — a real link. */
 const CaseStudyCard: React.FC<{ project: Project; spotlight?: boolean }> = ({ project, spotlight = false }) => {
-  const gradient = CATEGORY_GRADIENT[project.category] || 'from-white/10 via-white/5 to-transparent';
   return (
     <Link
       to={`/projects/${project.id}`}
@@ -37,15 +27,10 @@ const CaseStudyCard: React.FC<{ project: Project; spotlight?: boolean }> = ({ pr
             style={{ objectPosition: project.imagePosition ?? 'center' }}
           />
         ) : (
-          <div className={`w-full h-full bg-gradient-to-br ${gradient} flex items-center justify-center`}>
-            <span className="text-[10px] font-mono text-white/20 uppercase tracking-[0.3em]">{project.category}</span>
-          </div>
+          <div className="w-full h-full bg-gradient-to-br from-white/10 via-white/5 to-transparent" />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] via-transparent to-transparent opacity-60" />
-        <div className="absolute top-3 left-3 right-3 flex justify-between items-start">
-          <span className="text-[11px] font-mono text-[#24A2A7] font-bold uppercase tracking-widest px-3 py-1 bg-black/60 backdrop-blur-sm rounded-full">
-            {project.category}
-          </span>
+        <div className="absolute top-3 right-3">
           <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest px-3 py-1 bg-black/40 backdrop-blur-sm rounded-full">{project.date}</span>
         </div>
       </div>
@@ -82,7 +67,6 @@ const CaseStudyCard: React.FC<{ project: Project; spotlight?: boolean }> = ({ pr
 
 /** Card for work without a published case study — honest, not a dead end. */
 const ArchiveCard: React.FC<{ project: Project }> = ({ project }) => {
-  const gradient = CATEGORY_GRADIENT[project.category] || 'from-white/10 via-white/5 to-transparent';
   return (
     <div className="relative bg-[#1a1a1a]/40 border border-white/5 rounded-3xl overflow-hidden flex flex-col h-full w-full">
       <div className="relative w-full aspect-[16/10] overflow-hidden shrink-0">
@@ -97,15 +81,10 @@ const ArchiveCard: React.FC<{ project: Project }> = ({ project }) => {
             style={{ objectPosition: project.imagePosition ?? 'center' }}
           />
         ) : (
-          <div className={`w-full h-full bg-gradient-to-br ${gradient} flex items-center justify-center`}>
-            <span className="text-[10px] font-mono text-white/20 uppercase tracking-[0.3em]">{project.category}</span>
-          </div>
+          <div className="w-full h-full bg-gradient-to-br from-white/10 via-white/5 to-transparent" />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] via-transparent to-transparent opacity-60" />
-        <div className="absolute top-3 left-3 right-3 flex justify-between items-start">
-          <span className="text-[11px] font-mono text-[#24A2A7] font-bold uppercase tracking-widest px-3 py-1 bg-black/60 backdrop-blur-sm rounded-full">
-            {project.category}
-          </span>
+        <div className="absolute top-3 right-3">
           <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest px-3 py-1 bg-black/40 backdrop-blur-sm rounded-full">{project.date}</span>
         </div>
       </div>
@@ -145,20 +124,6 @@ const ArchiveCard: React.FC<{ project: Project }> = ({ project }) => {
 const ProjectsPage: React.FC = () => {
   usePageMeta(ROUTE_META['/projects']);
   const navigate = useNavigate();
-  const [filter, setFilter] = useState<string>('All');
-  const [search, setSearch] = useState('');
-
-  const categories = ['All', 'Hardware', 'Software', 'Research', 'Leadership'];
-  const isDefaultView = filter === 'All' && search.trim() === '';
-
-  const filteredProjects = useMemo(() => {
-    return PROJECTS.filter(p => {
-      const matchesFilter = filter === 'All' || p.category === filter;
-      const matchesSearch = p.title.toLowerCase().includes(search.toLowerCase()) ||
-                            p.description.toLowerCase().includes(search.toLowerCase());
-      return matchesFilter && matchesSearch;
-    });
-  }, [filter, search]);
 
   const spotlight = PROJECTS.filter(p => SPOTLIGHT_PROJECT_IDS.includes(p.id));
   const archive = PROJECTS.filter(p => !SPOTLIGHT_PROJECT_IDS.includes(p.id));
@@ -170,10 +135,11 @@ const ProjectsPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#121212] pt-24 pb-24 px-6 md:px-12 flex flex-col items-center">
-      {/* Back Button */}
+      {/* Back Button — always returns to the static homepage (transient, so it
+          never locks a 3D visitor's session into 2D) */}
       <button
-        onClick={() => goBack(navigate, '/')}
-        aria-label="Back"
+        onClick={() => navigate('/', { state: { force2D: true, transient: true } })}
+        aria-label="Back to home"
         className="fixed top-8 left-8 md:left-12 z-[60] flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-[color,border-color,transform] bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 hover:border-[#24A2A7]/40 shadow-xl active:scale-95"
       >
         <ArrowLeft className="w-4 h-4" aria-hidden="true" />
@@ -182,80 +148,24 @@ const ProjectsPage: React.FC = () => {
 
       <div className="max-w-6xl w-full">
         <header className="mb-16">
-          <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-8">Projects & Artifacts</h1>
-
-          <div className="flex flex-col md:flex-row gap-6 justify-between items-start md:items-center py-8 border-y border-white/5">
-            {/* Filters */}
-            <div className="flex flex-wrap gap-2" role="group" aria-label="Filter projects by category">
-              {categories.map(cat => (
-                <button
-                  key={cat}
-                  onClick={() => setFilter(cat)}
-                  aria-pressed={filter === cat}
-                  aria-label={`Filter by ${cat}`}
-                  className={`px-5 py-3 min-h-[44px] rounded-full text-xs font-bold uppercase tracking-widest transition-[color,background-color,border-color,box-shadow] border ${
-                    filter === cat
-                    ? 'bg-[#24A2A7] border-[#24A2A7] text-black shadow-[0_0_20px_rgba(36,162,167,0.3)]'
-                    : 'bg-white/5 border-white/10 text-gray-400 hover:border-[#24A2A7]/50'
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-
-            {/* Search */}
-            <div className="relative w-full md:w-80 group">
-              <label htmlFor="project-search" className="sr-only">Search projects</label>
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-[#24A2A7] transition-colors" aria-hidden="true" />
-              <input
-                id="project-search"
-                type="search"
-                placeholder="Search projects..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-full py-3 pl-12 pr-6 text-sm focus:outline-none focus:border-[#24A2A7] transition-[border-color] placeholder:text-gray-400"
-              />
-            </div>
-          </div>
+          <h1 className="text-5xl md:text-7xl font-black tracking-tighter">Projects & Artifacts</h1>
         </header>
 
-        {isDefaultView ? (
-          <>
-            {/* Spotlight — most recent / most senior work, full color */}
-            <section aria-label="Spotlight projects" className="mb-16">
-              <span className="text-[10px] font-black text-[#24A2A7] uppercase tracking-[0.5em] block mb-6">SPOTLIGHT</span>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-8 duration-700">
-                {spotlight.map(p => renderCard(p, true))}
-              </div>
-            </section>
-
-            {/* Everything else, denser */}
-            <section aria-label="All projects">
-              <span className="text-[10px] font-black text-gray-500 uppercase tracking-[0.5em] block mb-6">THE FULL ARCHIVE</span>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 animate-in fade-in slide-in-from-bottom-8 duration-700">
-                {archive.map(p => renderCard(p))}
-              </div>
-            </section>
-          </>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-8 duration-700">
-            {filteredProjects.map(p => renderCard(p))}
-
-            {filteredProjects.length === 0 && (
-              <div className="col-span-full py-32 text-center border border-dashed border-white/10 rounded-3xl px-6">
-                <p className="text-gray-400 uppercase font-black tracking-widest text-xs mb-3">No artifacts found in this sector.</p>
-                <p className="text-gray-500 text-sm mb-8">Nothing matches {search ? `"${search}"` : 'that filter'}. Try a different keyword or browse everything.</p>
-                <button
-                  onClick={() => { setSearch(''); setFilter('All'); }}
-                  className="px-6 py-3 min-h-[44px] rounded-full text-xs font-bold uppercase tracking-widest bg-[#24A2A7] text-black hover:brightness-110 transition-[filter,transform] active:scale-95"
-                >
-                  Show all projects
-                </button>
-              </div>
-            )}
+        {/* Spotlight — most recent / most senior work, full color */}
+        <section aria-label="Spotlight projects" className="mb-16">
+          <span className="text-[10px] font-black text-[#24A2A7] uppercase tracking-[0.5em] block mb-6">SPOTLIGHT</span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-8 duration-700">
+            {spotlight.map(p => renderCard(p, true))}
           </div>
-        )}
+        </section>
+
+        {/* Everything else, denser */}
+        <section aria-label="All projects">
+          <span className="text-[10px] font-black text-gray-500 uppercase tracking-[0.5em] block mb-6">THE FULL ARCHIVE</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 animate-in fade-in slide-in-from-bottom-8 duration-700">
+            {archive.map(p => renderCard(p))}
+          </div>
+        </section>
       </div>
     </div>
   );

@@ -273,9 +273,6 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent }) => {
                       style={{ objectPosition: project.imagePosition ?? 'center' }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] via-transparent to-transparent opacity-60" />
-                    <span className="absolute top-3 left-3 text-[10px] font-mono text-[#24A2A7] font-bold uppercase tracking-widest px-3 py-1 bg-black/80 rounded-full">
-                      {project.category}
-                    </span>
                   </div>
                 )}
                 <div className="p-5 md:p-6">
