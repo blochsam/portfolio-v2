@@ -319,6 +319,26 @@ const MichiganSpeechCaseStudy: React.FC = () => {
               The Spartanvitational turns ten in 2027. It doesn&rsquo;t need me anymore. That&rsquo;s the whole point.
             </p>
           </div>
+
+          {/* The awards-ceremony film */}
+          <figure data-reveal className="ms-reveal mt-12">
+            <div className="rounded-2xl overflow-hidden"
+              style={{ border: '1px solid rgba(42,38,32,0.15)', boxShadow: '0 12px 40px -18px rgba(42,38,32,0.3)', background: '#000' }}>
+              <iframe
+                src="https://www.youtube-nocookie.com/embed/ANkVF8trF0I"
+                title="Spartan Speech — the club film played at each year's awards ceremony"
+                className="w-full border-0"
+                style={{ aspectRatio: '16 / 9' }}
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+            <figcaption className="text-[12px] mt-3 tracking-wide font-mono" style={{ color: MUTED }}>
+              The club film I produced to close every awards ceremony — Spartan Speech, in its own voice.
+            </figcaption>
+          </figure>
+
           <div className="mt-10 grid md:grid-cols-2 gap-8">
             <PhotoSlot label="tournament day" caption="Spartanvitational — somewhere between round 2 and tab-room chaos." />
             <PhotoSlot label="the club" caption="Spartan Speech, 50+ members strong." />
