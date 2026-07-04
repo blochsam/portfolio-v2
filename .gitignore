@@ -26,6 +26,11 @@ favicon-1.ico
 # Spline scene file — downloaded at build time via `npm run prebuild`
 public/scene.splinecode
 
+# Local agent-skills tooling (installed via `npx skills add`)
+.agents/
+.claude/skills/
+skills-lock.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
