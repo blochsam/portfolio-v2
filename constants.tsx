@@ -34,7 +34,7 @@ export const CONTENT_MAP: Record<SplineObjectId, PortfolioContent> = {
       { title: 'Proactive, Not Reactive', desc: 'I’d rather move safety upstream than clean up downstream. Integrity gets designed in from day one.' },
     ],
     related: [
-      { label: 'YouTube & Google on my resume', href: '/resume' },
+      { label: 'Operations at Scale — the craft essay', href: '/projects/operations' },
     ],
     tags: ['Policy Enforcement', 'Program Management', 'SQL & Data Analysis']
   },

@@ -1727,6 +1727,8 @@ function generateOperationsCaseStudyPdf(baseUrl: string): string {
 
 function generateMichiganSpeechCaseStudyPdf(baseUrl: string): string {
   const origin = baseUrl.replace(/\/$/, '');
+  const img = (path: string, alt: string, caption: string) =>
+    `<div class="img-block"><img src="${origin}${path}" alt="${alt}"><p class="img-caption">${caption}</p></div>`;
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -1755,6 +1757,10 @@ function generateMichiganSpeechCaseStudyPdf(baseUrl: string): string {
     th { background: #f3f4f6; color: ${TEXT_DARK}; font-weight: 600; }
     td { color: ${TEXT_DARK}; }
     td strong { color: ${TEAL}; }
+    .img-block { margin: 1rem 0; }
+    .img-block img { width: 100%; height: auto; border: 1px solid #e5e7eb; border-radius: 0.5rem; }
+    .img-block img.portrait { width: auto; max-height: 420px; display: block; margin: 0 auto; }
+    .img-caption { font-size: 0.65rem; color: ${TEXT_MUTED}; margin-top: 0.25rem; }
     .footer { position: fixed; bottom: 0; left: 0; right: 0; padding: 0.75rem 1.5rem; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-between; font-size: 0.7rem; color: ${TEXT_MUTED}; background: #ffffff; }
     .footer a { color: ${TEAL}; text-decoration: none; }
     @media print { .doc { padding-bottom: 3rem; } }
@@ -1779,11 +1785,13 @@ function generateMichiganSpeechCaseStudyPdf(baseUrl: string): string {
     <section>
       <p class="section-label">Chapter I — The Competitor</p>
       <p>Storytelling was my event. Through the Michigan Interscholastic Forensic Association I became a two-time state champion, a four-time state finalist, and, for a while, a record-holder — plus three MSCI championships on Mackinac Island in four years. None of it happens without my coach, Doug "Bev" Bevier, the first person who made me believe a story could win a room.</p>
+      ${img('/case-study/michigan-speech/sam-and-bev.webp', 'Sam Bloch and coach Doug Bevier with trophies on Mackinac Island', 'Mackinac Island, 2013 — me and Bev, with the hardware to show for it.')}
     </section>
 
     <section>
       <p class="section-label">Chapter II — The Coach</p>
       <p>Through college and my early career I coached forensics at Okemos and my alma mater, Walled Lake Western — four and a half years of practices, tournaments, and helping teenagers find voices they didn't know they had. My students went further than I did: ten-plus state finalists, two state champions, and a national champion.</p>
+      ${img('/case-study/michigan-speech/wlw-team.webp', 'The Walled Lake Western Forensics team', 'Walled Lake Western Forensics — where I competed, then coached.')}
     </section>
 
     <section>
@@ -1796,11 +1804,14 @@ function generateMichiganSpeechCaseStudyPdf(baseUrl: string): string {
         <tr><td>February 22, 2020</td><td><strong>600+</strong></td><td>35+</td><td>Largest competitive public speaking competition in the state</td></tr>
       </table>
       <p>When COVID took the building, we ran a national tournament online. When I graduated, I handed the tournament to the next generation of Spartans. It turns ten in 2027. It doesn't need me anymore — that's the whole point.</p>
+      ${img('/case-study/michigan-speech/tournament-day.webp', 'A packed auditorium at the Spartanvitational', 'Tournament day — a full house of blazers, binders, and nerves.')}
+      ${img('/case-study/michigan-speech/spartan-speech-team.webp', 'The Spartan Speech club', 'Spartan Speech — the Spartans who made it happen.')}
     </section>
 
     <section>
       <p class="section-label">Chapter IV — The Steward</p>
       <p>Every May I'm back on Mackinac Island with Michigan Speech Coaches Inc. — eleven conferences and counting — tabulating tournaments, volunteer-coaching my alma mater, and most recently giving a professional development talk at the Grand Hotel on what AI can quietly take off a coach's plate. The kid this community built grew up and came back with tools.</p>
+      <div class="img-block"><img class="portrait" src="${origin}/case-study/michigan-speech/grand-hotel-talk.webp" alt="Sam Bloch and Brando Socarras presenting at the Grand Hotel"><p class="img-caption">The Grand Hotel, 2026 — teaching coaches to build with AI, alongside Brando Socarras.</p></div>
     </section>
 
     <section>
@@ -1813,7 +1824,13 @@ function generateMichiganSpeechCaseStudyPdf(baseUrl: string): string {
     <a href="${origin}">sam-bloch.com</a>
   </div>
   <script>
-    setTimeout(function(){ window.print(); }, 500);
+    (function() {
+      var imgs = Array.from(document.querySelectorAll('img'));
+      var loaded = 0;
+      function checkDone() { loaded++; if (loaded >= imgs.length) setTimeout(function(){ window.print(); }, 600); }
+      imgs.forEach(function(img) { if (img.complete) checkDone(); else img.onload = img.onerror = checkDone; });
+      if (imgs.length === 0) setTimeout(function(){ window.print(); }, 500);
+    })();
   </script>
 </body>
 </html>`;
