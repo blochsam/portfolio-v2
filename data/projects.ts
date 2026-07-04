@@ -15,7 +15,7 @@ export const PROJECTS: Project[] = [
     title: 'Operations at Scale',
     category: 'Operations',
     date: '2026',
-    description: 'Running Trust & Safety operations at YouTube: one quality standard across 10 global sites and 800+ moderators, calibration as a craft, and changing systems that can\'t stop running.',
+    description: 'Running Trust & Safety operations: one quality standard across 10 global sites and 800+ moderators, calibration as a craft, and changing systems that can\'t stop running.',
     tags: ['Trust & Safety', 'Quality Systems', 'Change Management', 'SQL'],
     image: '/case-study/operations/operations-card.webp'
   },
