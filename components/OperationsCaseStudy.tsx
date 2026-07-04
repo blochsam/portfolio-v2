@@ -261,9 +261,6 @@ const OperationsCaseStudy: React.FC = () => {
         <div className="relative flex-1 flex flex-col items-center justify-center text-center px-6 ops-grid">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_30%,_#0b0d10_100%)]" />
           <div className="relative z-10 max-w-4xl pt-28 pb-10 md:pt-32">
-            <p className="text-[13px] font-mono uppercase tracking-[0.3em] mb-6" style={{ color: `${AMBER}99` }}>
-              Operations Console · Access Level: Public
-            </p>
             <h1 className="text-5xl sm:text-6xl md:text-7xl font-black leading-[0.9] tracking-tight mb-10 text-white">
               Operations at Scale
             </h1>
@@ -271,8 +268,8 @@ const OperationsCaseStudy: React.FC = () => {
               The specifics of this work are confidential, and <span style={{ color: AMBER }}>keeping them that way is part of the job.</span>
             </p>
             <p className="text-base md:text-lg text-white/40 max-w-xl mx-auto leading-relaxed mt-8">
-              An essay on the craft of running very large operations — Trust &amp; Safety at YouTube (Google) —
-              told at the altitude discretion allows. The specifics stay inside. The thinking is mine to share.
+              An essay on the craft of running very large operations, told at the altitude discretion allows.
+              The specifics stay inside. The thinking is mine to share.
             </p>
           </div>
           <div data-reveal className="ops-reveal relative z-10 w-full pb-16">
