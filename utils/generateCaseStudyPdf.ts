@@ -1800,7 +1800,7 @@ function generateMichiganSpeechCaseStudyPdf(baseUrl: string): string {
 
     <section>
       <p class="section-label">Chapter IV — The Steward</p>
-      <p>Every May I'm back on Mackinac Island with Michigan Speech Coaches Inc. — eleven conferences and counting — tabulating tournaments, volunteer-coaching my alma mater (sixth place at states in Multiple), and most recently giving a professional development talk at the Grand Hotel on what AI can quietly take off a coach's plate. The kid this community built grew up and came back with tools.</p>
+      <p>Every May I'm back on Mackinac Island with Michigan Speech Coaches Inc. — eleven conferences and counting — tabulating tournaments, volunteer-coaching my alma mater, and most recently giving a professional development talk at the Grand Hotel on what AI can quietly take off a coach's plate. The kid this community built grew up and came back with tools.</p>
     </section>
 
     <section>

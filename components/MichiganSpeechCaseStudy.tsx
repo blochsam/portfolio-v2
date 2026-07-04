@@ -337,8 +337,8 @@ const MichiganSpeechCaseStudy: React.FC = () => {
             <p>
               Every May I&rsquo;m back on Mackinac Island with Michigan Speech Coaches Inc. — eleven conferences and
               counting. I spend the Saturday in the tabulation room keeping the tournament running, volunteer-coach
-              my alma mater when they&rsquo;ll have me (sixth place at states in Multiple, and yes, I&rsquo;m insufferably
-              proud), and eat my body weight in fudge, which I consider a membership obligation.
+              my alma mater when they&rsquo;ll have me, and eat my body weight in fudge, which I consider a
+              membership obligation.
             </p>
             <p>
               Lately, stewardship has started to look like my day job: at the most recent conference I gave a
@@ -346,9 +346,6 @@ const MichiganSpeechCaseStudy: React.FC = () => {
               building live on stage to show how approachable it&rsquo;s become. Not to hand anyone a finished product,
               but to put real capability in the hands of people who&rsquo;d never call themselves technical. The kid
               this community built grew up and came back with tools.
-            </p>
-            <p>
-              And if I ever move home to Michigan? I want a seat on that board.
             </p>
           </div>
           <div className="mt-10">
