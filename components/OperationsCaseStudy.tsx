@@ -301,9 +301,6 @@ const OperationsCaseStudy: React.FC = () => {
             </div>
           ))}
         </div>
-        <p className="text-center text-[11px] font-mono text-white/25 mt-8 max-w-lg mx-auto">
-          Every number on this page is already public on my resume. That is the rule this page is built on.
-        </p>
       </section>
 
       {/* ══ WHY OPS ══ */}
@@ -440,9 +437,9 @@ const OperationsCaseStudy: React.FC = () => {
           <div className="space-y-5 text-[17px] text-[#9a9a9f] leading-[1.8] text-left md:text-center">
             <p>
               Builders get to show the thing. Operators get to show the absence of disasters — which looks, from the
-              outside, like nothing. I've made peace with that trade, because the discipline it buys shows up everywhere
-              else I work: it's why Matinee shipped scoped instead of sprawling, why Level Up's course ran on
-              infrastructure that never made the syllabus, and why this page can be honest without being specific.
+              outside, like nothing. I've made peace with that trade. Quiet is what a healthy operation sounds like,
+              and building toward quiet — fewer surprises, fewer heroics, fewer 3 a.m. escalations — turns out to be
+              some of the most demanding design work there is.
             </p>
             <p>
               Discretion isn't a limitation on this portfolio. It's a qualification in it.

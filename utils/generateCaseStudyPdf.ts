@@ -1680,7 +1680,6 @@ function generateOperationsCaseStudyPdf(baseUrl: string): string {
       <div class="stat"><div class="stat-num">45%</div><div class="stat-label">Fewer processing errors (Legal Ops)</div></div>
       <div class="stat"><div class="stat-num">20%</div><div class="stat-label">Reporting efficiency gained</div></div>
     </div>
-    <p class="note">Every number in this document is already public on my resume. That is the rule this page is built on.</p>
 
     <section>
       <p class="section-label">Why Operations</p>
@@ -1709,7 +1708,7 @@ function generateOperationsCaseStudyPdf(baseUrl: string): string {
 
     <section>
       <p class="section-label">Reflection</p>
-      <p>Builders get to show the thing. Operators get to show the absence of disasters — which looks, from the outside, like nothing. I've made peace with that trade, because the discipline it buys shows up everywhere else I work. Discretion isn't a limitation on this portfolio. It's a qualification in it.</p>
+      <p>Builders get to show the thing. Operators get to show the absence of disasters — which looks, from the outside, like nothing. I've made peace with that trade. Quiet is what a healthy operation sounds like, and building toward quiet — fewer surprises, fewer heroics, fewer 3 a.m. escalations — turns out to be some of the most demanding design work there is. Discretion isn't a limitation on this portfolio. It's a qualification in it.</p>
     </section>
   </div>
   <div class="footer">
