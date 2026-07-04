@@ -2,6 +2,15 @@ import { Project } from '../types';
 
 export const PROJECTS: Project[] = [
   {
+    id: 'matinee',
+    title: 'Matinee',
+    category: 'Design',
+    date: '2026',
+    description: 'A cloud-connected e-ink display that turns my Letterboxd reviews into a movie poster for the wall. Custom PCB, ESP32, a cloud render pipeline, and the judgment to ship one source well.',
+    tags: ['PCB Design', 'ESP32', 'E-Ink', 'Next.js', 'Supabase'],
+    image: '/case-study/matinee/matinee-card.webp'
+  },
+  {
     id: 'space-utilization',
     title: 'Pacific Medical School Space Evaluation',
     category: 'Leadership',
@@ -134,6 +143,7 @@ export const FEATURED_PROJECT_IDS = ['portfolio', 'fudge', 'level-up'];
 /** Projects with a full immersive case study, in display order.
     Everything else renders as a non-clickable archive card. */
 export const CASE_STUDY_IDS = [
+  'matinee',
   'space-utilization',
   'portfolio',
   'dcade',
