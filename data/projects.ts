@@ -11,6 +11,15 @@ export const PROJECTS: Project[] = [
     image: '/case-study/matinee/matinee-card.webp'
   },
   {
+    id: 'operations',
+    title: 'Operations at Scale',
+    category: 'Operations',
+    date: '2026',
+    description: 'Trust & Safety and legal operations at YouTube (Google), told at the altitude confidentiality allows: quality frameworks, calibration, and changing systems that can\'t stop running.',
+    tags: ['Trust & Safety', 'Quality Systems', 'Change Management', 'SQL'],
+    image: '/case-study/operations/operations-card.webp'
+  },
+  {
     id: 'space-utilization',
     title: 'Pacific Medical School Space Evaluation',
     category: 'Leadership',
@@ -88,30 +97,6 @@ export const PROJECTS: Project[] = [
     image: '/case-study/smart-lockers/lockerblock.webp'
   },
   {
-    id: 'yt-quality-global',
-    title: 'YouTube Global Quality Framework',
-    category: 'Operations',
-    date: '2024',
-    description: 'Developed a comprehensive quality standard for child safety content moderation across 10 global sites, managing 800+ moderators.',
-    tags: ['Policy', 'Scale', 'YouTube']
-  },
-  {
-    id: 'google-legal-ops',
-    title: 'Legal Ops Workflow Automation',
-    category: 'AI',
-    date: '2023',
-    description: 'Designed and implemented an error management tool for legal operations that reduced internal processing errors by 45%.',
-    tags: ['Process Innovation', 'Google', 'Tooling']
-  },
-  {
-    id: 'yt-sql-dashboards',
-    title: 'Predictive SQL Performance Dashboards',
-    category: 'Operations',
-    date: '2024',
-    description: 'Built custom SQL dashboards to visualize vendor performance bottlenecks, improving reporting efficiency by 20%.',
-    tags: ['Data Analysis', 'SQL', 'Metrics']
-  },
-  {
     id: 'cube-ux-lead',
     title: 'the CUBE Publishing UX',
     category: 'Design',
@@ -126,14 +111,6 @@ export const PROJECTS: Project[] = [
     date: '2019',
     description: 'Founded and scaled the largest competitive speech tournament infrastructure in Michigan.',
     tags: ['Community', 'Org Design', 'Leadership']
-  },
-  {
-    id: 'ai-safety-upstream',
-    title: 'Upstream AI Safety Protocols',
-    category: 'AI',
-    date: '2024',
-    description: 'Integrating GenAI into moderation pipelines to move safety checks earlier in the product lifecycle.',
-    tags: ['GenAI', 'Trust & Safety', 'Strategy']
   }
 ];
 
@@ -144,6 +121,7 @@ export const FEATURED_PROJECT_IDS = ['portfolio', 'fudge', 'level-up'];
     Everything else renders as a non-clickable archive card. */
 export const CASE_STUDY_IDS = [
   'matinee',
+  'operations',
   'space-utilization',
   'portfolio',
   'dcade',

@@ -42,11 +42,11 @@ describe('ProjectsPage', () => {
     const user = userEvent.setup();
     render(<ProjectsPage />);
 
-    // Click on "AI" filter (less ambiguous than "Operations")
-    await user.click(screen.getByRole('button', { name: /Filter by AI/i }));
+    // Click on "Leadership" filter
+    await user.click(screen.getByRole('button', { name: /Filter by Leadership/i }));
 
-    // AI category project should be visible
-    expect(screen.getByText('Legal Ops Workflow Automation')).toBeInTheDocument();
+    // Leadership category project should be visible
+    expect(screen.getByText('Michigan Speech Coaches Platform')).toBeInTheDocument();
     // But pure Design projects should not
     expect(screen.queryByText('Augmented Reality Detroit Zoo App')).not.toBeInTheDocument();
   });

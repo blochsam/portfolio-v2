@@ -41,6 +41,9 @@ export function generateCaseStudyPdfHtml(projectId: string, baseUrl: string): st
   if (projectId === 'matinee') {
     return generateMatineeCaseStudyPdf(baseUrl);
   }
+  if (projectId === 'operations') {
+    return generateOperationsCaseStudyPdf(baseUrl);
+  }
   return generateUnderConstructionPdf(baseUrl);
 }
 
@@ -1619,6 +1622,102 @@ function generateMatineeCaseStudyPdf(baseUrl: string): string {
       imgs.forEach(function(img) { if (img.complete) checkDone(); else img.onload = img.onerror = checkDone; });
       if (imgs.length === 0) setTimeout(function(){ window.print(); }, 500);
     })();
+  </script>
+</body>
+</html>`;
+}
+
+function generateOperationsCaseStudyPdf(baseUrl: string): string {
+  const origin = baseUrl.replace(/\/$/, '');
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Operations at Scale — Sam Bloch</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: #ffffff; color: ${TEXT_DARK}; line-height: 1.6; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .doc { max-width: 700px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+    .header { border-bottom: 2px solid ${TEAL}; padding-bottom: 1rem; margin-bottom: 2rem; }
+    .logo span:first-child { color: ${TEXT_DARK}; font-weight: 800; font-size: 1.75rem; letter-spacing: -1px; }
+    .logo span:last-child { color: ${TEAL}; font-weight: 800; font-size: 1.75rem; letter-spacing: -1px; }
+    .meta { color: ${TEAL}; font-size: 0.75rem; margin-top: 0.5rem; }
+    h1 { font-size: 1.5rem; font-weight: 700; margin: 1rem 0 0.5rem; color: ${TEXT_DARK}; }
+    .subtitle { color: ${TEXT_MUTED}; font-size: 0.9rem; }
+    section { margin-bottom: 2rem; page-break-inside: avoid; }
+    .section-label { color: ${TEAL}; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; margin-bottom: 0.5rem; text-transform: uppercase; }
+    h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: ${TEXT_DARK}; }
+    p { color: ${TEXT_DARK}; font-size: 0.9rem; margin-bottom: 1rem; }
+    .statement { font-size: 1.05rem; font-weight: 700; color: ${TEXT_DARK}; border-left: 3px solid ${TEAL}; padding-left: 1rem; margin: 1rem 0 1.5rem; }
+    .stats { display: flex; gap: 1.5rem; margin: 1rem 0; flex-wrap: wrap; }
+    .stat { text-align: center; }
+    .stat-num { font-size: 1.5rem; font-weight: 700; color: ${TEAL}; }
+    .stat-label { font-size: 0.7rem; color: ${TEXT_MUTED}; }
+    .note { font-size: 0.75rem; color: ${TEXT_MUTED}; font-style: italic; }
+    .footer { position: fixed; bottom: 0; left: 0; right: 0; padding: 0.75rem 1.5rem; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-between; font-size: 0.7rem; color: ${TEXT_MUTED}; background: #ffffff; }
+    .footer a { color: ${TEAL}; text-decoration: none; }
+    @media print { .doc { padding-bottom: 3rem; } }
+  </style>
+</head>
+<body>
+  <div class="doc">
+    <header class="header">
+      <div class="logo"><span>SAM</span> <span>BLOCH</span></div>
+      <p class="meta">Operations at Scale · Trust &amp; Safety · YouTube (Google)</p>
+      <h1>Operations at Scale</h1>
+      <p class="subtitle">An essay on the craft of running very large operations, told at the altitude discretion allows.</p>
+    </header>
+
+    <section>
+      <p class="statement">The specifics of this work are confidential, and keeping them that way is part of the job.</p>
+      <p>This is an essay about operations craft: quality frameworks, calibration, metric design, and changing systems that can't stop running. The specifics stay inside. The thinking is mine to share.</p>
+    </section>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-num">10</div><div class="stat-label">Global sites, one standard</div></div>
+      <div class="stat"><div class="stat-num">800+</div><div class="stat-label">Moderators in scope</div></div>
+      <div class="stat"><div class="stat-num">45%</div><div class="stat-label">Fewer processing errors (Legal Ops)</div></div>
+      <div class="stat"><div class="stat-num">20%</div><div class="stat-label">Reporting efficiency gained</div></div>
+    </div>
+    <p class="note">Every number in this document is already public on my resume. That is the rule this page is built on.</p>
+
+    <section>
+      <p class="section-label">Why Operations</p>
+      <p>I landed in operations sideways, then discovered it's where my favorite kind of problem lives: systems design with people inside it. An operation is hundreds of humans across ten sites, a policy that keeps evolving, and a queue that never sleeps — and it still has to produce one consistent, defensible answer, every time. When it's done well, nobody notices, which is exactly the point.</p>
+    </section>
+
+    <section>
+      <p class="section-label">The Craft · 01 — Human Tools</p>
+      <p>Most operational tooling is designed around the process and inflicted on the humans. I work the other way: watch where people actually stumble, then design the tool around the stumble. The clearest proof I can share: I rebuilt an error-management workflow for legal operations, and internal processing errors fell 45%. The insight wasn't a clever algorithm — it was refusing to blame people for a process that made errors easy.</p>
+    </section>
+
+    <section>
+      <p class="section-label">The Craft · 02 — Calibration</p>
+      <p>A standard is not what's written in the document. It's what hundreds of different people, in different countries, actually do with the document at 3 a.m. their time. Those two things drift apart the moment the ink dries. Calibration is the discipline of pulling them back together, continuously, without ever being in the room. (The web version of this page includes an interactive exercise that lets you feel that drift in thirty seconds.)</p>
+    </section>
+
+    <section>
+      <p class="section-label">The Craft · 03 — Metrics</p>
+      <p>Metrics are steering wheels, not report cards. Designing a quality metric is designing behavior. I build the instruments too: custom SQL dashboards that surface where performance actually bottlenecks — one rebuild improved reporting efficiency by 20%, which in an operation means decisions land a day earlier, every day.</p>
+    </section>
+
+    <section>
+      <p class="section-label">The Craft · 04 — Change</p>
+      <p>The queue doesn't pause for your rollout. Every improvement ships into a system already running at full speed, so change becomes a craft of sequencing: pilot small, calibrate the pilots, scale what survives contact with reality. Across ten sites, a change isn't one change; it's ten local changes wearing one name. The newest chapter is moving safety upstream — integrating generative AI into moderation pipelines so problems get caught earlier instead of cleaned up after the fact.</p>
+    </section>
+
+    <section>
+      <p class="section-label">Reflection</p>
+      <p>Builders get to show the thing. Operators get to show the absence of disasters — which looks, from the outside, like nothing. I've made peace with that trade, because the discipline it buys shows up everywhere else I work. Discretion isn't a limitation on this portfolio. It's a qualification in it.</p>
+    </section>
+  </div>
+  <div class="footer">
+    <span>Operations at Scale · Sam Bloch</span>
+    <a href="${origin}">sam-bloch.com</a>
+  </div>
+  <script>
+    setTimeout(function(){ window.print(); }, 500);
   </script>
 </body>
 </html>`;
