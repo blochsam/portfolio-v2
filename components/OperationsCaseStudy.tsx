@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, RotateCcw } from 'lucide-react';
 import { useScrollReveal, CountUp } from './CaseStudyShared';
 
-/* Operations theme — "mission control" status green, calmer than Matinee's signal green */
-const GREEN = '#4cc38a';
+/* Operations theme — mission-control console amber */
+const AMBER = '#e8a33d';
 
 /* ─── Scroll progress bar ─── */
 const ScrollProgress: React.FC = () => {
@@ -26,47 +26,73 @@ const ScrollProgress: React.FC = () => {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
-  return <div ref={barRef} className="fixed top-0 left-0 h-[3px] z-[70]" style={{ width: '0%', background: GREEN }} />;
+  return <div ref={barRef} className="fixed top-0 left-0 h-[3px] z-[70]" style={{ width: '0%', background: AMBER }} />;
 };
 
 /* ─── Overline ─── */
 const Overline: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <p data-reveal className="ops-reveal text-[13px] font-semibold uppercase tracking-[0.2em] mb-6 font-mono" style={{ color: GREEN }}>
+  <p data-reveal className="ops-reveal text-[13px] font-semibold uppercase tracking-[0.2em] mb-6 font-mono" style={{ color: AMBER }}>
     {children}
   </p>
 );
 
 /* ════════════════════════════════════════════════════════════════════════
-   SITE CLOCKS — decorative strip of ten unnamed sites.
+   THE CLOCK WALL — ten analog clocks, newsroom style, for ten unnamed sites.
    Deliberately fictional: no city names, and the offsets are arbitrary
    minute values that do not map to real time zones. "10 global sites" is
-   public; which ten is not, and this strip must never imply otherwise.
+   public; which ten is not, and this wall must never imply otherwise.
+   Every clock shows a different time — but the second hands sweep in
+   perfect sync. Ten sites, one standard.
    ════════════════════════════════════════════════════════════════════════ */
 const FAKE_OFFSETS_MIN = [173, -412, 641, -88, 322, -257, 509, 47, -531, 218];
 
-const SiteClocks: React.FC = () => {
+const ClockFace: React.FC<{ now: number; offsetMin: number; label: string }> = ({ now, offsetMin, label }) => {
+  const d = new Date(now + offsetMin * 60_000);
+  const h = d.getHours() % 12, m = d.getMinutes(), s = d.getSeconds();
+  const hourDeg = h * 30 + m * 0.5;
+  const minDeg = m * 6 + s * 0.1;
+  const secDeg = s * 6;
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <svg viewBox="0 0 100 100" className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20" aria-hidden="true">
+        <circle cx="50" cy="50" r="46" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.14)" strokeWidth="2" />
+        {Array.from({ length: 12 }, (_, i) => {
+          const a = (i * 30 * Math.PI) / 180;
+          const r1 = i % 3 === 0 ? 38 : 41;
+          return (
+            <line key={i}
+              x1={50 + r1 * Math.sin(a)} y1={50 - r1 * Math.cos(a)}
+              x2={50 + 44 * Math.sin(a)} y2={50 - 44 * Math.cos(a)}
+              stroke={i % 3 === 0 ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.15)'} strokeWidth={i % 3 === 0 ? 2.5 : 1.5} />
+          );
+        })}
+        <line x1="50" y1="50" x2="50" y2="27" stroke="rgba(255,255,255,0.85)" strokeWidth="4" strokeLinecap="round" transform={`rotate(${hourDeg} 50 50)`} />
+        <line x1="50" y1="50" x2="50" y2="16" stroke="rgba(255,255,255,0.55)" strokeWidth="2.5" strokeLinecap="round" transform={`rotate(${minDeg} 50 50)`} />
+        <line x1="50" y1="56" x2="50" y2="12" stroke={AMBER} strokeWidth="1.5" strokeLinecap="round" transform={`rotate(${secDeg} 50 50)`} />
+        <circle cx="50" cy="50" r="3" fill={AMBER} />
+      </svg>
+      <div className="font-mono text-[9px] md:text-[10px] tracking-[0.15em] text-white/35 whitespace-nowrap">{label}</div>
+    </div>
+  );
+};
+
+const ClockWall: React.FC = () => {
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const id = setInterval(() => setNow(Date.now()), 10_000);
+    const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
   }, []);
-  const fmt = (offsetMin: number) => {
-    const d = new Date(now + offsetMin * 60_000);
-    return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
-  };
   return (
-    <div aria-hidden="true" className="w-full overflow-x-auto no-scrollbar border-b border-white/[0.05]">
-      <div className="flex gap-6 md:gap-8 px-6 py-3 min-w-max mx-auto justify-center">
+    <div aria-hidden="true" className="w-full max-w-4xl mx-auto">
+      <div className="grid grid-cols-5 gap-x-3 gap-y-6 md:gap-x-8 md:gap-y-8 px-4">
         {FAKE_OFFSETS_MIN.map((off, i) => (
-          <div key={i} className="flex items-center gap-2 font-mono text-[10px] tracking-[0.15em] text-white/30 whitespace-nowrap">
-            <span>SITE {String(i + 1).padStart(2, '0')}</span>
-            <span className="text-white/50 tabular-nums">{fmt(off)}</span>
-            <span className="w-1.5 h-1.5 rounded-full" style={{ background: GREEN, boxShadow: `0 0 6px ${GREEN}66` }} />
-            <span style={{ color: `${GREEN}99` }}>NOMINAL</span>
-          </div>
+          <ClockFace key={i} now={now} offsetMin={off} label={`SITE ${String(i + 1).padStart(2, '0')}`} />
         ))}
       </div>
+      <p className="text-center font-mono text-[10px] md:text-[11px] tracking-[0.2em] uppercase text-white/25 mt-8">
+        Ten local times · <span style={{ color: `${AMBER}b3` }}>one second hand</span>
+      </p>
     </div>
   );
 };
@@ -107,7 +133,7 @@ const CalibrationExercise: React.FC = () => {
     <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 md:p-10">
       {/* The rubric */}
       <div className="mb-8">
-        <p className="font-mono text-[11px] uppercase tracking-[0.2em] mb-3" style={{ color: GREEN }}>Rating Rubric v1.0</p>
+        <p className="font-mono text-[11px] uppercase tracking-[0.2em] mb-3" style={{ color: AMBER }}>Rating Rubric v1.0</p>
         <p className="text-white font-bold mb-3">Rate each swatch: how blue is it? (1 = not blue, 5 = fully blue)</p>
         <ol className="space-y-1 text-[15px] text-[#9a9a9f] font-mono list-decimal list-inside">
           <li>Blue means blue-blue: sky, cobalt, navy.</li>
@@ -131,7 +157,7 @@ const CalibrationExercise: React.FC = () => {
                     disabled={revealed}
                     className="w-9 h-9 rounded-lg font-mono text-sm font-bold border transition-colors disabled:cursor-default"
                     style={ratings[i] === n
-                      ? { background: GREEN, color: '#0b0d10', borderColor: GREEN }
+                      ? { background: AMBER, color: '#0b0d10', borderColor: AMBER }
                       : { background: 'transparent', color: 'rgba(255,255,255,0.45)', borderColor: 'rgba(255,255,255,0.12)' }}
                     aria-pressed={ratings[i] === n}
                   >
@@ -141,7 +167,7 @@ const CalibrationExercise: React.FC = () => {
               </div>
               {revealed && (
                 <p className="text-[12px] text-[#9a9a9f] mt-2 font-mono">
-                  <span style={{ color: GREEN }}>Standard: {SWATCHES[i].standard}</span>
+                  <span style={{ color: AMBER }}>Standard: {SWATCHES[i].standard}</span>
                   {ratings[i] !== SWATCHES[i].standard && <span className="text-amber-400/80"> · you said {ratings[i]}</span>}
                   {' — '}{s.note}
                 </p>
@@ -157,7 +183,7 @@ const CalibrationExercise: React.FC = () => {
           onClick={() => complete && setRevealed(true)}
           disabled={!complete}
           className="px-7 py-4 rounded-full font-mono text-[12px] font-bold uppercase tracking-[0.2em] transition-transform active:scale-95 disabled:opacity-40"
-          style={{ background: GREEN, color: '#0b0d10' }}
+          style={{ background: AMBER, color: '#0b0d10' }}
         >
           {complete ? 'Compare to the standard' : 'Rate all four to continue'}
         </button>
@@ -202,7 +228,7 @@ const OperationsCaseStudy: React.FC = () => {
         [data-reveal].revealed { opacity: 1; transform: none; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { scrollbar-width: none; }
-        .ops-grid { background-image: linear-gradient(rgba(76,195,138,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(76,195,138,.04) 1px, transparent 1px); background-size: 40px 40px; }
+        .ops-grid { background-image: linear-gradient(rgba(232,163,61,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(232,163,61,.04) 1px, transparent 1px); background-size: 40px 40px; }
         @media (prefers-reduced-motion: reduce) {
           [data-reveal] { transition: none !important; opacity: 1; transform: none; }
         }
@@ -229,29 +255,29 @@ const OperationsCaseStudy: React.FC = () => {
 
       {/* ══ HERO ══ */}
       <header className="relative min-h-screen flex flex-col overflow-hidden">
-        <div className="pt-28 md:pt-24">
-          <SiteClocks />
-        </div>
         <div className="relative flex-1 flex flex-col items-center justify-center text-center px-6 ops-grid">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_30%,_#0b0d10_100%)]" />
-          <div className="relative z-10 max-w-4xl py-16">
-            <p className="text-[13px] font-mono uppercase tracking-[0.3em] mb-6" style={{ color: `${GREEN}99` }}>
+          <div className="relative z-10 max-w-4xl pt-28 pb-10 md:pt-32">
+            <p className="text-[13px] font-mono uppercase tracking-[0.3em] mb-6" style={{ color: `${AMBER}99` }}>
               Operations Console · Access Level: Public
             </p>
             <h1 className="text-5xl sm:text-6xl md:text-7xl font-black leading-[0.9] tracking-tight mb-10 text-white">
               Operations at Scale
             </h1>
             <p className="text-2xl md:text-4xl font-bold leading-snug tracking-tight max-w-3xl mx-auto text-white/90">
-              The specifics of this work are confidential, and <span style={{ color: GREEN }}>keeping them that way is part of the job.</span>
+              The specifics of this work are confidential, and <span style={{ color: AMBER }}>keeping them that way is part of the job.</span>
             </p>
             <p className="text-base md:text-lg text-white/40 max-w-xl mx-auto leading-relaxed mt-8">
               An essay on the craft of running very large operations — Trust &amp; Safety at YouTube (Google) —
               told at the altitude discretion allows. The specifics stay inside. The thinking is mine to share.
             </p>
           </div>
+          <div data-reveal className="ops-reveal relative z-10 w-full pb-16">
+            <ClockWall />
+          </div>
         </div>
         <div className="pb-12 flex justify-center">
-          <div className="w-[1px] h-16 bg-gradient-to-b from-transparent to-transparent" style={{ backgroundImage: `linear-gradient(to bottom, transparent, ${GREEN}4d, transparent)` }} />
+          <div className="w-[1px] h-16 bg-gradient-to-b from-transparent to-transparent" style={{ backgroundImage: `linear-gradient(to bottom, transparent, ${AMBER}4d, transparent)` }} />
         </div>
       </header>
 
@@ -265,7 +291,7 @@ const OperationsCaseStudy: React.FC = () => {
             { end: 20, suffix: '%', label: 'Reporting efficiency gained' },
           ].map((s, i) => (
             <div key={s.label} data-reveal className="ops-reveal" style={{ transitionDelay: `${i * 100}ms` }}>
-              <p className="text-4xl md:text-5xl font-mono font-bold tabular-nums" style={{ color: GREEN }}>
+              <p className="text-4xl md:text-5xl font-mono font-bold tabular-nums" style={{ color: AMBER }}>
                 <CountUp end={s.end} suffix={s.suffix} />
               </p>
               <p className="text-[12px] font-mono text-[#8a8a8f] uppercase tracking-wider mt-3 leading-snug">{s.label}</p>
@@ -316,7 +342,7 @@ const OperationsCaseStudy: React.FC = () => {
             </p>
             <p>
               The clearest proof I can share: I rebuilt an error-management workflow for legal operations, and internal
-              processing errors fell <span className="font-bold" style={{ color: GREEN }}>45%</span>. The insight wasn't
+              processing errors fell <span className="font-bold" style={{ color: AMBER }}>45%</span>. The insight wasn't
               a clever algorithm. It was sitting with how errors actually happened and refusing to blame the people for
               a process that made errors easy.
             </p>
@@ -368,7 +394,7 @@ const OperationsCaseStudy: React.FC = () => {
             <p>
               I build the instruments too: custom SQL dashboards that surface where performance actually bottlenecks,
               built to answer questions instead of decorating slides. One rebuild improved reporting efficiency by{' '}
-              <span className="font-bold" style={{ color: GREEN }}>20%</span> — which, in an operation, means decisions
+              <span className="font-bold" style={{ color: AMBER }}>20%</span> — which, in an operation, means decisions
               land a day earlier, every day, forever.
             </p>
           </div>
@@ -421,11 +447,11 @@ const OperationsCaseStudy: React.FC = () => {
           </div>
           <div className="mt-12 grid grid-cols-2 gap-x-8 gap-y-4 max-w-xl mx-auto">
             <div data-reveal className="ops-reveal">
-              <h4 className="text-[12px] font-mono font-bold uppercase tracking-widest mb-3" style={{ color: GREEN }}>Instruments</h4>
+              <h4 className="text-[12px] font-mono font-bold uppercase tracking-widest mb-3" style={{ color: AMBER }}>Instruments</h4>
               <ul className="space-y-2 text-left">
                 {['Quality Frameworks', 'Calibration & Consistency', 'Metric Design', 'SQL & Dashboards', 'Process Design', 'GenAI in Workflows'].map((s, i) => (
                   <li key={s} data-reveal className="ops-reveal text-[13px] text-[#9a9a9f] flex items-center gap-2" style={{ transitionDelay: `${i * 50}ms` }}>
-                    <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: GREEN }} />{s}
+                    <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: AMBER }} />{s}
                   </li>
                 ))}
               </ul>
@@ -446,7 +472,7 @@ const OperationsCaseStudy: React.FC = () => {
 
       {/* ══ CONTACT CTA ══ */}
       <section className="py-16 md:py-24 text-center border-t border-white/5">
-        <span className="text-[10px] font-black uppercase tracking-[0.5em] block mb-4" style={{ color: GREEN }}>GET IN TOUCH</span>
+        <span className="text-[10px] font-black uppercase tracking-[0.5em] block mb-4" style={{ color: AMBER }}>GET IN TOUCH</span>
         <h2 className="text-3xl md:text-5xl font-black tracking-tighter mb-6">Want to talk shop?</h2>
         <p className="text-[#9a9a9f] text-[17px] leading-[1.8] max-w-lg mx-auto mb-10">
           I can't tell you the specifics. I can absolutely talk craft — quality systems, calibration,
@@ -455,7 +481,7 @@ const OperationsCaseStudy: React.FC = () => {
         <button
           onClick={() => { window.location.href = `mailto:sam@sam-bloch.com`; }}
           className="group px-10 py-5 font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:brightness-110 transition-[filter,transform] shadow-xl active:scale-95 inline-flex items-center gap-3"
-          style={{ background: GREEN, color: '#0b0d10' }}
+          style={{ background: AMBER, color: '#0b0d10' }}
         >
           Let's Connect
           <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
