@@ -38,6 +38,9 @@ export function generateCaseStudyPdfHtml(projectId: string, baseUrl: string): st
   if (projectId === 'space-utilization') {
     return generateSpaceUtilizationCaseStudyPdf(baseUrl);
   }
+  if (projectId === 'matinee') {
+    return generateMatineeCaseStudyPdf(baseUrl);
+  }
   return generateUnderConstructionPdf(baseUrl);
 }
 
@@ -1487,6 +1490,127 @@ function generateFudgeCaseStudyPdf(baseUrl: string): string {
     <a href="mailto:sam@sam-bloch.com">sam@sam-bloch.com</a>
   </div>
 
+  <script>
+    (function() {
+      var imgs = Array.from(document.querySelectorAll('img'));
+      var loaded = 0;
+      function checkDone() { loaded++; if (loaded >= imgs.length) setTimeout(function(){ window.print(); }, 600); }
+      imgs.forEach(function(img) { if (img.complete) checkDone(); else img.onload = img.onerror = checkDone; });
+      if (imgs.length === 0) setTimeout(function(){ window.print(); }, 500);
+    })();
+  </script>
+</body>
+</html>`;
+}
+
+function generateMatineeCaseStudyPdf(baseUrl: string): string {
+  const origin = baseUrl.replace(/\/$/, '');
+  const img = (path: string, alt: string, caption: string) =>
+    `<div class="img-block"><img src="${origin}${path}" alt="${alt}"><p class="img-caption">${caption}</p></div>`;
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Matinee — Sam Bloch</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: #ffffff; color: ${TEXT_DARK}; line-height: 1.6; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .doc { max-width: 700px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+    .header { border-bottom: 2px solid ${TEAL}; padding-bottom: 1rem; margin-bottom: 2rem; }
+    .logo span:first-child { color: ${TEXT_DARK}; font-weight: 800; font-size: 1.75rem; letter-spacing: -1px; }
+    .logo span:last-child { color: ${TEAL}; font-weight: 800; font-size: 1.75rem; letter-spacing: -1px; }
+    .meta { color: ${TEAL}; font-size: 0.75rem; margin-top: 0.5rem; }
+    h1 { font-size: 1.5rem; font-weight: 700; margin: 1rem 0 0.5rem; color: ${TEXT_DARK}; }
+    .subtitle { color: ${TEXT_MUTED}; font-size: 0.9rem; }
+    section { margin-bottom: 2rem; page-break-inside: avoid; }
+    .section-label { color: ${TEAL}; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; margin-bottom: 0.5rem; text-transform: uppercase; }
+    h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: ${TEXT_DARK}; }
+    p { color: ${TEXT_DARK}; font-size: 0.9rem; margin-bottom: 1rem; }
+    .stats { display: flex; gap: 1.5rem; margin: 1rem 0; flex-wrap: wrap; }
+    .stat { text-align: center; }
+    .stat-num { font-size: 1.5rem; font-weight: 700; color: ${TEAL}; }
+    .stat-label { font-size: 0.7rem; color: ${TEXT_MUTED}; }
+    .img-block { margin: 1rem 0; }
+    .img-block img { width: 100%; height: auto; border: 1px solid #e5e7eb; border-radius: 0.5rem; }
+    .img-caption { font-size: 0.65rem; color: ${TEXT_MUTED}; margin-top: 0.25rem; }
+    .app-shots { display: flex; gap: 1rem; justify-content: center; margin: 1rem 0; }
+    .app-shots > div { flex: 0 1 auto; text-align: center; }
+    .app-shots img { max-height: 440px; width: auto; border: 1px solid #e5e7eb; border-radius: 0.5rem; }
+    .chips { color: ${TEXT_MUTED}; font-size: 0.85rem; }
+    .footer { position: fixed; bottom: 0; left: 0; right: 0; padding: 0.75rem 1.5rem; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-between; font-size: 0.7rem; color: ${TEXT_MUTED}; background: #ffffff; }
+    .footer a { color: ${TEAL}; text-decoration: none; }
+    @media print { .doc { padding-bottom: 3rem; } }
+  </style>
+</head>
+<body>
+  <div class="doc">
+    <header class="header">
+      <div class="logo"><span>SAM</span> <span>BLOCH</span></div>
+      <p class="meta">A cloud-connected e-ink display · matinee.ink · 2026</p>
+      <h1>Matinee</h1>
+      <p class="subtitle">A movie review that hangs on your wall — hardware, cloud, and product judgment.</p>
+    </header>
+
+    <section>
+      <p>Matinee is a cloud-connected e-ink display that turns my Letterboxd reviews into a physical object. It pulls what I've watched and rated, renders the whole frame in the cloud, and paints it onto a 13.3&Prime; six-color e-ink panel that sips power and holds its image with the power off — a movie poster that changes its mind once a day.</p>
+      ${img('/case-study/matinee/hero.webp', 'Matinee framed on a wall showing a Forrest Gump review', 'Matinee on the wall — a five-star Forrest Gump review, rendered to e-ink.')}
+    </section>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-num">200</div><div class="stat-label">Unit Kickstarter run</div></div>
+      <div class="stat"><div class="stat-num">$114</div><div class="stat-label">BOM per unit</div></div>
+      <div class="stat"><div class="stat-num">6</div><div class="stat-label">Colors of e-ink</div></div>
+      <div class="stat"><div class="stat-num">1</div><div class="stat-label">Source, done right</div></div>
+    </div>
+
+    <section>
+      <p class="section-label">The Idea</p>
+      <p>I've logged hundreds of films on Letterboxd — ratings, one-liners, the occasional review I'm proud of — and all of it lives in an app I open, scroll, and forget. So I built the room a screen. Matinee turns my latest entry into an object that just sits on the wall, being true. It's the opposite of a notification.</p>
+    </section>
+
+    <section>
+      <p class="section-label">The Object</p>
+      <p>The hardware does almost nothing on purpose. An ESP32 wakes up, asks the cloud "is there a new picture?", paints it if so, and goes back to sleep. Every hard problem — fetching, layout, fitting a poster into six colors — happens on a server I can fix in seconds, not on 200 boards I'd have to physically recall.</p>
+      ${img('/case-study/matinee/object-detail.webp', 'Close-up of the Matinee e-ink panel', 'The 13.3&Prime; Spectra 6 panel up close — six colors, no backlight, no glow.')}
+    </section>
+
+    <section>
+      <p class="section-label">The Board</p>
+      <p>I designed the PCB to be almost boring, and that was the goal: one ESP32-S3, a regulator, a USB-C port, two buttons, a ribbon to the panel. Two layers. Under a dollar to assemble. The less on the board, the less that can fail across a 200-unit run.</p>
+      ${img('/case-study/matinee/pcb-bom.png', 'Matinee bill of materials', 'The whole BOM fits on one page — ~$114 per unit at 200 qty.')}
+    </section>
+
+    <section>
+      <p class="section-label">The Pipeline</p>
+      <p>Letterboxd RSS → a Vercel Python function renders the frame with PIL → a 1600×1200 PNG lands in Supabase Storage → the ESP32 polls via ETag (only downloading if it actually changed) → the panel repaints. That ETag trick is the difference between a wall ornament and a power bill.</p>
+    </section>
+
+    <section>
+      <p class="section-label">The Companion</p>
+      <p>The wall is the output; the app is the control room. Pairing, what's on the wall, and the whole review feed live in a Next.js PWA I run off my phone — including my house critic, Spike.</p>
+      <div class="app-shots">
+        <div><img src="${origin}/case-study/matinee/app-home.webp" alt="Matinee app home screen"><p class="img-caption">Now Displaying — the wall's status and Spike.</p></div>
+        <div><img src="${origin}/case-study/matinee/app-feed.webp" alt="Matinee app review feed"><p class="img-caption">The feed the wall pulls from.</p></div>
+      </div>
+    </section>
+
+    <section>
+      <p class="section-label">The Hard Part</p>
+      <h2>I designed it for everything. I shipped it for one thing.</h2>
+      <p>The original spec was greedy — Letterboxd plus Untappd, concerts, books, sources as plug-ins. Then I ran the honest math on a 200-unit Kickstarter and made the call I'd make again: one source, flawless, beats five, flaky. So I cut to Letterboxd only — the one I actually use every day.</p>
+      <p class="chips"><strong>Designed for, deliberately not shipped:</strong> Untappd · Concert Archives · Belli · Books.</p>
+    </section>
+
+    <section>
+      <p class="section-label">Reflection</p>
+      <p>Software forgives you; hardware doesn't — every choice gets soldered into 200 copies you can't take back. That pressure made me a better editor of my own ideas. The scope cut, the dumb-hardware bet, the boring two-layer board: all of it was designing for the version that ships and survives, not the version that demos.</p>
+    </section>
+  </div>
+  <div class="footer">
+    <span>Matinee · Sam Bloch</span>
+    <a href="${origin}">sam-bloch.com</a>
+  </div>
   <script>
     (function() {
       var imgs = Array.from(document.querySelectorAll('img'));

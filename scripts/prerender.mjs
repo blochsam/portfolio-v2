@@ -30,6 +30,7 @@ const ROUTES = [
   '/projects/dcade',
   '/projects/smart-lockers',
   '/projects/space-utilization',
+  '/projects/matinee',
 ];
 
 /**

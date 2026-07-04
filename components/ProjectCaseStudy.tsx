@@ -14,8 +14,10 @@ const SmartLockersCaseStudy = lazy(() => import('./SmartLockersCaseStudy'));
 const FudgeCaseStudy = lazy(() => import('./FudgeCaseStudy'));
 const LevelUpCaseStudy = lazy(() => import('./LevelUpCaseStudy'));
 const SpaceUtilizationCaseStudy = lazy(() => import('./SpaceUtilizationCaseStudy'));
+const MatineeCaseStudy = lazy(() => import('./MatineeCaseStudy'));
 
 const CASE_STUDY_COMPONENTS: Record<string, React.LazyExoticComponent<React.FC>> = {
+  'matinee': MatineeCaseStudy,
   'uc-calnat': CalNatCaseStudy,
   'portfolio': PortfolioCaseStudy,
   'dcade': DcadeCaseStudy,
