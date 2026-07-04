@@ -46,7 +46,7 @@ describe('ProjectsPage', () => {
     await user.click(screen.getByRole('button', { name: /Filter by Leadership/i }));
 
     // Leadership category project should be visible
-    expect(screen.getByText('Michigan Speech Coaches Platform')).toBeInTheDocument();
+    expect(screen.getByText('Michigan Speech')).toBeInTheDocument();
     // But pure Design projects should not
     expect(screen.queryByText('Augmented Reality Detroit Zoo App')).not.toBeInTheDocument();
   });

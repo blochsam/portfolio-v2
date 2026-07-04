@@ -20,6 +20,15 @@ export const PROJECTS: Project[] = [
     image: '/case-study/operations/operations-card.webp'
   },
   {
+    id: 'michigan-speech',
+    title: 'Michigan Speech',
+    category: 'Leadership',
+    date: '2018',
+    description: 'Fourteen years in Michigan forensics: two state titles, a national champion coached, and founding the Spartanvitational, the largest speech tournament in the state.',
+    tags: ['Community', 'Founding', 'Coaching', 'Leadership'],
+    image: '/case-study/michigan-speech/michigan-speech-card.webp'
+  },
+  {
     id: 'space-utilization',
     title: 'Pacific Medical School Space Evaluation',
     category: 'Leadership',
@@ -95,14 +104,6 @@ export const PROJECTS: Project[] = [
     description: 'A self-service smart-locker system at Quicken Loans: web portal, Raspberry Pi prototype, and an API that reached the SVP of Infrastructure.',
     tags: ['PHP', 'SQL', 'Python', 'Raspberry Pi', '3D Printing'],
     image: '/case-study/smart-lockers/lockerblock.webp'
-  },
-  {
-    id: 'michigan-speech',
-    title: 'Michigan Speech Coaches Platform',
-    category: 'Leadership',
-    date: '2019',
-    description: 'Founded and scaled the largest competitive speech tournament infrastructure in Michigan.',
-    tags: ['Community', 'Org Design', 'Leadership']
   }
 ];
 
@@ -114,6 +115,7 @@ export const FEATURED_PROJECT_IDS = ['portfolio', 'fudge', 'level-up'];
 export const CASE_STUDY_IDS = [
   'matinee',
   'operations',
+  'michigan-speech',
   'space-utilization',
   'portfolio',
   'dcade',
@@ -121,7 +123,7 @@ export const CASE_STUDY_IDS = [
   'uc-calnat',
   'zoo-report',
   'fudge',
-  'smart-lockers',
+  'smart-lockers'
 ];
 
 /** The three works spotlighted at full size and color at the top of the

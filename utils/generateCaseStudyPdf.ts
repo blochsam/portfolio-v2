@@ -44,6 +44,9 @@ export function generateCaseStudyPdfHtml(projectId: string, baseUrl: string): st
   if (projectId === 'operations') {
     return generateOperationsCaseStudyPdf(baseUrl);
   }
+  if (projectId === 'michigan-speech') {
+    return generateMichiganSpeechCaseStudyPdf(baseUrl);
+  }
   return generateUnderConstructionPdf(baseUrl);
 }
 
@@ -1713,6 +1716,100 @@ function generateOperationsCaseStudyPdf(baseUrl: string): string {
   </div>
   <div class="footer">
     <span>Operations at Scale · Sam Bloch</span>
+    <a href="${origin}">sam-bloch.com</a>
+  </div>
+  <script>
+    setTimeout(function(){ window.print(); }, 500);
+  </script>
+</body>
+</html>`;
+}
+
+function generateMichiganSpeechCaseStudyPdf(baseUrl: string): string {
+  const origin = baseUrl.replace(/\/$/, '');
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Michigan Speech — Sam Bloch</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: #ffffff; color: ${TEXT_DARK}; line-height: 1.6; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .doc { max-width: 700px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+    .header { border-bottom: 2px solid ${TEAL}; padding-bottom: 1rem; margin-bottom: 2rem; }
+    .logo span:first-child { color: ${TEXT_DARK}; font-weight: 800; font-size: 1.75rem; letter-spacing: -1px; }
+    .logo span:last-child { color: ${TEAL}; font-weight: 800; font-size: 1.75rem; letter-spacing: -1px; }
+    .meta { color: ${TEAL}; font-size: 0.75rem; margin-top: 0.5rem; }
+    h1 { font-size: 1.5rem; font-weight: 700; margin: 1rem 0 0.5rem; color: ${TEXT_DARK}; }
+    .subtitle { color: ${TEXT_MUTED}; font-size: 0.9rem; }
+    section { margin-bottom: 2rem; page-break-inside: avoid; }
+    .section-label { color: ${TEAL}; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; margin-bottom: 0.5rem; text-transform: uppercase; }
+    p { color: ${TEXT_DARK}; font-size: 0.9rem; margin-bottom: 1rem; }
+    .stats { display: flex; gap: 1.5rem; margin: 1rem 0; flex-wrap: wrap; }
+    .stat { text-align: center; }
+    .stat-num { font-size: 1.5rem; font-weight: 700; color: ${TEAL}; }
+    .stat-label { font-size: 0.7rem; color: ${TEXT_MUTED}; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.85rem; }
+    th, td { border: 1px solid #e5e7eb; padding: 0.6rem 0.8rem; text-align: left; }
+    th { background: #f3f4f6; color: ${TEXT_DARK}; font-weight: 600; }
+    td { color: ${TEXT_DARK}; }
+    td strong { color: ${TEAL}; }
+    .footer { position: fixed; bottom: 0; left: 0; right: 0; padding: 0.75rem 1.5rem; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-between; font-size: 0.7rem; color: ${TEXT_MUTED}; background: #ffffff; }
+    .footer a { color: ${TEAL}; text-decoration: none; }
+    @media print { .doc { padding-bottom: 3rem; } }
+  </style>
+</head>
+<body>
+  <div class="doc">
+    <header class="header">
+      <div class="logo"><span>SAM</span> <span>BLOCH</span></div>
+      <p class="meta">Michigan Speech · MIFA · MSCI · 14 years and counting</p>
+      <h1>Michigan Speech</h1>
+      <p class="subtitle">Fourteen years in Michigan's speech and debate community — competitor, coach, founder, steward.</p>
+    </header>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-num">2x</div><div class="stat-label">MIFA state champion, Storytelling</div></div>
+      <div class="stat"><div class="stat-num">10+</div><div class="stat-label">State finalists coached</div></div>
+      <div class="stat"><div class="stat-num">600+</div><div class="stat-label">Competitors hosted in one day</div></div>
+      <div class="stat"><div class="stat-num">14</div><div class="stat-label">Years in the community</div></div>
+    </div>
+
+    <section>
+      <p class="section-label">Chapter I — The Competitor</p>
+      <p>Storytelling was my event. Through the Michigan Interscholastic Forensic Association I became a two-time state champion, a four-time state finalist, and, for a while, a record-holder — plus three MSCI championships on Mackinac Island in four years. None of it happens without my coach, Doug "Bev" Bevier, the first person who made me believe a story could win a room.</p>
+    </section>
+
+    <section>
+      <p class="section-label">Chapter II — The Coach</p>
+      <p>Through college and my early career I coached forensics at Okemos and my alma mater, Walled Lake Western — four and a half years of practices, tournaments, and helping teenagers find voices they didn't know they had. My students went further than I did: ten-plus state finalists, two state champions, and a national champion.</p>
+    </section>
+
+    <section>
+      <p class="section-label">Chapter III — The Founder</p>
+      <p>After aging out, I missed the activity enough to do something unreasonable: I chartered Spartan Speech at Michigan State and founded the Spartanvitational, securing a university grant, a performance hall, and fifty classrooms for a Saturday.</p>
+      <table>
+        <tr><th>Date</th><th>Students</th><th>Schools</th><th>Note</th></tr>
+        <tr><td>March 23, 2018</td><td><strong>~250</strong></td><td>20+</td><td>The first Spartanvitational</td></tr>
+        <tr><td>February 23, 2019</td><td><strong>500+</strong></td><td>25+</td><td>~800 people — largest tournament in Michigan</td></tr>
+        <tr><td>February 22, 2020</td><td><strong>600+</strong></td><td>35+</td><td>Largest competitive public speaking competition in the state</td></tr>
+      </table>
+      <p>When COVID took the building, we ran a national tournament online. When I graduated, I handed the tournament to the next generation of Spartans. It turns ten in 2027. It doesn't need me anymore — that's the whole point.</p>
+    </section>
+
+    <section>
+      <p class="section-label">Chapter IV — The Steward</p>
+      <p>Every May I'm back on Mackinac Island with Michigan Speech Coaches Inc. — eleven conferences and counting — tabulating tournaments, volunteer-coaching my alma mater (sixth place at states in Multiple), and most recently giving a professional development talk at the Grand Hotel on what AI can quietly take off a coach's plate. The kid this community built grew up and came back with tools.</p>
+    </section>
+
+    <section>
+      <p class="section-label">The Last Round</p>
+      <p>Holding a room. Coaching someone to a result you'll never get credit for. Founding an organization from a lunch conversation. Running an 800-person operation out of a tab room. I've been rehearsing my entire career since I was fourteen — this community was the stage.</p>
+    </section>
+  </div>
+  <div class="footer">
+    <span>Michigan Speech · Sam Bloch</span>
     <a href="${origin}">sam-bloch.com</a>
   </div>
   <script>
