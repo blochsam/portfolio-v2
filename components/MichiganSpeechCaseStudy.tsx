@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useFooterAwareBottom } from '../utils/useFooterAwareBottom';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Download, Image as ImageIcon } from 'lucide-react';
-import { useScrollReveal, CountUp } from './CaseStudyShared';
+import { ArrowLeft, Download, X } from 'lucide-react';
+import { useScrollReveal, CountUp, CaseStudyImage } from './CaseStudyShared';
 
 /* Michigan Speech theme — ballot paper, ink, and a judge's red pen.
    Spartan green appears only in the founder chapter, where MSU enters the story. */
@@ -42,21 +42,9 @@ const Overline: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   </p>
 );
 
-/* ─── Photo placeholder — swapped for real shots when Sam supplies them ─── */
-const PhotoSlot: React.FC<{ label: string; caption: string; aspect?: string }> = ({ label, caption, aspect = '16 / 10' }) => (
-  <figure data-reveal className="ms-reveal">
-    <div
-      className="w-full rounded-xl border-2 border-dashed flex flex-col items-center justify-center gap-3"
-      style={{ aspectRatio: aspect, borderColor: 'rgba(42,38,32,0.18)', background: 'rgba(42,38,32,0.03)' }}
-    >
-      <ImageIcon className="w-8 h-8" style={{ color: 'rgba(42,38,32,0.25)' }} />
-      <p className="font-mono text-[11px] uppercase tracking-[0.2em]" style={{ color: 'rgba(42,38,32,0.35)' }}>
-        photo coming soon · {label}
-      </p>
-    </div>
-    <figcaption className="text-[12px] mt-3 tracking-wide font-mono" style={{ color: MUTED }}>{caption}</figcaption>
-  </figure>
-);
+/* ─── Photo, ballot-paper framing ─── */
+const PAPER_WRAPPER = 'overflow-hidden rounded-xl border border-[#2a2620]/15 shadow-[0_12px_40px_-18px_rgba(42,38,32,0.35)] transition-shadow duration-500 group-hover:shadow-[0_16px_48px_-16px_rgba(42,38,32,0.45)]';
+const PAPER_CAPTION = 'text-[12px] mt-3 tracking-wide font-mono text-[#6b6459]';
 
 /* ════════════════════════════════════════════════════════════════════════
    THREE SATURDAYS — the signature interaction.
@@ -146,6 +134,13 @@ const MichiganSpeechCaseStudy: React.FC = () => {
   const navigate = useNavigate();
   const fabBottom = useFooterAwareBottom();
   const containerRef = useScrollReveal();
+  const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null);
+
+  useEffect(() => {
+    const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') setLightbox(null); };
+    window.addEventListener('keydown', esc);
+    return () => window.removeEventListener('keydown', esc);
+  }, []);
 
   const handleDownloadPDF = async () => {
     const { generateCaseStudyPdfHtml } = await import('../utils/generateCaseStudyPdf');
@@ -171,6 +166,17 @@ const MichiganSpeechCaseStudy: React.FC = () => {
       `}</style>
 
       <ScrollProgress />
+
+      {/* Lightbox */}
+      {lightbox && (
+        <div className="fixed inset-0 z-[200] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-6 md:p-12"
+          onClick={() => setLightbox(null)} role="dialog" aria-label="Enlarged image">
+          <button onClick={() => setLightbox(null)}
+            className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/20 transition-colors z-[201]"
+            aria-label="Close"><X className="w-5 h-5" /></button>
+          <img src={lightbox.src} alt={lightbox.alt} className="max-w-full max-h-[85vh] rounded-2xl object-contain" onClick={(e) => e.stopPropagation()} />
+        </div>
+      )}
 
       {/* Back button */}
       <button onClick={() => navigate('/projects')}
@@ -248,7 +254,10 @@ const MichiganSpeechCaseStudy: React.FC = () => {
             </p>
           </div>
           <div className="mt-10">
-            <PhotoSlot label="the competitor" caption="Competition days — trophies, blazers, and a black binder." />
+            <CaseStudyImage src="/case-study/michigan-speech/sam-and-bev.webp"
+              alt="A young Sam Bloch with coach Doug 'Bev' Bevier, both holding trophies at the MSCI Mackinac tournament"
+              caption="Mackinac Island, 2013 — me and Bev, with the hardware to show for it."
+              onOpen={setLightbox} wrapperClassName={PAPER_WRAPPER} captionClassName={PAPER_CAPTION} />
           </div>
         </div>
       </section>
@@ -273,7 +282,10 @@ const MichiganSpeechCaseStudy: React.FC = () => {
             </p>
           </div>
           <div className="mt-10">
-            <PhotoSlot label="the coach" caption="Walled Lake Western Forensics — where I competed, then coached." />
+            <CaseStudyImage src="/case-study/michigan-speech/wlw-team.webp"
+              alt="The Walled Lake Western Forensics team dressed up at the Grand Hotel"
+              caption="Walled Lake Western Forensics — where I competed, then coached."
+              onOpen={setLightbox} wrapperClassName={PAPER_WRAPPER} captionClassName={PAPER_CAPTION} />
           </div>
         </div>
       </section>
@@ -339,9 +351,15 @@ const MichiganSpeechCaseStudy: React.FC = () => {
             </figcaption>
           </figure>
 
-          <div className="mt-10 grid md:grid-cols-2 gap-8">
-            <PhotoSlot label="tournament day" caption="Spartanvitational — somewhere between round 2 and tab-room chaos." />
-            <PhotoSlot label="the club" caption="Spartan Speech, 50+ members strong." />
+          <div className="mt-10 grid md:grid-cols-2 gap-8 items-start">
+            <CaseStudyImage src="/case-study/michigan-speech/tournament-day.webp"
+              alt="A packed auditorium of high school competitors at the Spartanvitational"
+              caption="Tournament day — a full house of blazers, binders, and nerves."
+              onOpen={setLightbox} wrapperClassName={PAPER_WRAPPER} captionClassName={PAPER_CAPTION} />
+            <CaseStudyImage src="/case-study/michigan-speech/spartan-speech-team.webp"
+              alt="The Spartan Speech club posing together in matching shirts"
+              caption="Spartan Speech — the Spartans who made it happen."
+              onOpen={setLightbox} wrapperClassName={PAPER_WRAPPER} captionClassName={PAPER_CAPTION} />
           </div>
         </div>
       </section>
@@ -368,8 +386,11 @@ const MichiganSpeechCaseStudy: React.FC = () => {
               this community built grew up and came back with tools.
             </p>
           </div>
-          <div className="mt-10">
-            <PhotoSlot label="the steward" caption="Mackinac Island, every May. Still my favorite place on the planet." />
+          <div className="mt-10 max-w-md mx-auto">
+            <CaseStudyImage src="/case-study/michigan-speech/grand-hotel-talk.webp"
+              alt="Sam Bloch and Brando Socarras beside a screen reading 'Making Coaching Easier with Google AI Studio' at the Grand Hotel"
+              caption="The Grand Hotel, 2026 — teaching coaches to build with AI, alongside Brando Socarras."
+              onOpen={setLightbox} wrapperClassName={PAPER_WRAPPER} captionClassName={PAPER_CAPTION} />
           </div>
         </div>
       </section>
