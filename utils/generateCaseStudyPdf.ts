@@ -1694,7 +1694,7 @@ function generateOperationsCaseStudyPdf(baseUrl: string): string {
 
     <section>
       <p class="section-label">The Craft · 02 — Calibration</p>
-      <p>A standard is not what's written in the document. It's what hundreds of different people, in different countries, actually do with the document at 3 a.m. their time. Those two things drift apart the moment the ink dries. Calibration is the discipline of pulling them back together, continuously, without ever being in the room. (The web version of this page includes an interactive exercise that lets you feel that drift in thirty seconds.)</p>
+      <p>A standard is not what's written in the document. It's what hundreds of different people, in different countries, actually do with the document at 3 a.m. their time. Every policy is written with clarity as the intent — and still turns out to be interpretable in the hands of everyone applying it. That gap opens the moment the ink dries. Calibration is the discipline of pulling it closed, continuously, without ever being in the room. (The web version of this page includes an interactive exercise that lets you feel that drift in thirty seconds.)</p>
     </section>
 
     <section>

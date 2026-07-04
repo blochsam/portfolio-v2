@@ -140,6 +140,7 @@ const CalibrationExercise: React.FC = () => {
           <li>If it leans green, it caps at 3.</li>
           <li>If it leans purple, subtract at least 1.</li>
         </ol>
+        <p className="text-[12px] text-white/30 font-mono italic mt-3">Written with clarity as the intent. So is every policy.</p>
       </div>
 
       {/* The swatches */}
@@ -191,9 +192,11 @@ const CalibrationExercise: React.FC = () => {
         <div className="border-t border-white/[0.08] pt-6">
           <p className="text-lg md:text-xl text-white font-bold leading-relaxed mb-3">{verdict}</p>
           <p className="text-[15px] text-[#9a9a9f] leading-relaxed mb-5">
-            Notice what just happened: the rubric felt clear until you had to apply it. That gap — between a
-            standard as written and a standard as applied — is where quality programs live. My job is closing it,
-            at scale, without ever meeting most of the people doing the rating.
+            Notice what just happened: that rubric was written to be clear, and it still wasn&rsquo;t the moment you
+            had to apply it. What does &ldquo;leans&rdquo; mean? How much purple is &ldquo;at least 1&rdquo; worth? Every
+            policy is like this — unambiguous to the people who wrote it, interpretable in the hands of everyone else.
+            That gap, between a standard as written and a standard as applied, is where quality programs live. My job
+            is closing it, at scale, without ever meeting most of the people doing the rating.
           </p>
           <button onClick={reset} className="inline-flex items-center gap-2 text-[12px] font-mono uppercase tracking-widest text-white/50 hover:text-white transition-colors">
             <RotateCcw className="w-3.5 h-3.5" /> Run it again
