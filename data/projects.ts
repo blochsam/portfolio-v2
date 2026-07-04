@@ -97,14 +97,6 @@ export const PROJECTS: Project[] = [
     image: '/case-study/smart-lockers/lockerblock.webp'
   },
   {
-    id: 'cube-ux-lead',
-    title: 'the CUBE Publishing UX',
-    category: 'Design',
-    date: '2020',
-    description: 'Led ethnographic research and UX design for an immersive web experience serving 8 academic journal partners.',
-    tags: ['User Research', 'HCI', 'Academic']
-  },
-  {
     id: 'michigan-speech',
     title: 'Michigan Speech Coaches Platform',
     category: 'Leadership',
