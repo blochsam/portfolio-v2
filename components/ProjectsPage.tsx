@@ -23,7 +23,7 @@ const CaseStudyCard: React.FC<{ project: Project; spotlight?: boolean }> = ({ pr
             width={640}
             height={400}
             loading="lazy"
-            className={`w-full h-full object-cover group-hover:scale-105 transition-[filter,transform] duration-500 ${spotlight ? '' : '[@media(hover:hover)]:grayscale group-hover:grayscale-0'}`}
+            className={`w-full h-full object-cover group-hover:scale-105 transition-[filter,transform] duration-500 ${spotlight ? '' : 'md:[@media(hover:hover)]:grayscale group-hover:grayscale-0'}`}
             style={{ objectPosition: project.imagePosition ?? 'center' }}
           />
         ) : (

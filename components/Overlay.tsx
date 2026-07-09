@@ -239,7 +239,7 @@ const Overlay: React.FC<OverlayProps> = ({ content, onClose }) => {
                   width={640}
                   height={480}
                   loading="lazy"
-                  className="w-full h-full object-cover [@media(hover:hover)]:grayscale transition-[filter,transform] duration-700 group-hover:grayscale-0 group-hover:scale-105"
+                  className="w-full h-full object-cover md:[@media(hover:hover)]:grayscale transition-[filter,transform] duration-700 group-hover:grayscale-0 group-hover:scale-105"
                   onError={(e) => {
                     (e.target as HTMLImageElement).style.display = 'none';
                   }}
