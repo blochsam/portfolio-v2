@@ -180,7 +180,7 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent }) => {
                 the stacked headline; desktop keeps the full portrait column. */}
             <div className="relative">
               <div
-                className="md:hidden absolute right-0 inset-y-0 z-0 rounded-xl overflow-hidden motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700"
+                className="md:hidden absolute right-0 top-0 z-0 w-[clamp(112px,30vw,176px)] rounded-xl overflow-hidden motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700"
                 style={{ aspectRatio: '4/5' }}
                 aria-hidden="false"
               >
@@ -203,10 +203,10 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent }) => {
               </h1>
             </div>
 
-            <p className="whitespace-nowrap text-gray-400 text-[clamp(0.7rem,2.8vw,1.25rem)] 2xl:text-xl leading-relaxed motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 duration-1000 delay-300">
+            <p className="md:whitespace-nowrap pr-[30vw] md:pr-0 text-gray-400 text-[clamp(0.85rem,2.8vw,1.25rem)] 2xl:text-xl leading-relaxed motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 duration-1000 delay-300">
               Show me a pain point and I'll show you what I built to solve it.
             </p>
-            <p className="mt-3 text-gray-500 text-sm md:text-base 2xl:text-lg tracking-wide motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 duration-1000 delay-400">
+            <p className="mt-3 pr-[30vw] md:pr-0 text-gray-500 text-sm md:text-base 2xl:text-lg tracking-wide motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 duration-1000 delay-400">
               Program Manager at <GoogleColorized /> · AI Builder · College Educator
             </p>
 
