@@ -82,7 +82,10 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent }) => {
     track('contact_click', { source: 'home_hero' });
     const user = 'sam';
     const domain = 'sam-bloch.com';
-    window.location.href = `mailto:${user}@${domain}`;
+    const address = `${user}@${domain}`;
+    // Copy first: mailto silently no-ops without a configured mail client
+    if (navigator.clipboard?.writeText) navigator.clipboard.writeText(address).catch(() => {});
+    window.location.href = `mailto:${address}`;
   };
 
   return (
@@ -269,7 +272,7 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent }) => {
                       width={640}
                       height={400}
                       loading="lazy"
-                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-[filter,transform] duration-500"
+                      className="w-full h-full object-cover [@media(hover:hover)]:grayscale group-hover:grayscale-0 group-hover:scale-105 transition-[filter,transform] duration-500"
                       style={{ objectPosition: project.imagePosition ?? 'center' }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] via-transparent to-transparent opacity-60" />
@@ -448,7 +451,7 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent }) => {
                 <img
                   src="/headshot.webp"
                   alt="Sam Bloch"
-                  className="w-full h-full object-cover object-center grayscale group-hover:grayscale-0 transition-[filter] duration-700"
+                  className="w-full h-full object-cover object-center [@media(hover:hover)]:grayscale group-hover:grayscale-0 transition-[filter] duration-700"
                   decoding="async"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a]/50 via-transparent to-transparent" />

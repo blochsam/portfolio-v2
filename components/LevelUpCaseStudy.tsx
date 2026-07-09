@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, X, ExternalLink, FileText, Mic, Bot, Shield, Clock, Database, Cloud, Palette, GraduationCap, Lightbulb, Users, Zap, BookOpen, Code, Coffee, MapPin, MessageSquare, Calendar } from 'lucide-react';
-import { useScrollReveal } from './CaseStudyShared';
+import {useScrollReveal, AtAGlance } from './CaseStudyShared';
 import { useFooterAwareBottom } from '../utils/useFooterAwareBottom';
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -670,6 +670,14 @@ const LevelUpCaseStudy: React.FC = () => {
           <SketchArrow className="hidden md:block absolute -left-20 top-[110px] rotate-[-20deg] opacity-60" />
         </div>
       </header>
+
+      <AtAGlance accent="#1B7A7E" ink="#2d2d2d" muted="#6b6b6b" border="rgba(45,45,45,0.15)" items={[
+        { label: "What", value: "A production LMS built for my AI career-development course" },
+        { label: "My role", value: "Built the platform, teach the course" },
+        { label: "Outcome", value: "Live at levelupqu.com, powering the course" },
+        { label: "Stack", value: "Next.js · Prisma · Gemini API · Cloud Run" }
+      ]} />
+
 
       <div className="max-w-4xl mx-auto px-6">
 

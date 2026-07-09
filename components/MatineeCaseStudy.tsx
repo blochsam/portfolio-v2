@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useFooterAwareBottom } from '../utils/useFooterAwareBottom';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, X, RefreshCw } from 'lucide-react';
-import { useScrollReveal, CountUp, CaseStudyImage } from './CaseStudyShared';
+import {useScrollReveal, CountUp, CaseStudyImage, AtAGlance } from './CaseStudyShared';
+import ConnectButton from './ConnectButton';
 
 /* Matinee theme accent — "signal green" pulled from the PCB spec document */
 const GREEN = '#3fb950';
@@ -266,6 +267,14 @@ const MatineeCaseStudy: React.FC = () => {
           <p className="text-[11px] text-white/25 mt-3 font-mono">On my wall right now — Forrest Gump, five stars.</p>
         </div>
       </header>
+
+      <AtAGlance accent="#3fb950" items={[
+        { label: "What", value: "A cloud-connected e-ink display that frames your latest Letterboxd review" },
+        { label: "My role", value: "All of it — PCB, firmware, cloud pipeline, companion app" },
+        { label: "Status", value: "Working prototype in daily use; Kickstarter planned" },
+        { label: "Stack", value: "ESP32-S3 · Python/PIL · Next.js · Supabase" }
+      ]} />
+
 
       {/* ══ STATS ══ */}
       <section className="py-14 md:py-20 px-6 border-y border-white/[0.05]">
@@ -540,16 +549,7 @@ const MatineeCaseStudy: React.FC = () => {
         <p className="text-[#9a9a9f] text-[17px] leading-[1.8] max-w-lg mx-auto mb-10">
           Matinee&rsquo;s heading to Kickstarter. If you want to talk hardware, taste, or how a $4 chip ends up being furniture — I&rsquo;m around.
         </p>
-        <button
-          onClick={() => { window.location.href = `mailto:sam@sam-bloch.com`; }}
-          className="group px-10 py-5 font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:brightness-110 transition-[filter,transform] shadow-xl active:scale-95 inline-flex items-center gap-3"
-          style={{ background: GREEN, color: '#0a0a0a' }}
-        >
-          Let&rsquo;s Connect
-          <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-          </svg>
-        </button>
+        <ConnectButton className="group px-10 py-5 font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:brightness-110 transition-[filter,transform] shadow-xl active:scale-95 inline-flex items-center gap-3" style={{ background: GREEN, color: '#0a0a0a' }} source="matinee" />
       </section>
 
       {/* Footer */}
