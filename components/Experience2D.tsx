@@ -174,31 +174,34 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent }) => {
            ════════════════════════════════════════ */}
         <section className="relative md:min-h-screen grid grid-cols-1 md:grid-cols-[1fr_auto] md:items-center gap-4 md:gap-12 px-6 md:px-12 lg:px-[6%] xl:px-[8%] mx-auto pt-28 md:pt-32 pb-12 overflow-visible">
           <div className="relative z-20">
-            {/* Mobile: portrait-first card — small deliberate avatar instead of
-                the bleeding desktop portrait (which cropped mid-face when the
-                column stacked). Desktop keeps the full portrait on the right. */}
-            <div
-              className="md:hidden relative w-[min(210px,55vw)] rounded-2xl overflow-hidden mb-6 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700"
-              style={{ aspectRatio: '4/5' }}
-            >
-              <img
-                src="/about-portrait.webp"
-                alt="Sam Bloch"
-                width={210}
-                height={262}
-                fetchPriority="high"
-                className="w-full h-full object-cover object-center grayscale"
-              />
-              {/* Same vignette fade as the desktop portrait, scaled to size */}
-              <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: 'inset 0 44px 34px -12px #121212, inset 0 -54px 44px -12px #121212, inset 32px 0 22px -12px #121212, inset -32px 0 22px -12px #121212' }} />
-            </div>
             {/* Line-by-line kinetic reveal — the signature moment for visitors
-                who never see the 3D scene (mobile + reduced-motion stays static) */}
-            <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl 2xl:text-[9rem] font-black tracking-tighter leading-[0.95] md:leading-[0.9] mb-8 md:mb-12">
-              <span className="block motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700">Architecting</span>
-              <span className="block text-[#24A2A7] motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700 motion-safe:delay-150">Human-Centric</span>
-              <span className="block motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700 motion-safe:delay-300">Systems.</span>
-            </h1>
+                who never see the 3D scene (mobile + reduced-motion stays static).
+                Mobile tucks a small faded portrait into the empty space right of
+                the stacked headline; desktop keeps the full portrait column. */}
+            <div className="relative">
+              <div
+                className="md:hidden absolute right-0 top-0 z-0 w-[clamp(100px,28vw,150px)] rounded-xl overflow-hidden motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700"
+                style={{ aspectRatio: '4/5' }}
+                aria-hidden="false"
+              >
+                <img
+                  src="/about-portrait.webp"
+                  alt="Sam Bloch"
+                  width={150}
+                  height={188}
+                  fetchPriority="high"
+                  className="w-full h-full object-cover object-center grayscale"
+                />
+                {/* Same vignette fade as the desktop portrait, scaled to size —
+                    the faded edge is what lets the headline meet it gracefully */}
+                <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: 'inset 0 30px 24px -8px #121212, inset 0 -34px 28px -8px #121212, inset 26px 0 18px -8px #121212, inset -24px 0 16px -8px #121212' }} />
+              </div>
+              <h1 className="relative z-10 text-4xl sm:text-5xl md:text-7xl lg:text-8xl 2xl:text-[9rem] font-black tracking-tighter leading-[0.95] md:leading-[0.9] mb-8 md:mb-12">
+                <span className="block motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700">Architecting</span>
+                <span className="block text-[#24A2A7] motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700 motion-safe:delay-150">Human-Centric</span>
+                <span className="block motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700 motion-safe:delay-300">Systems.</span>
+              </h1>
+            </div>
 
             <p className="whitespace-nowrap text-gray-400 text-[clamp(0.7rem,2.8vw,1.25rem)] 2xl:text-xl leading-relaxed motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 duration-1000 delay-300">
               Show me a pain point and I'll show you what I built to solve it.
