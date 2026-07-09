@@ -6,6 +6,7 @@ import { COLORS } from '../constants';
 import InteractiveSitemap from './InteractiveSitemap';
 import { SITEMAP } from '../sitemap';
 import {useScrollReveal as useAnimateOnScroll, CaseStudyImage as Img, AtAGlance } from './CaseStudyShared';
+import ConnectButton from './ConnectButton';
 
 /* ═══════════════════════════════════
    SUB-COMPONENTS

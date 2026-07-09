@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, X } from 'lucide-react';
 import { COLORS } from '../constants';
 import {useScrollReveal, CountUp, CaseStudyImage as Img, AtAGlance } from './CaseStudyShared';
+import ConnectButton from './ConnectButton';
 
 /* ─── Blueprint paper texture background ───
    A subtle architectural drafting overlay that runs behind the
@@ -407,7 +408,7 @@ const SpaceUtilizationCaseStudy: React.FC = () => {
         </section>
 
 
-      <AtAGlance items={[
+      <AtAGlance className="-mt-28 md:-mt-40" items={[
         { label: "What", value: "A graduate program evaluation of campus space capacity" },
         { label: "My role", value: "Data & analysis" },
         { label: "Data", value: "Six semesters · three buildings · 73 rooms" },

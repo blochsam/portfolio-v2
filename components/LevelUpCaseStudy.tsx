@@ -671,7 +671,7 @@ const LevelUpCaseStudy: React.FC = () => {
         </div>
       </header>
 
-      <AtAGlance accent="#1B7A7E" ink="#2d2d2d" muted="#6b6b6b" border="rgba(45,45,45,0.15)" bg="#ffffff" items={[
+      <AtAGlance accent="#1B7A7E" ink="#2d2d2d" muted="#6b6b6b" border="rgba(45,45,45,0.15)" bg="#ffffff" className="-mt-10 md:-mt-16" items={[
         { label: "What", value: "A production LMS built for my AI career-development course" },
         { label: "My role", value: "Built the platform, teach the course" },
         { label: "Outcome", value: "Live at levelupqu.com, powering the course" },

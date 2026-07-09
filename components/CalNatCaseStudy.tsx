@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, X } from 'lucide-react';
 import { COLORS } from '../constants';
 import {useScrollReveal, Overline, CaseStudyImage as Img, AtAGlance } from './CaseStudyShared';
+import ConnectButton from './ConnectButton';
 
 /* ─── Full-bleed nature image section ─── */
 const NatureMoment: React.FC<{
@@ -449,7 +450,7 @@ const CalNatCaseStudy: React.FC = () => {
         </div>
       </header>
 
-      <AtAGlance items={[
+      <AtAGlance className="-mt-40 md:-mt-56" items={[
         { label: "What", value: "A design-thinking engagement for UC Agriculture & Natural Resources" },
         { label: "My role", value: "UX research and facilitation" },
         { label: "Outcome", value: "A community-of-practice platform for 9,000+ stewardship alumni" },

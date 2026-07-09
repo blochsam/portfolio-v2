@@ -132,9 +132,10 @@ export const AtAGlance: React.FC<{
   muted?: string;
   border?: string;
   bg?: string;
-}> = ({ items, accent = '#24A2A7', ink = '#e8e8e6', muted = '#9a9a9f', border = 'rgba(255,255,255,0.08)', bg = '#161616' }) => (
+  className?: string;
+}> = ({ items, accent = '#24A2A7', ink = '#e8e8e6', muted = '#9a9a9f', border = 'rgba(255,255,255,0.08)', bg = '#161616', className = '' }) => (
   <section aria-label="At a glance"
-    className="relative z-10 max-w-4xl mx-auto px-6 md:px-12 pt-10 pb-2">
+    className={`relative z-10 max-w-4xl mx-auto px-6 md:px-12 pt-2 pb-10 ${className}`}>
     <div className="rounded-2xl px-6 py-5 md:px-8" style={{ border: `1px solid ${border}`, background: bg }}>
       <p className="text-[10px] font-black uppercase tracking-[0.4em] mb-4" style={{ color: accent }}>At a glance</p>
       <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">

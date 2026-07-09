@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, X } from 'lucide-react';
 import { COLORS } from '../constants';
 import {useScrollReveal, Overline, CaseStudyImage as Img, CountUp, AtAGlance } from './CaseStudyShared';
+import ConnectButton from './ConnectButton';
 
 /* ─── Full-bleed nature image section (parallax) ─── */
 const NatureMoment: React.FC<{
@@ -271,7 +272,7 @@ const ZooReportCaseStudy: React.FC = () => {
         </div>
       </header>
 
-      <AtAGlance items={[
+      <AtAGlance className="-mt-40 md:-mt-56" items={[
         { label: "What", value: "An AR mobile app concept for the Detroit Zoo" },
         { label: "My role", value: "UX research through final UI" },
         { label: "Outcome", value: "Research-driven wireframes to a polished prototype" },

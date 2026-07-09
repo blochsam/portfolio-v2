@@ -214,7 +214,7 @@ const MichiganSpeechCaseStudy: React.FC = () => {
         </div>
       </header>
 
-      <AtAGlance accent="#b23628" ink="#2a2620" muted="#6b6459" border="rgba(42,38,32,0.15)" bg="#fbf8f0" items={[
+      <AtAGlance className="-mt-28 md:-mt-40" accent="#b23628" ink="#2a2620" muted="#6b6459" border="rgba(42,38,32,0.15)" bg="#fbf8f0" items={[
         { label: "What", value: "Fourteen years in Michigan's speech and debate community" },
         { label: "Competitor", value: "2× MIFA state champion in Storytelling" },
         { label: "Coach", value: "10+ state finalists, two champions, a national champion" },

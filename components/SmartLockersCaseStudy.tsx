@@ -324,7 +324,7 @@ const SmartLockersCaseStudy: React.FC = () => {
       </section>
 
 
-      <AtAGlance items={[
+      <AtAGlance className="-mt-44 md:-mt-64" items={[
         { label: "What", value: "A self-service smart-locker system for device distribution at Quicken Loans" },
         { label: "My role", value: "Intern — web portal, API, and the Raspberry Pi kiosk" },
         { label: "Outcome", value: "Prototype and pitch reached the SVP of Infrastructure" },

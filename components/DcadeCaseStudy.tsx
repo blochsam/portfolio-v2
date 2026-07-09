@@ -5,6 +5,7 @@ import { ArrowLeft, Download, X } from 'lucide-react';
 import { COLORS } from '../constants';
 import DcadeHeroAnimation from './DcadeHeroAnimation';
 import {useScrollReveal, CountUp, AtAGlance } from './CaseStudyShared';
+import ConnectButton from './ConnectButton';
 
 /* ─── Scroll progress bar ─── */
 const ScrollProgress: React.FC = () => {
@@ -464,7 +465,7 @@ const DcadeCaseStudy: React.FC = () => {
         </div>
       </header>
 
-      <AtAGlance items={[
+      <AtAGlance className="-mt-24 md:-mt-32" items={[
         { label: "What", value: "A dead Dreamcast cabinet reborn as a Raspberry Pi arcade" },
         { label: "My role", value: "Solo builder — wiring, 3D printing, software" },
         { label: "Outcome", value: "Two years in the D-House; now serving a doctor's waiting room" },
