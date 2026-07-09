@@ -177,14 +177,21 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent }) => {
             {/* Mobile: portrait-first card — small deliberate avatar instead of
                 the bleeding desktop portrait (which cropped mid-face when the
                 column stacked). Desktop keeps the full portrait on the right. */}
-            <img
-              src="/headshot.webp"
-              alt="Sam Bloch"
-              width={96}
-              height={96}
-              fetchPriority="high"
-              className="md:hidden w-20 h-20 rounded-full object-cover mb-6 ring-2 ring-[#24A2A7]/50 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700"
-            />
+            <div
+              className="md:hidden relative w-[min(210px,55vw)] rounded-2xl overflow-hidden mb-6 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700"
+              style={{ aspectRatio: '4/5' }}
+            >
+              <img
+                src="/about-portrait.webp"
+                alt="Sam Bloch"
+                width={210}
+                height={262}
+                fetchPriority="high"
+                className="w-full h-full object-cover object-center grayscale"
+              />
+              {/* Same vignette fade as the desktop portrait, scaled to size */}
+              <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: 'inset 0 44px 34px -12px #121212, inset 0 -54px 44px -12px #121212, inset 32px 0 22px -12px #121212, inset -32px 0 22px -12px #121212' }} />
+            </div>
             {/* Line-by-line kinetic reveal — the signature moment for visitors
                 who never see the 3D scene (mobile + reduced-motion stays static) */}
             <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl 2xl:text-[9rem] font-black tracking-tighter leading-[0.95] md:leading-[0.9] mb-8 md:mb-12">
