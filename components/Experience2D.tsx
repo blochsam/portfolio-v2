@@ -174,6 +174,17 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent }) => {
            ════════════════════════════════════════ */}
         <section className="relative md:min-h-screen grid grid-cols-1 md:grid-cols-[1fr_auto] md:items-center gap-4 md:gap-12 px-6 md:px-12 lg:px-[6%] xl:px-[8%] mx-auto pt-28 md:pt-32 pb-12 overflow-visible">
           <div className="relative z-20">
+            {/* Mobile: portrait-first card — small deliberate avatar instead of
+                the bleeding desktop portrait (which cropped mid-face when the
+                column stacked). Desktop keeps the full portrait on the right. */}
+            <img
+              src="/headshot.webp"
+              alt="Sam Bloch"
+              width={96}
+              height={96}
+              fetchPriority="high"
+              className="md:hidden w-20 h-20 rounded-full object-cover mb-6 ring-2 ring-[#24A2A7]/50 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700"
+            />
             {/* Line-by-line kinetic reveal — the signature moment for visitors
                 who never see the 3D scene (mobile + reduced-motion stays static) */}
             <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl 2xl:text-[9rem] font-black tracking-tighter leading-[0.95] md:leading-[0.9] mb-8 md:mb-12">
@@ -221,7 +232,7 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent }) => {
           </div>
 
           {/* Headshot */}
-          <div className="flex items-center justify-center md:justify-end pr-0 md:pr-4 lg:pr-8 -mt-2 md:mt-0 order-2 md:order-none">
+          <div className="hidden md:flex items-center justify-center md:justify-end pr-0 md:pr-4 lg:pr-8 -mt-2 md:mt-0 order-2 md:order-none">
             <div
               className="relative w-[min(300px,85vw)] md:w-[min(440px,40vw)] xl:w-[min(480px,35vw)] 2xl:w-[min(600px,28vw)] rounded-2xl overflow-hidden shrink-0"
               style={{ aspectRatio: '4/5' }}
