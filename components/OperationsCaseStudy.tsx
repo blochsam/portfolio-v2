@@ -282,7 +282,7 @@ const OperationsCaseStudy: React.FC = () => {
         </div>
       </header>
 
-      <AtAGlance className="-mt-24 md:-mt-36" accent="#e8a33d" items={[
+      <AtAGlance accent="#e8a33d" items={[
         { label: "What", value: "A craft essay on running Trust & Safety operations at scale" },
         { label: "Scope", value: "One quality standard · 10 global sites · 800+ moderators" },
         { label: "Receipts", value: "45% fewer processing errors · 20% faster reporting" },

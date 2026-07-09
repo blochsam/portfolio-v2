@@ -408,7 +408,7 @@ const SpaceUtilizationCaseStudy: React.FC = () => {
         </section>
 
 
-      <AtAGlance className="-mt-28 md:-mt-40" items={[
+      <AtAGlance items={[
         { label: "What", value: "A graduate program evaluation of campus space capacity" },
         { label: "My role", value: "Data & analysis" },
         { label: "Data", value: "Six semesters · three buildings · 73 rooms" },

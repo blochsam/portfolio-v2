@@ -272,7 +272,7 @@ const ZooReportCaseStudy: React.FC = () => {
         </div>
       </header>
 
-      <AtAGlance className="-mt-40 md:-mt-56" items={[
+      <AtAGlance items={[
         { label: "What", value: "An AR mobile app concept for the Detroit Zoo" },
         { label: "My role", value: "UX research through final UI" },
         { label: "Outcome", value: "Research-driven wireframes to a polished prototype" },

@@ -465,7 +465,7 @@ const DcadeCaseStudy: React.FC = () => {
         </div>
       </header>
 
-      <AtAGlance className="-mt-24 md:-mt-32" items={[
+      <AtAGlance items={[
         { label: "What", value: "A dead Dreamcast cabinet reborn as a Raspberry Pi arcade" },
         { label: "My role", value: "Solo builder — wiring, 3D printing, software" },
         { label: "Outcome", value: "Two years in the D-House; now serving a doctor's waiting room" },

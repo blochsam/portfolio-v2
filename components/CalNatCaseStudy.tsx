@@ -450,7 +450,7 @@ const CalNatCaseStudy: React.FC = () => {
         </div>
       </header>
 
-      <AtAGlance className="-mt-40 md:-mt-56" items={[
+      <AtAGlance items={[
         { label: "What", value: "A design-thinking engagement for UC Agriculture & Natural Resources" },
         { label: "My role", value: "UX research and facilitation" },
         { label: "Outcome", value: "A community-of-practice platform for 9,000+ stewardship alumni" },
