@@ -180,7 +180,7 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent }) => {
                 the stacked headline; desktop keeps the full portrait column. */}
             <div className="relative">
               <div
-                className="md:hidden absolute right-0 top-0 z-0 w-[clamp(100px,28vw,150px)] rounded-xl overflow-hidden motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700"
+                className="md:hidden absolute right-0 inset-y-0 z-0 rounded-xl overflow-hidden motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700"
                 style={{ aspectRatio: '4/5' }}
                 aria-hidden="false"
               >
