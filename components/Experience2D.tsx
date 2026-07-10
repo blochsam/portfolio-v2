@@ -82,7 +82,10 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent }) => {
     track('contact_click', { source: 'home_hero' });
     const user = 'sam';
     const domain = 'sam-bloch.com';
-    window.location.href = `mailto:${user}@${domain}`;
+    const address = `${user}@${domain}`;
+    // Copy first: mailto silently no-ops without a configured mail client
+    if (navigator.clipboard?.writeText) navigator.clipboard.writeText(address).catch(() => {});
+    window.location.href = `mailto:${address}`;
   };
 
   return (
@@ -172,17 +175,38 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent }) => {
         <section className="relative md:min-h-screen grid grid-cols-1 md:grid-cols-[1fr_auto] md:items-center gap-4 md:gap-12 px-6 md:px-12 lg:px-[6%] xl:px-[8%] mx-auto pt-28 md:pt-32 pb-12 overflow-visible">
           <div className="relative z-20">
             {/* Line-by-line kinetic reveal — the signature moment for visitors
-                who never see the 3D scene (mobile + reduced-motion stays static) */}
-            <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl 2xl:text-[9rem] font-black tracking-tighter leading-[0.95] md:leading-[0.9] mb-8 md:mb-12">
-              <span className="block motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700">Architecting</span>
-              <span className="block text-[#24A2A7] motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700 motion-safe:delay-150">Human-Centric</span>
-              <span className="block motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700 motion-safe:delay-300">Systems.</span>
-            </h1>
+                who never see the 3D scene (mobile + reduced-motion stays static).
+                Mobile tucks a small faded portrait into the empty space right of
+                the stacked headline; desktop keeps the full portrait column. */}
+            <div className="relative">
+              <div
+                className="md:hidden absolute right-0 top-0 z-0 w-[clamp(112px,30vw,176px)] rounded-xl overflow-hidden motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700"
+                style={{ aspectRatio: '4/5' }}
+                aria-hidden="false"
+              >
+                <img
+                  src="/about-portrait.webp"
+                  alt="Sam Bloch"
+                  width={150}
+                  height={188}
+                  fetchPriority="high"
+                  className="w-full h-full object-cover object-center grayscale"
+                />
+                {/* Same vignette fade as the desktop portrait, scaled to size —
+                    the faded edge is what lets the headline meet it gracefully */}
+                <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: 'inset 0 30px 24px -8px #121212, inset 0 -34px 28px -8px #121212, inset 26px 0 18px -8px #121212, inset -24px 0 16px -8px #121212' }} />
+              </div>
+              <h1 className="relative z-10 text-4xl sm:text-5xl md:text-7xl lg:text-8xl 2xl:text-[9rem] font-black tracking-tighter leading-[0.95] md:leading-[0.9] mb-8 md:mb-12">
+                <span className="block motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700">Architecting</span>
+                <span className="block text-[#24A2A7] motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700 motion-safe:delay-150">Human-Centric</span>
+                <span className="block motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700 motion-safe:delay-300">Systems.</span>
+              </h1>
+            </div>
 
-            <p className="whitespace-nowrap text-gray-400 text-[clamp(0.7rem,2.8vw,1.25rem)] 2xl:text-xl leading-relaxed motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 duration-1000 delay-300">
+            <p className="md:whitespace-nowrap pr-[30vw] md:pr-0 text-gray-400 text-[clamp(0.85rem,2.8vw,1.25rem)] 2xl:text-xl leading-relaxed motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 duration-1000 delay-300">
               Show me a pain point and I'll show you what I built to solve it.
             </p>
-            <p className="mt-3 text-gray-500 text-sm md:text-base 2xl:text-lg tracking-wide motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 duration-1000 delay-400">
+            <p className="mt-3 pr-[30vw] md:pr-0 text-gray-500 text-sm md:text-base 2xl:text-lg tracking-wide motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 duration-1000 delay-400">
               Program Manager at <GoogleColorized /> · AI Builder · College Educator
             </p>
 
@@ -218,7 +242,7 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent }) => {
           </div>
 
           {/* Headshot */}
-          <div className="flex items-center justify-center md:justify-end pr-0 md:pr-4 lg:pr-8 -mt-2 md:mt-0 order-2 md:order-none">
+          <div className="hidden md:flex items-center justify-center md:justify-end pr-0 md:pr-4 lg:pr-8 -mt-2 md:mt-0 order-2 md:order-none">
             <div
               className="relative w-[min(300px,85vw)] md:w-[min(440px,40vw)] xl:w-[min(480px,35vw)] 2xl:w-[min(600px,28vw)] rounded-2xl overflow-hidden shrink-0"
               style={{ aspectRatio: '4/5' }}
@@ -269,7 +293,7 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent }) => {
                       width={640}
                       height={400}
                       loading="lazy"
-                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-[filter,transform] duration-500"
+                      className="w-full h-full object-cover md:[@media(hover:hover)]:grayscale group-hover:grayscale-0 group-hover:scale-105 transition-[filter,transform] duration-500"
                       style={{ objectPosition: project.imagePosition ?? 'center' }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] via-transparent to-transparent opacity-60" />
@@ -448,7 +472,7 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent }) => {
                 <img
                   src="/headshot.webp"
                   alt="Sam Bloch"
-                  className="w-full h-full object-cover object-center grayscale group-hover:grayscale-0 transition-[filter] duration-700"
+                  className="w-full h-full object-cover object-center md:[@media(hover:hover)]:grayscale group-hover:grayscale-0 transition-[filter] duration-700"
                   decoding="async"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a]/50 via-transparent to-transparent" />

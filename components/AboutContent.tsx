@@ -33,8 +33,10 @@ const AboutContent: React.FC<AboutContentProps> = ({ variant = 'page', onClose }
     track('contact_click', { source: `about_${variant}` });
     const user = 'sam';
     const domain = 'sam-bloch.com';
-    const at = '@';
-    window.location.href = `mailto:${user}${at}${domain}`;
+    const address = `${user}@${domain}`;
+    // Copy first: mailto silently no-ops without a configured mail client
+    if (navigator.clipboard?.writeText) navigator.clipboard.writeText(address).catch(() => {});
+    window.location.href = `mailto:${address}`;
   };
 
   const reveal = 'motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700';

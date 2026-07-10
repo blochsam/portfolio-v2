@@ -3,7 +3,8 @@ import { useFooterAwareBottom } from '../utils/useFooterAwareBottom';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, X } from 'lucide-react';
 import { COLORS } from '../constants';
-import { useScrollReveal, CountUp, CaseStudyImage as Img } from './CaseStudyShared';
+import {useScrollReveal, CountUp, CaseStudyImage as Img, AtAGlance } from './CaseStudyShared';
+import ConnectButton from './ConnectButton';
 
 /* ─── Blueprint paper texture background ───
    A subtle architectural drafting overlay that runs behind the
@@ -406,6 +407,14 @@ const SpaceUtilizationCaseStudy: React.FC = () => {
           </div>
         </section>
 
+
+      <AtAGlance items={[
+        { label: "What", value: "A graduate program evaluation of campus space capacity" },
+        { label: "My role", value: "Data & analysis" },
+        { label: "Data", value: "Six semesters · three buildings · 73 rooms" },
+        { label: "Course", value: "LEAD 215 · University of the Pacific" }
+      ]} />
+
         {/* ════════════════════════════════════════
             SECTION 2 — THE BRIEF
            ════════════════════════════════════════ */}
@@ -757,19 +766,7 @@ const SpaceUtilizationCaseStudy: React.FC = () => {
           <p className="text-[#9a9a9f] text-[17px] leading-[1.8] max-w-lg mx-auto mb-10">
             I'm always open to discussing new opportunities, creative projects, or just nerding out about design and technology.
           </p>
-          <button
-            onClick={() => {
-              const user = 'sam';
-              const domain = 'sam-bloch.com';
-              window.location.href = `mailto:${user}@${domain}`;
-            }}
-            className="group px-10 py-5 bg-[#24A2A7] text-black font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:brightness-110 transition-[filter,transform] shadow-xl active:scale-95 inline-flex items-center gap-3"
-          >
-            Let's Connect
-            <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </button>
+          <ConnectButton className="group px-10 py-5 bg-[#24A2A7] text-black font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:brightness-110 transition-[filter,transform] shadow-xl active:scale-95 inline-flex items-center gap-3" />
         </section>
 
         {/* ════════════════════════════════════════

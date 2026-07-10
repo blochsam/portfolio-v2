@@ -3,7 +3,8 @@ import { useFooterAwareBottom } from '../utils/useFooterAwareBottom';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, X } from 'lucide-react';
 import { COLORS } from '../constants';
-import { useScrollReveal, Overline as SharedOverline, CaseStudyImage as Img, CountUp } from './CaseStudyShared';
+import {useScrollReveal, Overline as SharedOverline, CaseStudyImage as Img, CountUp, AtAGlance } from './CaseStudyShared';
+import ConnectButton from './ConnectButton';
 
 /* ─── Dorothy Draper / Camellia Rose palette ─── */
 const FUDGE = {
@@ -335,6 +336,14 @@ const FudgeCaseStudy: React.FC = () => {
           <div className="w-[1px] h-10 bg-gradient-to-b from-transparent via-white/30 to-transparent" />
         </div>
       </header>
+
+      <AtAGlance accent="#C41E63" items={[
+        { label: "What", value: "A PWA that coordinated a 16-person Mackinac Island trip" },
+        { label: "My role", value: "One developer, one AI partner" },
+        { label: "Outcome", value: "Shipped, installed, and used for the real trip" },
+        { label: "Stack", value: "Next.js 15 · React 19 · Supabase · PWA" }
+      ]} />
+
 
       {/* ═══════════════════ IMPACT NUMBERS ═══════════════════ */}
       <section className="relative py-24 md:py-32 px-6 overflow-hidden" style={{ background: FUDGE.dark }}>
@@ -743,13 +752,12 @@ const FudgeCaseStudy: React.FC = () => {
           Like what you see?
         </h2>
         <div data-reveal className="apple-reveal flex flex-col sm:flex-row gap-4 justify-center" style={{ transitionDelay: '200ms' }}>
-          <a
-            href="mailto:sam@sam-bloch.com"
-            className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full font-semibold text-white text-sm transition-transform hover:scale-105 active:scale-95"
+          <ConnectButton
+            label="Say Hello"
+            source="fudge"
+            className="group inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full font-semibold text-white text-sm transition-transform hover:scale-105 active:scale-95"
             style={{ backgroundColor: FUDGE.teal }}
-          >
-            Say Hello
-          </a>
+          />
           <a
             href="https://fudge.sam-bloch.com"
             target="_blank"

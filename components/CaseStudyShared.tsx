@@ -120,3 +120,32 @@ export const CountUp: React.FC<{
 
   return <span ref={ref}>{prefix}{count.toLocaleString()}{suffix}</span>;
 };
+
+/* ─── At a glance ───
+   Skim strip for the top of case studies: what it is, my role, the outcome,
+   in seconds. Added after the feedback study showed readers skim first and
+   commit second. Theme-agnostic via accent/ink/muted props (dark defaults). */
+export const AtAGlance: React.FC<{
+  items: { label: string; value: string }[];
+  accent?: string;
+  ink?: string;
+  muted?: string;
+  border?: string;
+  bg?: string;
+  className?: string;
+}> = ({ items, accent = '#24A2A7', ink = '#e8e8e6', muted = '#9a9a9f', border = 'rgba(255,255,255,0.08)', bg = '#161616', className = '' }) => (
+  <section aria-label="At a glance"
+    className={`relative z-10 max-w-4xl mx-auto px-6 md:px-12 pt-2 pb-10 ${className}`}>
+    <div className="rounded-2xl px-6 py-5 md:px-8" style={{ border: `1px solid ${border}`, background: bg }}>
+      <p className="text-[10px] font-black uppercase tracking-[0.4em] mb-4" style={{ color: accent }}>At a glance</p>
+      <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
+        {items.map((it) => (
+          <div key={it.label} className="flex gap-3 items-baseline">
+            <dt className="text-[11px] font-bold uppercase tracking-widest whitespace-nowrap" style={{ color: muted }}>{it.label}</dt>
+            <dd className="text-[14px] leading-snug" style={{ color: ink }}>{it.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+);

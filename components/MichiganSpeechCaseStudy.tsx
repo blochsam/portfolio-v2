@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useFooterAwareBottom } from '../utils/useFooterAwareBottom';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, X } from 'lucide-react';
-import { useScrollReveal, CountUp, CaseStudyImage } from './CaseStudyShared';
+import {useScrollReveal, CountUp, CaseStudyImage, AtAGlance } from './CaseStudyShared';
+import ConnectButton from './ConnectButton';
 
 /* Michigan Speech theme — ballot paper, ink, and a judge's red pen.
    Spartan green appears only in the founder chapter, where MSU enters the story. */
@@ -212,6 +213,14 @@ const MichiganSpeechCaseStudy: React.FC = () => {
           </p>
         </div>
       </header>
+
+      <AtAGlance accent="#b23628" ink="#2a2620" muted="#6b6459" border="rgba(42,38,32,0.15)" bg="#fbf8f0" items={[
+        { label: "What", value: "Fourteen years in Michigan's speech and debate community" },
+        { label: "Competitor", value: "2× MIFA state champion in Storytelling" },
+        { label: "Coach", value: "10+ state finalists, two champions, a national champion" },
+        { label: "Founder", value: "The Spartanvitational — the largest tournament in the state" }
+      ]} />
+
 
       {/* ══ STATS ══ */}
       <section className="py-14 md:py-20 px-6" style={{ borderTop: '1px solid rgba(42,38,32,0.1)', borderBottom: '1px solid rgba(42,38,32,0.1)' }}>
@@ -446,16 +455,7 @@ const MichiganSpeechCaseStudy: React.FC = () => {
           I&rsquo;m always up for talking speech, coaching, community-building — or why Storytelling is
           objectively the best event. Fudge opinions also welcome.
         </p>
-        <button
-          onClick={() => { window.location.href = `mailto:sam@sam-bloch.com`; }}
-          className="group px-10 py-5 font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:brightness-110 transition-[filter,transform] shadow-xl active:scale-95 inline-flex items-center gap-3"
-          style={{ background: RED, color: CARD }}
-        >
-          Let&rsquo;s Connect
-          <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-          </svg>
-        </button>
+        <ConnectButton className="group px-10 py-5 font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:brightness-110 transition-[filter,transform] shadow-xl active:scale-95 inline-flex items-center gap-3" style={{ background: RED, color: CARD }} source="michigan_speech" />
       </section>
 
       {/* Footer */}

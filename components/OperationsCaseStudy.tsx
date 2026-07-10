@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useFooterAwareBottom } from '../utils/useFooterAwareBottom';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, RotateCcw } from 'lucide-react';
-import { useScrollReveal, CountUp } from './CaseStudyShared';
+import {useScrollReveal, CountUp, AtAGlance } from './CaseStudyShared';
+import ConnectButton from './ConnectButton';
 
 /* Operations theme — mission-control console amber */
 const AMBER = '#e8a33d';
@@ -281,6 +282,14 @@ const OperationsCaseStudy: React.FC = () => {
         </div>
       </header>
 
+      <AtAGlance accent="#e8a33d" items={[
+        { label: "What", value: "A craft essay on running Trust & Safety operations at scale" },
+        { label: "Scope", value: "One quality standard · 10 global sites · 800+ moderators" },
+        { label: "Receipts", value: "45% fewer processing errors · 20% faster reporting" },
+        { label: "Note", value: "Specifics confidential — by design" }
+      ]} />
+
+
       {/* ══ STATS WALL ══ */}
       <section className="py-14 md:py-20 px-6 border-y border-white/[0.05]">
         <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
@@ -475,16 +484,7 @@ const OperationsCaseStudy: React.FC = () => {
           I can't tell you the specifics. I can absolutely talk craft — quality systems, calibration,
           and how to change an operation without dropping what it carries.
         </p>
-        <button
-          onClick={() => { window.location.href = `mailto:sam@sam-bloch.com`; }}
-          className="group px-10 py-5 font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:brightness-110 transition-[filter,transform] shadow-xl active:scale-95 inline-flex items-center gap-3"
-          style={{ background: AMBER, color: '#0b0d10' }}
-        >
-          Let's Connect
-          <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-          </svg>
-        </button>
+        <ConnectButton className="group px-10 py-5 font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:brightness-110 transition-[filter,transform] shadow-xl active:scale-95 inline-flex items-center gap-3" style={{ background: AMBER, color: '#0b0d10' }} source="operations" />
       </section>
 
       {/* Footer */}

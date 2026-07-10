@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, X } from 'lucide-react';
 import { COLORS } from '../constants';
 import DcadeHeroAnimation from './DcadeHeroAnimation';
-import { useScrollReveal, CountUp } from './CaseStudyShared';
+import {useScrollReveal, CountUp, AtAGlance } from './CaseStudyShared';
+import ConnectButton from './ConnectButton';
 
 /* ─── Scroll progress bar ─── */
 const ScrollProgress: React.FC = () => {
@@ -155,51 +156,51 @@ const SPRITE_FRIEND1: SpriteData = [
   [null,null,null,'#4a2a1a','#4a2a1a','#4a2a1a','#4a2a1a','#4a2a1a','#4a2a1a',null,null,null],
   [null,null,'#4a2a1a','#5c3a2a','#5c3a2a','#5c3a2a','#5c3a2a','#5c3a2a','#5c3a2a','#4a2a1a',null,null],
   [null,'#4a2a1a','#5c3a2a','#5c3a2a','#5c3a2a','#5c3a2a','#5c3a2a','#5c3a2a','#5c3a2a','#5c3a2a','#4a2a1a',null],
-  [null,'#4a2a1a','#E8B87A','#E8B87A','#E8B87A','#E8B87A','#E8B87A','#E8B87A','#E8B87A','#E8B87A','#4a2a1a',null],
-  [null,'#E8B87A','#E8B87A','#1a1a1a','#1a1a1a','#E8B87A','#E8B87A','#1a1a1a','#1a1a1a','#E8B87A','#E8B87A',null],
-  [null,'#E8B87A','#E8B87A','#E8B87A','#E8B87A','#E8B87A','#E8B87A','#E8B87A','#E8B87A','#E8B87A','#E8B87A',null],
-  [null,null,'#E8B87A','#E8B87A','#C08050','#E8B87A','#E8B87A','#C08050','#E8B87A','#E8B87A',null,null],
-  [null,null,null,'#E8B87A','#E8B87A','#E8B87A','#E8B87A','#E8B87A','#E8B87A',null,null,null],
+  [null,'#4a2a1a','#F4C794','#F4C794','#F4C794','#F4C794','#F4C794','#F4C794','#F4C794','#F4C794','#4a2a1a',null],
+  [null,'#F4C794','#F4C794','#1a1a1a','#1a1a1a','#F4C794','#F4C794','#1a1a1a','#1a1a1a','#F4C794','#F4C794',null],
+  [null,'#F4C794','#F4C794','#F4C794','#F4C794','#F4C794','#F4C794','#F4C794','#F4C794','#F4C794','#F4C794',null],
+  [null,null,'#F4C794','#F4C794','#D4956B','#F4C794','#F4C794','#D4956B','#F4C794','#F4C794',null,null],
+  [null,null,null,'#F4C794','#F4C794','#F4C794','#F4C794','#F4C794','#F4C794',null,null,null],
   [null,null,'#7B2D8B','#7B2D8B','#7B2D8B','#7B2D8B','#7B2D8B','#7B2D8B','#7B2D8B','#7B2D8B',null,null],
   [null,'#7B2D8B','#7B2D8B','#7B2D8B','#7B2D8B','#7B2D8B','#7B2D8B','#7B2D8B','#7B2D8B','#7B2D8B','#7B2D8B',null],
-  ['#7B2D8B','#7B2D8B','#7B2D8B','#E8B87A','#7B2D8B','#7B2D8B','#7B2D8B','#7B2D8B','#E8B87A','#7B2D8B','#7B2D8B','#7B2D8B'],
-  [null,null,null,'#E8B87A','#7B2D8B','#7B2D8B','#7B2D8B','#7B2D8B','#E8B87A',null,null,null],
+  ['#7B2D8B','#7B2D8B','#7B2D8B','#F4C794','#7B2D8B','#7B2D8B','#7B2D8B','#7B2D8B','#F4C794','#7B2D8B','#7B2D8B','#7B2D8B'],
+  [null,null,null,'#F4C794','#7B2D8B','#7B2D8B','#7B2D8B','#7B2D8B','#F4C794',null,null,null],
   [null,null,null,null,'#3d3d5c','#3d3d5c','#3d3d5c','#3d3d5c',null,null,null,null],
   [null,null,null,'#3d3d5c','#3d3d5c',null,null,'#3d3d5c','#3d3d5c',null,null,null],
   [null,null,'#2d2d2d','#2d2d2d','#2d2d2d',null,null,'#2d2d2d','#2d2d2d','#2d2d2d',null,null],
 ];
 
 const SPRITE_FRIEND2: SpriteData = [
-  [null,null,null,'#8B4513','#8B4513','#8B4513','#8B4513','#8B4513','#8B4513',null,null,null],
-  [null,null,'#8B4513','#A0522D','#A0522D','#A0522D','#A0522D','#A0522D','#A0522D','#8B4513',null,null],
-  [null,'#8B4513','#A0522D','#A0522D','#A0522D','#A0522D','#A0522D','#A0522D','#A0522D','#A0522D','#8B4513',null],
-  [null,'#8B4513','#DEB887','#DEB887','#DEB887','#DEB887','#DEB887','#DEB887','#DEB887','#DEB887','#8B4513',null],
-  [null,'#DEB887','#DEB887','#1a1a1a','#1a1a1a','#DEB887','#DEB887','#1a1a1a','#1a1a1a','#DEB887','#DEB887',null],
-  [null,'#DEB887','#DEB887','#DEB887','#DEB887','#DEB887','#DEB887','#DEB887','#DEB887','#DEB887','#DEB887',null],
-  [null,null,'#DEB887','#DEB887','#C4956A','#DEB887','#DEB887','#C4956A','#DEB887','#DEB887',null,null],
-  [null,null,null,'#DEB887','#DEB887','#DEB887','#DEB887','#DEB887','#DEB887',null,null,null],
+  [null,null,null,'#D4A574','#D4A574','#D4A574','#D4A574','#D4A574','#D4A574',null,null,null],
+  [null,null,'#D4A574','#E0BB8A','#E0BB8A','#E0BB8A','#E0BB8A','#E0BB8A','#E0BB8A','#D4A574',null,null],
+  [null,'#D4A574','#E0BB8A','#E0BB8A','#E0BB8A','#E0BB8A','#E0BB8A','#E0BB8A','#E0BB8A','#E0BB8A','#D4A574',null],
+  [null,'#D4A574','#F4C794','#F4C794','#F4C794','#F4C794','#F4C794','#F4C794','#F4C794','#F4C794','#D4A574',null],
+  [null,'#F4C794','#F4C794','#1a1a1a','#1a1a1a','#F4C794','#F4C794','#1a1a1a','#1a1a1a','#F4C794','#F4C794',null],
+  [null,'#F4C794','#F4C794','#F4C794','#F4C794','#F4C794','#F4C794','#F4C794','#F4C794','#F4C794','#F4C794',null],
+  [null,null,'#F4C794','#F4C794','#D4956B','#F4C794','#F4C794','#D4956B','#F4C794','#F4C794',null,null],
+  [null,null,null,'#F4C794','#F4C794','#F4C794','#F4C794','#F4C794','#F4C794',null,null,null],
   [null,null,'#2E8B57','#2E8B57','#2E8B57','#2E8B57','#2E8B57','#2E8B57','#2E8B57','#2E8B57',null,null],
   [null,'#2E8B57','#2E8B57','#2E8B57','#2E8B57','#2E8B57','#2E8B57','#2E8B57','#2E8B57','#2E8B57','#2E8B57',null],
-  ['#2E8B57','#2E8B57','#2E8B57','#DEB887','#2E8B57','#2E8B57','#2E8B57','#2E8B57','#DEB887','#2E8B57','#2E8B57','#2E8B57'],
-  [null,null,null,'#DEB887','#2E8B57','#2E8B57','#2E8B57','#2E8B57','#DEB887',null,null,null],
+  ['#2E8B57','#2E8B57','#2E8B57','#F4C794','#2E8B57','#2E8B57','#2E8B57','#2E8B57','#F4C794','#2E8B57','#2E8B57','#2E8B57'],
+  [null,null,null,'#F4C794','#2E8B57','#2E8B57','#2E8B57','#2E8B57','#F4C794',null,null,null],
   [null,null,null,null,'#4a4a3a','#4a4a3a','#4a4a3a','#4a4a3a',null,null,null,null],
   [null,null,null,'#4a4a3a','#4a4a3a',null,null,'#4a4a3a','#4a4a3a',null,null,null],
   [null,null,'#2d2d2d','#2d2d2d','#2d2d2d',null,null,'#2d2d2d','#2d2d2d','#2d2d2d',null,null],
 ];
 
 const SPRITE_FRIEND3: SpriteData = [
-  [null,null,null,'#D4A574','#D4A574','#D4A574','#D4A574','#D4A574','#D4A574',null,null,null],
-  [null,null,'#D4A574','#E0BB8A','#E0BB8A','#E0BB8A','#E0BB8A','#E0BB8A','#E0BB8A','#D4A574',null,null],
-  [null,'#D4A574','#E0BB8A','#E0BB8A','#E0BB8A','#E0BB8A','#E0BB8A','#E0BB8A','#E0BB8A','#E0BB8A','#D4A574',null],
-  [null,'#D4A574','#F5D5A8','#F5D5A8','#F5D5A8','#F5D5A8','#F5D5A8','#F5D5A8','#F5D5A8','#F5D5A8','#D4A574',null],
-  [null,'#F5D5A8','#F5D5A8','#1a1a1a','#1a1a1a','#F5D5A8','#F5D5A8','#1a1a1a','#1a1a1a','#F5D5A8','#F5D5A8',null],
-  [null,'#F5D5A8','#F5D5A8','#F5D5A8','#F5D5A8','#F5D5A8','#F5D5A8','#F5D5A8','#F5D5A8','#F5D5A8','#F5D5A8',null],
-  [null,null,'#F5D5A8','#F5D5A8','#D4A574','#F5D5A8','#F5D5A8','#D4A574','#F5D5A8','#F5D5A8',null,null],
-  [null,null,null,'#F5D5A8','#F5D5A8','#F5D5A8','#F5D5A8','#F5D5A8','#F5D5A8',null,null,null],
-  [null,null,'#E8850C','#E8850C','#E8850C','#E8850C','#E8850C','#E8850C','#E8850C','#E8850C',null,null],
-  [null,'#E8850C','#E8850C','#E8850C','#E8850C','#E8850C','#E8850C','#E8850C','#E8850C','#E8850C','#E8850C',null],
-  ['#E8850C','#E8850C','#E8850C','#F5D5A8','#E8850C','#E8850C','#E8850C','#E8850C','#F5D5A8','#E8850C','#E8850C','#E8850C'],
-  [null,null,null,'#F5D5A8','#E8850C','#E8850C','#E8850C','#E8850C','#F5D5A8',null,null,null],
+  [null,null,null,'#8B4513','#8B4513','#8B4513','#8B4513','#8B4513','#8B4513',null,null,null],
+  [null,null,'#8B4513','#A0522D','#A0522D','#A0522D','#A0522D','#A0522D','#A0522D','#8B4513',null,null],
+  [null,'#8B4513','#A0522D','#A0522D','#A0522D','#A0522D','#A0522D','#A0522D','#A0522D','#A0522D','#8B4513',null],
+  [null,'#8B4513','#F4C794','#F4C794','#F4C794','#F4C794','#F4C794','#F4C794','#F4C794','#F4C794','#8B4513',null],
+  [null,'#F4C794','#F4C794','#1a1a1a','#1a1a1a','#F4C794','#F4C794','#1a1a1a','#1a1a1a','#F4C794','#F4C794',null],
+  [null,'#F4C794','#F4C794','#F4C794','#F4C794','#F4C794','#F4C794','#F4C794','#F4C794','#F4C794','#F4C794',null],
+  [null,null,'#F4C794','#F4C794','#D4956B','#F4C794','#F4C794','#D4956B','#F4C794','#F4C794',null,null],
+  [null,null,null,'#F4C794','#F4C794','#F4C794','#F4C794','#F4C794','#F4C794',null,null,null],
+  [null,null,'#3D6BD8','#3D6BD8','#3D6BD8','#3D6BD8','#3D6BD8','#3D6BD8','#3D6BD8','#3D6BD8',null,null],
+  [null,'#3D6BD8','#3D6BD8','#3D6BD8','#3D6BD8','#3D6BD8','#3D6BD8','#3D6BD8','#3D6BD8','#3D6BD8','#3D6BD8',null],
+  ['#3D6BD8','#3D6BD8','#3D6BD8','#F4C794','#3D6BD8','#3D6BD8','#3D6BD8','#3D6BD8','#F4C794','#3D6BD8','#3D6BD8','#3D6BD8'],
+  [null,null,null,'#F4C794','#3D6BD8','#3D6BD8','#3D6BD8','#3D6BD8','#F4C794',null,null,null],
   [null,null,null,null,'#5c4a3a','#5c4a3a','#5c4a3a','#5c4a3a',null,null,null,null],
   [null,null,null,'#5c4a3a','#5c4a3a',null,null,'#5c4a3a','#5c4a3a',null,null,null],
   [null,null,'#2d2d2d','#2d2d2d','#2d2d2d',null,null,'#2d2d2d','#2d2d2d','#2d2d2d',null,null],
@@ -463,6 +464,14 @@ const DcadeCaseStudy: React.FC = () => {
           <div className="w-[1px] h-16 bg-gradient-to-b from-transparent via-[#24A2A7]/30 to-transparent mx-auto" />
         </div>
       </header>
+
+      <AtAGlance items={[
+        { label: "What", value: "A dead Dreamcast cabinet reborn as a Raspberry Pi arcade" },
+        { label: "My role", value: "Solo builder — wiring, 3D printing, software" },
+        { label: "Outcome", value: "Two years in the D-House; now serving a doctor's waiting room" },
+        { label: "Stack", value: "Raspberry Pi · RetroPie · 3D printing · A/V" }
+      ]} />
+
 
       {/* ════════════════════════════════════════
           IMPACT STATS
@@ -814,19 +823,7 @@ const DcadeCaseStudy: React.FC = () => {
         <p className="text-[#9a9a9f] text-[17px] leading-[1.8] max-w-lg mx-auto mb-10">
           I'm always open to discussing new opportunities, creative projects, or just nerding out about design and technology.
         </p>
-        <button
-          onClick={() => {
-            const user = 'sam';
-            const domain = 'sam-bloch.com';
-            window.location.href = `mailto:${user}@${domain}`;
-          }}
-          className="group px-10 py-5 bg-[#24A2A7] text-black font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:brightness-110 transition-[filter,transform] shadow-xl active:scale-95 inline-flex items-center gap-3"
-        >
-          Let's Connect
-          <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-          </svg>
-        </button>
+        <ConnectButton className="group px-10 py-5 bg-[#24A2A7] text-black font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:brightness-110 transition-[filter,transform] shadow-xl active:scale-95 inline-flex items-center gap-3" />
       </section>
 
       {/* ─── Footer ─── */}

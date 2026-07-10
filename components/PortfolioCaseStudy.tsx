@@ -5,7 +5,8 @@ import { ArrowLeft, Download, X } from 'lucide-react';
 import { COLORS } from '../constants';
 import InteractiveSitemap from './InteractiveSitemap';
 import { SITEMAP } from '../sitemap';
-import { useScrollReveal as useAnimateOnScroll, CaseStudyImage as Img } from './CaseStudyShared';
+import {useScrollReveal as useAnimateOnScroll, CaseStudyImage as Img, AtAGlance } from './CaseStudyShared';
+import ConnectButton from './ConnectButton';
 
 /* ═══════════════════════════════════
    SUB-COMPONENTS
@@ -410,6 +411,14 @@ const PortfolioCaseStudy: React.FC = () => {
           </div>
         </header>
 
+      <AtAGlance items={[
+        { label: "What", value: "This site — an explorable 3D desk with real work behind every object" },
+        { label: "My role", value: "Design, build, and the 3D scene" },
+        { label: "Outcome", value: "You're inside it right now" },
+        { label: "Stack", value: "React · Vite · Spline · Tailwind" }
+      ]} />
+
+
         {/* ═══ STATS BAR ═══ */}
         <section className="border-y border-white/[0.04] bg-[#0c0c0c]">
           <div className="max-w-6xl mx-auto px-6 md:px-12 py-12 md:py-16">
@@ -813,19 +822,7 @@ const PortfolioCaseStudy: React.FC = () => {
           <p className="text-[#9a9a9f] text-[17px] leading-[1.8] max-w-lg mx-auto mb-10">
             I'm always open to discussing new opportunities, creative projects, or just nerding out about design and technology.
           </p>
-          <button
-            onClick={() => {
-              const user = 'sam';
-              const domain = 'sam-bloch.com';
-              window.location.href = `mailto:${user}@${domain}`;
-            }}
-            className="group px-10 py-5 bg-[#24A2A7] text-black font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:brightness-110 transition-[filter,transform] shadow-xl active:scale-95 inline-flex items-center gap-3"
-          >
-            Let's Connect
-            <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </button>
+          <ConnectButton className="group px-10 py-5 bg-[#24A2A7] text-black font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:brightness-110 transition-[filter,transform] shadow-xl active:scale-95 inline-flex items-center gap-3" />
         </section>
 
         {/* ═══ CTA ═══ */}

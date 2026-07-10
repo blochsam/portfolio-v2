@@ -3,7 +3,8 @@ import { useFooterAwareBottom } from '../utils/useFooterAwareBottom';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, X } from 'lucide-react';
 import { COLORS } from '../constants';
-import { useScrollReveal, Overline, CaseStudyImage as Img, CountUp } from './CaseStudyShared';
+import {useScrollReveal, Overline, CaseStudyImage as Img, CountUp, AtAGlance } from './CaseStudyShared';
+import ConnectButton from './ConnectButton';
 
 /* ─── Full-bleed nature image section (parallax) ─── */
 const NatureMoment: React.FC<{
@@ -270,6 +271,14 @@ const ZooReportCaseStudy: React.FC = () => {
           <div className="w-[1px] h-16 bg-gradient-to-b from-transparent via-[#24A2A7]/40 to-transparent mx-auto" />
         </div>
       </header>
+
+      <AtAGlance items={[
+        { label: "What", value: "An AR mobile app concept for the Detroit Zoo" },
+        { label: "My role", value: "UX research through final UI" },
+        { label: "Outcome", value: "Research-driven wireframes to a polished prototype" },
+        { label: "Tools", value: "Adobe XD · usability testing" }
+      ]} />
+
 
       {/* ════════════════════════════════════════
           IMPACT NUMBERS
@@ -714,19 +723,7 @@ const ZooReportCaseStudy: React.FC = () => {
         <p className="text-[#9a9a9f] text-[17px] leading-[1.8] max-w-lg mx-auto mb-10">
           I'm always open to discussing new opportunities, creative projects, or just nerding out about design and technology.
         </p>
-        <button
-          onClick={() => {
-            const user = 'sam';
-            const domain = 'sam-bloch.com';
-            window.location.href = `mailto:${user}@${domain}`;
-          }}
-          className="group px-10 py-5 bg-[#24A2A7] text-black font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:brightness-110 transition-[filter,transform] shadow-xl active:scale-95 inline-flex items-center gap-3"
-        >
-          Let's Connect
-          <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-          </svg>
-        </button>
+        <ConnectButton className="group px-10 py-5 bg-[#24A2A7] text-black font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:brightness-110 transition-[filter,transform] shadow-xl active:scale-95 inline-flex items-center gap-3" />
       </section>
 
       {/* ════════════════════════════════════════

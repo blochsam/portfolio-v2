@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useFooterAwareBottom } from '../utils/useFooterAwareBottom';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, X } from 'lucide-react';
-import { useScrollReveal, CountUp } from './CaseStudyShared';
+import {useScrollReveal, CountUp, AtAGlance } from './CaseStudyShared';
 
 /* ─── Scroll progress bar ─── */
 const ScrollProgress: React.FC = () => {
@@ -322,6 +322,14 @@ const SmartLockersCaseStudy: React.FC = () => {
         {/* Bottom vignette line */}
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#24A2A7]/30 to-transparent" />
       </section>
+
+
+      <AtAGlance items={[
+        { label: "What", value: "A self-service smart-locker system for device distribution at Quicken Loans" },
+        { label: "My role", value: "Intern — web portal, API, and the Raspberry Pi kiosk" },
+        { label: "Outcome", value: "Prototype and pitch reached the SVP of Infrastructure" },
+        { label: "Stack", value: "PHP · SQL · Python · Raspberry Pi · 3D printing" }
+      ]} />
 
       {/* ══════════════════════════════════════════════════
           THE STORY
