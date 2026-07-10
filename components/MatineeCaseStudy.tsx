@@ -74,18 +74,27 @@ const TerminalText: React.FC<{ text: string; delay?: number; className?: string 
    A framed simulation of the 13.3" Spectra 6 display. Hitting "Refresh"
    plays the characteristic e-ink flash (invert → settle) and advances to
    the next frame. Frames live in /public/case-study/matinee/frames/.
-   Frames are real Matinee output: frame-1 is a render straight from the
-   pipeline; frame-2 is a photograph of the panel on the wall.
+   Frames are real Matinee output, exported straight from the render
+   pipeline — the household's actual reviews.
    ════════════════════════════════════════════════════════════════════════ */
 const FRAMES = [
   '/case-study/matinee/frames/frame-1.webp',
   '/case-study/matinee/frames/frame-2.webp',
+  '/case-study/matinee/frames/frame-3.webp',
+  '/case-study/matinee/frames/frame-4.webp',
+  '/case-study/matinee/frames/frame-5.webp',
+  '/case-study/matinee/frames/frame-6.webp',
 ];
 
 const EinkPanel: React.FC = () => {
   const [index, setIndex] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
   const nextIndex = useRef(0);
+
+  // Warm the cache so a refresh click never outruns its frame
+  useEffect(() => {
+    FRAMES.slice(1).forEach((src) => { const img = new Image(); img.src = src; });
+  }, []);
 
   const refresh = useCallback(() => {
     if (refreshing) return;
@@ -137,7 +146,7 @@ const EinkPanel: React.FC = () => {
         {refreshing ? 'Refreshing' : 'Refresh'}
       </button>
       <p className="text-[12px] text-[#8a8a8f] mt-5 font-mono max-w-md text-center leading-relaxed">
-        Real frames — one straight from the render pipeline, one photographed on my wall. The flash mimics how e-ink actually repaints.
+        Real frames, exported straight from the live pipeline — the household&rsquo;s actual reviews. The flash mimics how e-ink repaints.
       </p>
     </div>
   );
