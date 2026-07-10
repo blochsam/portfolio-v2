@@ -1,5 +1,5 @@
 {
-  "buildCommand": "node scripts/fetch-spline-scene.mjs && vite build && npx playwright install --with-deps chromium && node scripts/prerender.mjs",
+  "buildCommand": "node scripts/fetch-spline-scene.mjs && vite build && npx playwright install chromium && node scripts/prerender.mjs",
   "outputDirectory": "dist",
   "trailingSlash": false,
   "crons": [
