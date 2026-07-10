@@ -42,3 +42,6 @@ skills-lock.json
 *.sln
 *.sw?
 .vercel
+
+# launch video workspace (large media, not part of the site)
+remotion-video/
