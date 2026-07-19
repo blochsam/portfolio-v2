@@ -18,12 +18,14 @@
 
 ---
 
-This is the third rebuild of my personal site since 2020, and the first one I
-built entirely in code. It opens on my actual desk rendered in 3D (click
-around, find the cat), and every object on it opens into real work: eleven
-case studies, each with its own design language, from an e-ink movie frame
-hanging on my wall to the Trust & Safety operations I run by day. A 2D
-editorial version loads automatically on mobile or whenever WebGL says no.
+My first portfolio was hand-written HTML on MSU's student servers back in
+college. Then sam-bloch.com spent six years and two designs on Wix. This
+rebuild brings the domain back to code. It opens on my actual desk rendered
+in 3D (click around, find the cat), and every object on it opens into real
+work: eleven case studies, each with its own design language, from an e-ink
+movie frame hanging on my wall to the Trust & Safety operations I run by
+day. A 2D editorial version loads automatically on mobile or whenever WebGL
+says no.
 
 <div align="center">
 <table>
