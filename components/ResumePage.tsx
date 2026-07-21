@@ -164,7 +164,7 @@ const ResumePage: React.FC = () => {
                 <span className="font-bold text-black">Master of Arts: Leadership, Organizational Innovation & Change</span><br/>
                 <span className="text-xs text-gray-500 font-medium">University of the Pacific — Stockton, CA</span>
               </div>
-              <span className="text-[10px] font-bold text-gray-600 whitespace-nowrap ml-4">Expected in 2026</span>
+              <span className="text-[10px] font-bold text-gray-600 whitespace-nowrap ml-4">07/2026</span>
             </div>
             <div className="flex justify-between items-start md:items-baseline">
               <div className="leading-tight">
