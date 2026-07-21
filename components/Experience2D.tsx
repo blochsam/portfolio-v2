@@ -196,7 +196,7 @@ const Experience2D: React.FC<Experience2DProps> = ({ setSelectedContent }) => {
                     the faded edge is what lets the headline meet it gracefully */}
                 <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: 'inset 0 30px 24px -8px #121212, inset 0 -34px 28px -8px #121212, inset 26px 0 18px -8px #121212, inset -24px 0 16px -8px #121212' }} />
               </div>
-              <h1 className="relative z-10 text-4xl sm:text-5xl md:text-7xl lg:text-8xl 2xl:text-[9rem] font-black tracking-tighter leading-[0.95] md:leading-[0.9] mb-8 md:mb-12">
+              <h1 className="relative z-10 text-[clamp(1.2rem,6.2vw,2rem)] sm:text-5xl md:text-7xl lg:text-8xl 2xl:text-[9rem] font-black tracking-tighter leading-[0.95] md:leading-[0.9] mb-8 md:mb-12">
                 <span className="block motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700">Architecting</span>
                 <span className="block text-[#24A2A7] motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700 motion-safe:delay-150">Human-Centric</span>
                 <span className="block motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700 motion-safe:delay-300">Systems.</span>
