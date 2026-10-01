@@ -4,10 +4,26 @@ import { track } from '../utils/track';
 import Experience2D from './Experience2D';
 import { AppShellContext } from '../types';
 
-// 3D is opt-in. The Spline chunk (and its heavy scene asset) load only when a
-// visitor actually enters 3D — never eagerly on the default landing — so the
-// static site stays instant for everyone who doesn't choose the immersive view.
-const Experience3D = lazy(() => import('./Experience3D'));
+// Start loading the 2MB 3D chunk on desktop, but defer to idle so it doesn't
+// compete with first paint. Falls back to immediate import if requestIdleCallback
+// isn't available (Safari <16.4).
+let experience3DImport: Promise<typeof import('./Experience3D')> | null = null;
+
+if (typeof window !== 'undefined' &&
+    !window.matchMedia('(pointer: coarse)').matches &&
+    window.innerWidth >= 768) {
+  if ('requestIdleCallback' in window) {
+    experience3DImport = new Promise((resolve) => {
+      window.requestIdleCallback(() => {
+        resolve(import('./Experience3D'));
+      });
+    });
+  } else {
+    experience3DImport = import('./Experience3D');
+  }
+}
+
+const Experience3D = lazy(() => experience3DImport || import('./Experience3D'));
 
 /**
  * Shown while the 3D chunk loads. Leads with who Sam is and offers an
@@ -68,15 +84,16 @@ class WebGLErrorBoundary extends Component<WebGLErrorBoundaryProps, { hasError: 
 }
 
 const ExperienceDefault: React.FC = () => {
-  // 2D is the default landing for everyone — it matches the pre-rendered HTML,
-  // so first paint is instant and there's no flash. 3D is opted into below.
-  const [is3D, setIs3D] = useState<boolean>(false);
+  const [is3D, setIs3D] = useState<boolean | null>(null);
   const context = useOutletContext<AppShellContext>();
   const location = useLocation();
 
   useEffect(() => {
-    // Navigated here with force2D signal ("Switch to Static Site"). Only a
-    // deliberate, non-transient choice persists for the session.
+    // Navigated here with force2D signal. Only a deliberate preference
+    // ("Switch to Static Site") persists for the session — skips, crash
+    // fallbacks, and plain "Home" navigation pass transient:true and
+    // affect this page view only. One bad WebGL moment or one impatient
+    // skip must never lock the session out of 3D.
     if (location.state?.force2D) {
       if (!location.state?.transient) {
         sessionStorage.setItem('experienceChoice.v2', '2d');
@@ -86,17 +103,17 @@ const ExperienceDefault: React.FC = () => {
       window.history.replaceState({}, '');
       return;
     }
-    // Respect an explicit 3D choice made earlier this session (via the
-    // "Enter Immersive 3D" button / the /3d route), so navigating Home keeps
-    // a visitor who opted in inside the immersive view — and the scene is
-    // already warm in the service-worker cache, so it's instant.
-    if (sessionStorage.getItem('experienceChoice.v2') === '3d') {
-      setIs3D(true);
+    // Respect an earlier explicit choice of the static site this session.
+    if (sessionStorage.getItem('experienceChoice.v2') === '2d') {
+      setIs3D(false);
       return;
     }
-    // Everyone else gets the fast static site. The 3D desk is a heavy download,
-    // so it loads only when a visitor opts in — it stays one click away.
-    setIs3D(false);
+    // Default to the static site for touch/small screens AND for visitors who
+    // ask the OS to reduce motion (vestibular, migraine, focus needs). The 3D
+    // scene stays one click away; we just don't auto-play heavy motion at them.
+    const isMobile = window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    setIs3D(!isMobile && !reduceMotion);
   }, [location.state]);
 
   // Which experience visitors actually land in (3d / 2d, and why)
@@ -108,6 +125,16 @@ const ExperienceDefault: React.FC = () => {
       });
     }
   }, [is3D]);
+
+  if (is3D === null) {
+    return (
+      <div className="fixed inset-0 bg-[#121212] flex items-center justify-center">
+        <span className="text-[10px] font-mono uppercase tracking-[0.5em] text-white/50 animate-pulse">
+          Initializing Samulation...
+        </span>
+      </div>
+    );
+  }
 
   return is3D ? (
     <WebGLErrorBoundary onFallback={() => setIs3D(false)}>
