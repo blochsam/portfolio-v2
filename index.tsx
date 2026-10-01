@@ -26,3 +26,13 @@ if (rootElement.hasChildNodes()) {
 } else {
   ReactDOM.createRoot(rootElement).render(app);
 }
+
+// Register the service worker that durably caches the heavy 3D scene, so a
+// visitor who enters 3D once never re-downloads it (the HTTP cache evicts big
+// files; Cache Storage survives). Deferred to load so it never competes with
+// first paint, and failures are swallowed — the site works without it.
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}

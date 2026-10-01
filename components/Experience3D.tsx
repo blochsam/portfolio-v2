@@ -205,7 +205,7 @@ const Experience3D: React.FC<Experience3DProps> = ({ setSelectedContent, openAbo
           {/* ?v=2 busts browser caches that stored the bad immutable payload
               served while the scene file was missing from production builds */}
           <Spline
-            scene="/scene.splinecode?v=2"
+            scene="/scene.splinecode?v=3"
             onLoad={onLoad}
           />
         </div>
